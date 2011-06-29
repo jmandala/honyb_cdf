@@ -5,4 +5,8 @@ Order.class_eval do
   end
 
 
+  def tax_rate
+    TaxRate.match(ship_address).first
+  end
+
 end

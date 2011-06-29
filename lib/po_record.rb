@@ -18,6 +18,10 @@ class PoRecord < CdfRecord
     cdf << append(Po10) + "\n"
     cdf << append(Po20) + "\n"
     cdf << append(Po21) + "\n"
+    cdf << append(Po24) + "\n"
+    cdf << append(Po25) + "\n"
+    cdf << append(Po26) + "\n"
+    cdf << append(Po27) + "\n"
     cdf.string
   end
 
