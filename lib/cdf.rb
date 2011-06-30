@@ -1,6 +1,10 @@
 require 'spree_core'
 require 'cdf_hooks'
-require 'ext/string'
+
+# hackery, but it works to include the libs
+Dir.glob(File.join(File.dirname(__FILE__), "ext/**/*.rb")) do |c|
+  Rails.env.production? ? require(c) : load(c)
+end
 
 module Cdf
   class Engine < Rails::Engine
