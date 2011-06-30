@@ -1,6 +1,6 @@
 module Records
 # Recipient Ship To Name
-  class Po30 < CdfRecord
+  class Po30 < PoBase
 
     def cdf_record
       cdf = super

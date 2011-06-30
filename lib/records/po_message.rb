@@ -1,5 +1,5 @@
 module Records
-  class PoMessage < CdfRecord
+  class PoMessage < PoBase
     def cdf_record
       cdf = super
       cdf << message

@@ -1,8 +1,7 @@
 module Records
   class CdfRecord
 
-    def initialize(order, sequence, args)
-      @order = order
+    def initialize(sequence, args)
       @sequence = sequence
       @options = args
       @options[:name] ||= "undefined"
@@ -29,26 +28,14 @@ module Records
       cdf = String.new
       cdf << record_code
       cdf << sequence_number
-      cdf << po_number
-      cdf
-    end
-
-
-    def po_number
-      sprintf("%22d", @order.id)
     end
 
     def record_code
-      @options[:name].gsub(/Po(\d*)/, '\1')
+      @options[:name].gsub(/.*Po(\d*)/, '\1')
     end
 
     def to_s
       cdf_record
-    end
-
-
-    def line_item
-      @options[:line_item]
     end
 
   end

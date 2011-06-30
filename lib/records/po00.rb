@@ -1,7 +1,7 @@
 module Records
 
 # Client Header
-  class Po10 < PoBase
+  class Po00 < CdfRecord
 
     def cdf_record
       cdf = super

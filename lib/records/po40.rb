@@ -1,6 +1,6 @@
 module Records
 # Line Item Detail
-  class Po40 < CdfRecord
+  class Po40 < PoBase
     def cdf_record
       cdf = super
       cdf << line_item_po_number

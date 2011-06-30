@@ -6,19 +6,17 @@ module Records
 
     def initialize(order, start_sequence)
       @order = order
-      @sequence = start_sequence
-      @count = 0
+      init_counters start_sequence
     end
 
     def append(clazz, args = {})
       args[:name] = clazz.name
-      record = clazz.send(:new, @order, @sequence, args)
-      @sequence += 1
-      @count += 1
+      record = clazz.send(:new, @order, @count[:sequence], args)
+
+      update_counters_for record
 
       record.cdf_record + "\n"
     end
-
 
     def to_s
       cdf = StringIO.new
@@ -51,7 +49,7 @@ module Records
         end
       end
 
-      cdf << append(Po50, :record_count => @count+1)
+      cdf << append(Po50, :record_count => @count[:total]+1)
 
       cdf.string
     end
@@ -59,6 +57,27 @@ module Records
     def marketing_message
       "HonyB Is Direct Commerce"
     end
+
+    private
+
+    def init_counters(start)
+      @count = {}
+      @count[:sequence] = start
+      @count[:total] = 0
+      for i in 0..8 do
+        Rails.logger.debug "i.to_s #{i.to_s}"
+        @count[i.to_s] = 0
+      end
+    end
+
+    def update_counters_for(record)
+      @count[:sequence] += 1
+      @count[:total] += 1
+      @count[record.record_code[0].to_s] += 1
+      Rails.logger.info @count.inspect
+
+    end
+
 
   end
 end

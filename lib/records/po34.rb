@@ -1,6 +1,6 @@
 module Records
 # Recipient To City, State, Zip
-  class Po34 < CdfRecord
+  class Po34 < PoBase
 
     def cdf_record
       cdf = super

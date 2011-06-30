@@ -1,6 +1,6 @@
 module Records
 # Purchase Order Control
-  class Po50 < CdfRecord
+  class Po50 < PoBase
     def cdf_record
       cdf = super
       cdf << total_purchase_order_records
@@ -20,7 +20,5 @@ module Records
     def total_units_ordered
       sprintf("%010d", @order.total_quantity)
     end
-
-
   end
 end

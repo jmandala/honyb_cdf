@@ -1,7 +1,7 @@
 module Records
 
 # Consumer Bill To Address Line
-  class Po27 < CdfRecord
+  class Po27 < PoBase
 
     def cdf_record
       cdf = super

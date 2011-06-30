@@ -1,7 +1,7 @@
 module Records
 
 # Recipient Cost
-  class Po24 < CdfRecord
+  class Po24 < PoBase
 
     def cdf_record
       cdf = super

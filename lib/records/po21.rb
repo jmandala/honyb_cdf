@@ -1,7 +1,7 @@
 module Records
 
 # Purchase Order Options Record
-  class Po21 < CdfRecord
+  class Po21 < PoBase
 
     def cdf_record
       cdf = super

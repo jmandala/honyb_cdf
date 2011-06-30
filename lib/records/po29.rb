@@ -1,7 +1,7 @@
 module Records
 
 # Consumer Bill To City, State, Zipr
-  class Po29 < CdfRecord
+  class Po29 < PoBase
 
     def cdf_record
       cdf = super

@@ -1,6 +1,6 @@
 module Records
 # Recipient Address Line
-  class Po32 < CdfRecord
+  class Po32 < PoBase
 
     def cdf_record
       cdf = super

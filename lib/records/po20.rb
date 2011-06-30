@@ -2,7 +2,7 @@ module Records
 
 # Optional
 # Fixed Special Handling Instructions
-  class Po20 < CdfRecord
+  class Po20 < PoBase
 
     def cdf_record
       cdf = super

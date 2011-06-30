@@ -1,7 +1,7 @@
 module Records
 
 # Consumer Bill To Name
-  class Po25 < CdfRecord
+  class Po25 < PoBase
 
     def cdf_record
       cdf = super

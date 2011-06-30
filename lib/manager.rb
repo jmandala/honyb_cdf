@@ -23,8 +23,9 @@ class Manager
     po_data = "HEADER\n"
     orders.each do |order|
       po = order.as_cdf(count)
+      Rails.logger.info po.count.inspect
       po_data << po.to_s
-      count += po.count
+      count += po.count[:total]
     end
 
     po_data << "#{count}FOOTER"

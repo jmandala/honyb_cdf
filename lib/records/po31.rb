@@ -1,6 +1,6 @@
 module Records
 # Consumer Bill To Phone Number
-  class Po31 < CdfRecord
+  class Po31 < PoBase
 
     def cdf_record
       cdf = super

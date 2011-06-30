@@ -1,6 +1,6 @@
 module Records
 # Drop Ship Detail
-  class Po35 < CdfRecord
+  class Po35 < PoBase
 
     def cdf_record
       cdf = super

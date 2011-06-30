@@ -1,6 +1,6 @@
 module Records
 # Additional Line Item Detail
-  class Po41 < CdfRecord
+  class Po41 < PoBase
     def cdf_record
       cdf = super
       cdf << client_item_list_price
