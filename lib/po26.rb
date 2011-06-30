@@ -1,3 +1,4 @@
+# Consumer Bill To Phone Number
 class Po26 < CdfRecord
 
   def to_s
@@ -5,17 +6,11 @@ class Po26 < CdfRecord
   end
 
   def cdf_record
-    cdf = String.new
-    cdf << record_code
-    cdf << sequence_number
-    cdf << po_number
+    cdf = super
     cdf << purchaser_phone_number
     cdf << reserved(26)
   end
 
-  def record_code
-    "25"
-  end
 
   def purchaser_phone_number
     @order.bill_address.phone.ljust 25

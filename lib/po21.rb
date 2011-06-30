@@ -1,16 +1,12 @@
 # Purchase Order Options Record
 class Po21 < CdfRecord
 
-
   def to_s
     cdf_record
   end
 
   def cdf_record
-    cdf = String.new
-    cdf << record_code
-    cdf << sequence_number
-    cdf << po_number
+    cdf = super
     cdf << ingram_ship_to_account_number
     cdf << po_type
     cdf << order_type
@@ -25,9 +21,6 @@ class Po21 < CdfRecord
     cdf << reserved(1)
   end
 
-  def record_code
-    "21"
-  end
 
   def ingram_ship_to_account_number
     "1234567"

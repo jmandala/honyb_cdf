@@ -18,9 +18,21 @@ class CdfRecord
     sprintf("%05d", @sequence)
   end
 
+  def cdf_record
+    cdf = String.new
+    cdf << record_code
+    cdf << sequence_number
+    cdf << po_number
+    cdf
+  end
+
 
   def po_number
     sprintf("%22d", @order.id)
+  end
+
+  def record_code
+    @options[:name].gsub(/Po(\d*)/, '\1')
   end
 
 end

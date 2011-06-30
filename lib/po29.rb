@@ -6,19 +6,12 @@ class Po29 < CdfRecord
   end
 
   def cdf_record
-    cdf = String.new
-    cdf << record_code
-    cdf << sequence_number
-    cdf << po_number
+    cdf = super
     cdf << purchaser_city
     cdf << purchaser_state
     cdf << purchaser_postal_code
     cdf << purchaser_country
-    cdf << reserved(16)
-  end
-
-  def record_code
-    "25"
+    cdf << reserved(9)
   end
 
   def purchaser_city

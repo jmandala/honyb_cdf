@@ -9,6 +9,7 @@ class PoRecord < CdfRecord
   end
 
   def append(clazz, args = {})
+    args[:name] = clazz.name
     record = clazz.send(:new, @order, @sequence, args)
     @sequence += 1
     record.cdf_record
@@ -26,6 +27,7 @@ class PoRecord < CdfRecord
     cdf << append(Po27) + "\n"
     cdf << append(Po27, :address_line => :address2) + "\n"
     cdf << append(Po29) + "\n"
+    cdf << append(Po30) + "\n"
     cdf.string
 
   end

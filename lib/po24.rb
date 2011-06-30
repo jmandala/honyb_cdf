@@ -1,26 +1,18 @@
-# Purchase Order Options Record
+# Recipient Cost
 class Po24 < CdfRecord
-
-
 
   def to_s
     cdf_record
   end
 
   def cdf_record
-    cdf = String.new
-    cdf << record_code
-    cdf << sequence_number
-    cdf << po_number
+    cdf = super
     cdf << sales_tax_percent
     cdf << freight_tax_percent
     cdf << freight_amount
     cdf << reserved(28)
   end
 
-  def record_code
-    "24"
-  end
 
   def sales_tax_percent
     if @order.tax_rate

@@ -1,3 +1,4 @@
+# Consumer Bill To Address Line
 class Po27 < CdfRecord
 
   def to_s
@@ -5,16 +6,9 @@ class Po27 < CdfRecord
   end
 
   def cdf_record
-    cdf = String.new
-    cdf << record_code
-    cdf << sequence_number
-    cdf << po_number
+    cdf = super
     cdf << purchaser_address_line
     cdf << reserved(16)
-  end
-
-  def record_code
-    "25"
   end
 
   def purchaser_address_line

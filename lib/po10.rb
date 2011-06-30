@@ -1,3 +1,4 @@
+# Client Header
 class Po10 < CdfRecord
 
   def to_s
@@ -5,10 +6,7 @@ class Po10 < CdfRecord
   end
 
   def cdf_record
-    cdf = String.new
-    cdf << record_code
-    cdf << sequence_number
-    cdf << po_number
+    cdf = super
     cdf << ingram_bill_to_account_number
     cdf << vendor_san
     cdf << order_date
@@ -22,10 +20,6 @@ class Po10 < CdfRecord
     cdf << reserved(6)
     cdf << reserved(1)
     cdf << reserved(5)
-  end
-
-  def record_code
-    "10"
   end
 
   def ingram_bill_to_account_number
