@@ -1,5 +1,8 @@
 module Records
+
   class PoRecord < CdfRecord
+
+    attr_reader :count
 
     def initialize(order, start_sequence)
       @order = order

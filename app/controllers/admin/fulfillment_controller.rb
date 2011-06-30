@@ -1,7 +1,8 @@
 class Admin::FulfillmentController < Admin::BaseController
 
   def index
-    @orders = Order.complete.limit(1)
+    manager = Cdf::Manager.new
+    @po = manager.generate_po
   end
 
   def show
