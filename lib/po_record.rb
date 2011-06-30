@@ -29,8 +29,18 @@ class PoRecord < CdfRecord
     cdf << append(Po29) + "\n"
     cdf << append(Po30) + "\n"
     cdf << append(Po31) + "\n"
+    cdf << append(Po32) + "\n"
+    cdf << append(Po32, :address_line => :address2) + "\n"
+    cdf << append(Po34) + "\n"
+    cdf << append(Po35) + "\n"
+    cdf << append(Po37, :message => marketing_message) + "\n"
+    cdf << append(Po38, :message => @order.gift_message) + "\n"
     cdf.string
 
+  end
+
+  def marketing_message
+    "HonyB Is Direct Commerce"
   end
 
 end

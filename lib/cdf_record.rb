@@ -4,6 +4,8 @@ class CdfRecord
     @order = order
     @sequence = sequence
     @options = args
+    @options[:name] ||= "undefined"
+    @options[:message] ||= ""
   end
 
   def reserved(size)
