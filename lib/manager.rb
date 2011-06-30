@@ -20,7 +20,7 @@ class Manager
   def as_po
     orders = find_eligible_orders
     count = 1
-    po00 = Records::Po::Po00.new
+    po00 = Records::Po::Po00.new("HB-PO-#{Time.now.strftime('%y%m%d%M')}.fbo")
     po_data = po00.cdf_record + "\n"
     orders.each do |order|
       po = order.as_cdf(count)

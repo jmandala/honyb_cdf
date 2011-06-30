@@ -4,8 +4,8 @@ class String
       return self.ljust length, padstr
     end
 
+    Rails.logger.warn "String trimmed. Orig '#{self}'. Length: '#{length}'"
     self[0, length-1]
 
-    "WTF!"
   end
 end
