@@ -1,3 +1,5 @@
+require 'csv'
+
 class PoRecord < CdfRecord
 
   def initialize(order, start_sequence)
@@ -22,8 +24,9 @@ class PoRecord < CdfRecord
     cdf << append(Po25) + "\n"
     cdf << append(Po26) + "\n"
     cdf << append(Po27) + "\n"
+    cdf << append(Po29) + "\n"
     cdf.string
-  end
 
+  end
 
 end
