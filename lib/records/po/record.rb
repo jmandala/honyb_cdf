@@ -65,7 +65,6 @@ module Records
         @count[:sequence] = start
         @count[:total] = 0
         for i in 0..8 do
-          Rails.logger.debug "i.to_s #{i.to_s}"
           @count[i.to_s] = 0
         end
       end
