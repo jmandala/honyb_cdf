@@ -1,7 +1,7 @@
 Order.class_eval do
 
   def as_cdf(start_sequence = 1)
-    Cdf::Records::Po::Record.new(self, start_sequence)
+    Records::Po::Record.new(self, start_sequence)
   end
 
   def tax_rate

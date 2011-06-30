@@ -1,7 +1,7 @@
 module Records
   class Base
 
-    def initialize(sequence, args)
+    def initialize(sequence, args = {})
       @sequence = sequence
       @options = args
       @options[:name] ||= "undefined"
@@ -31,6 +31,7 @@ module Records
     end
 
     def record_code
+      Rails.logger.debug "record_code: "+@options[:name].gsub(/.+?(\d*)/, '\1')
       @options[:name].gsub(/.+?(\d*)/, '\1')
     end
 

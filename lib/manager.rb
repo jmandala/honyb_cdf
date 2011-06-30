@@ -20,10 +20,10 @@ class Manager
   def as_po
     orders = find_eligible_orders
     count = 1
-    po_data = "HEADER\n"
+    po00 = Records::Po::Po00.new
+    po_data = po00.cdf_record + "\n"
     orders.each do |order|
       po = order.as_cdf(count)
-      Rails.logger.info po.count.inspect
       po_data << po.to_s
       count += po.count[:total]
     end
