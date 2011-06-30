@@ -2,10 +2,6 @@
 # Fixed Special Handling Instructions
 class Po20 < CdfRecord
 
-  def to_s
-    cdf_record
-  end
-
   def cdf_record
     cdf = super
     cdf << special_handling_codes

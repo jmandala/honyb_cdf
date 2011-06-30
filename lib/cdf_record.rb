@@ -35,4 +35,8 @@ class CdfRecord
     @options[:name].gsub(/Po(\d*)/, '\1')
   end
 
+  def to_s
+    cdf_record
+  end
+
 end

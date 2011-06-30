@@ -28,6 +28,7 @@ class PoRecord < CdfRecord
     cdf << append(Po27, :address_line => :address2) + "\n"
     cdf << append(Po29) + "\n"
     cdf << append(Po30) + "\n"
+    cdf << append(Po31) + "\n"
     cdf.string
 
   end

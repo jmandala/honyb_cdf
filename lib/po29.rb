@@ -1,10 +1,5 @@
 class Po29 < CdfRecord
 
-
-  def to_s
-    cdf_record
-  end
-
   def cdf_record
     cdf = super
     cdf << purchaser_city

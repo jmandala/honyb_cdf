@@ -1,10 +1,6 @@
 # Recipient Ship To Name
 class Po30 < CdfRecord
 
-  def to_s
-    cdf_record
-  end
-
   def cdf_record
     cdf = super
     cdf << recipient_name

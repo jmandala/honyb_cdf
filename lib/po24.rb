@@ -1,10 +1,6 @@
 # Recipient Cost
 class Po24 < CdfRecord
 
-  def to_s
-    cdf_record
-  end
-
   def cdf_record
     cdf = super
     cdf << sales_tax_percent

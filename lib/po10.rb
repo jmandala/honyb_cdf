@@ -1,10 +1,6 @@
 # Client Header
 class Po10 < CdfRecord
 
-  def to_s
-    cdf_record
-  end
-
   def cdf_record
     cdf = super
     cdf << ingram_bill_to_account_number

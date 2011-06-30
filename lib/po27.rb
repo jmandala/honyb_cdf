@@ -1,10 +1,6 @@
 # Consumer Bill To Address Line
 class Po27 < CdfRecord
 
-  def to_s
-    cdf_record
-  end
-
   def cdf_record
     cdf = super
     cdf << purchaser_address_line

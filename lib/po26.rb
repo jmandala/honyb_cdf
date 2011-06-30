@@ -1,10 +1,6 @@
 # Consumer Bill To Phone Number
 class Po26 < CdfRecord
 
-  def to_s
-    cdf_record
-  end
-
   def cdf_record
     cdf = super
     cdf << purchaser_phone_number

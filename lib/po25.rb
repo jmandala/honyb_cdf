@@ -1,10 +1,6 @@
 # Consumer Bill To Name
 class Po25 < CdfRecord
 
-  def to_s
-    cdf_record
-  end
-
   def cdf_record
     cdf = super
     cdf << purchasing_consumer_name

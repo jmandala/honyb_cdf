@@ -1,10 +1,6 @@
 # Purchase Order Options Record
 class Po21 < CdfRecord
 
-  def to_s
-    cdf_record
-  end
-
   def cdf_record
     cdf = super
     cdf << ingram_ship_to_account_number
