@@ -7,9 +7,8 @@ class Po31 < CdfRecord
     cdf << reserved(26)
   end
 
-
   def recipient_phone_number
-    @order.ship_address.phone.ljust 25
+    @order.ship_address.phone.ljust_trim 25
   end
 
 end

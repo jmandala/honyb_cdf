@@ -93,7 +93,7 @@ class Po21 < CdfRecord
     #           INTL Priority (non-trackable)       	### INTL PRIORITY            	50 	Yes
     #           INTL with Delivery Confirmation ***  	### INTL W/DEL CONFIRMATION 	50 	Dependant on ship-to country
   def shipping_method
-    "### 2ND DAY AIR".ljust(25)
+    "### 2ND DAY AIR".ljust_trim(25)
   end
 
   # Y = Yes

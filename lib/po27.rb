@@ -8,7 +8,7 @@ class Po27 < CdfRecord
   end
 
   def purchaser_address_line
-    @order.bill_address.send(address_line).ljust 35
+    @order.bill_address.send(address_line).ljust_trim 35
   end
 
   def address_line

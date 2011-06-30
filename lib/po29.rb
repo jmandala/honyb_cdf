@@ -10,15 +10,15 @@ class Po29 < CdfRecord
   end
 
   def purchaser_city
-    @order.bill_address.city.ljust 25
+    @order.bill_address.city.ljust_trim 25
   end
 
   def purchaser_postal_code
-    @order.bill_address.zipcode.ljust 11
+    @order.bill_address.zipcode.ljust_trim 11
   end
 
   def purchaser_state
-    @order.bill_address.state.abbr.ljust(3)
+    @order.bill_address.state.abbr.ljust_trim(3)
   end
 
   def purchaser_country

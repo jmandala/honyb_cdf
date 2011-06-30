@@ -9,7 +9,7 @@ class Po25 < CdfRecord
 
 
   def purchasing_consumer_name
-    "#{@order.bill_address.firstname} #{@order.bill_address.lastname}".ljust 35
+    "#{@order.bill_address.firstname} #{@order.bill_address.lastname}".ljust_trim 35
   end
 
 end

@@ -18,7 +18,7 @@ class Po30 < CdfRecord
   end
 
   def recipient_name
-    "#{@order.ship_address.firstname} #{@order.ship_address.lastname}".ljust 35
+    "#{@order.ship_address.firstname} #{@order.ship_address.lastname}".ljust_trim 35
   end
 
 end

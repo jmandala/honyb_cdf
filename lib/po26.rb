@@ -9,7 +9,7 @@ class Po26 < CdfRecord
 
 
   def purchaser_phone_number
-    @order.bill_address.phone.ljust 25
+    @order.bill_address.phone.ljust_trim 25
   end
 
 end

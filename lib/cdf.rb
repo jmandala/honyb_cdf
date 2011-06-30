@@ -1,5 +1,6 @@
 require 'spree_core'
 require 'cdf_hooks'
+require 'ext/string'
 
 module Cdf
   class Engine < Rails::Engine
