@@ -8,12 +8,16 @@ class CdfRecord
     @options[:message] ||= ""
   end
 
-  def reserved(size)
-    sprintf("%#{size.to_s}s", "")
+  def reserved(arg)
+    if arg.is_a? String
+      return arg
+    end
+
+    sprintf("%#{arg.to_s}s", "")
   end
 
   def cdf_date(date)
-    date.strftime '%Y%m%d'
+    date.strftime '%y%m%d'
   end
 
   def sequence_number
@@ -39,6 +43,11 @@ class CdfRecord
 
   def to_s
     cdf_record
+  end
+
+
+  def line_item
+    @options[:line_item]
   end
 
 end

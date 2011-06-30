@@ -24,4 +24,8 @@ Order.class_eval do
     "Enjoy your gifts!"
   end
 
+  def total_quantity
+   line_items.inject(0) { |sum, l| sum + l.quantity }
+  end
+
 end

@@ -6,7 +6,6 @@ class Po30 < CdfRecord
     cdf << recipient_name
     cdf << reserved(15)
     cdf << address_validation
-    cdf
   end
 
   # Allow Ingram to validate and scrub address information
