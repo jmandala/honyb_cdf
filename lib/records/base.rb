@@ -1,5 +1,5 @@
 module Records
-  class CdfRecord
+  class Base
 
     def initialize(sequence, args)
       @sequence = sequence
@@ -31,7 +31,7 @@ module Records
     end
 
     def record_code
-      @options[:name].gsub(/.*Po(\d*)/, '\1')
+      @options[:name].gsub(/.+?(\d*)/, '\1')
     end
 
     def to_s
