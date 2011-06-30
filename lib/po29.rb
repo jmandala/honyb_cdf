@@ -1,9 +1,5 @@
 class Po29 < CdfRecord
 
-  def initialize(order, sequence)
-    @order = order
-    @sequence = sequence
-  end
 
   def to_s
     cdf_record
@@ -34,7 +30,7 @@ class Po29 < CdfRecord
   end
 
   def purchaser_state
-    @order.bill_address.state.abbr
+    @order.bill_address.state.abbr.ljust(3)
   end
 
   def purchaser_country

@@ -1,10 +1,5 @@
 class Po27 < CdfRecord
 
-  def initialize(order, sequence)
-    @order = order
-    @sequence = sequence
-  end
-
   def to_s
     cdf_record
   end
@@ -23,7 +18,11 @@ class Po27 < CdfRecord
   end
 
   def purchaser_address_line
-    @order.bill_address.one_line_street.ljust 35
+    @order.bill_address.send(address_line).ljust 35
+  end
+
+  def address_line
+    @options[:address_line] || :address1
   end
 
 end

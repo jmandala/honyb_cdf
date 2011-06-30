@@ -1,10 +1,6 @@
 # Purchase Order Options Record
 class Po21 < CdfRecord
 
-  def initialize(order, sequence)
-    @order = order
-    @sequence = sequence
-  end
 
   def to_s
     cdf_record

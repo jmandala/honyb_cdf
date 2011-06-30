@@ -1,4 +1,11 @@
 class CdfRecord
+
+  def initialize(order, sequence, args)
+    @order = order
+    @sequence = sequence
+    @options = args
+  end
+
   def reserved(size)
     sprintf("%#{size.to_s}s", "")
   end
