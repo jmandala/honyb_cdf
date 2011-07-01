@@ -33,7 +33,7 @@ class Manager
   end
 
   def po90(count)
-    Records::Po::Po90.new(count[:total_records], :count => count)
+    Records::Po::Po90.new(count[:total_records], :name=>'Po90', :count => count)
   end
 
   def update_counters(count, order, po)
