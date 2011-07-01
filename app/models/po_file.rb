@@ -23,6 +23,7 @@ class PoFile < ActiveRecord::Base
         @data << line
       end
     end
+    @data
   end
 
   def load_data

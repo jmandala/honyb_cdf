@@ -1,15 +1,10 @@
 class Admin::FulfillmentController < Admin::BaseController
+  respond_to :html, :xml, :json
 
   def index
     @needs_po_count = Order.needs_po.count
     @po_files = PoFile.find(:all)
+    respond_with @po_files
   end
 
-  def create_po
-    @po = PoFile.generate
-  end
-
-  def show_po
-    @po = PoFile.find(params[:id])
-  end
 end

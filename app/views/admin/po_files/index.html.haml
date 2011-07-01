@@ -1,0 +1,4 @@
+%h1 PO Files
+%div
+  - @po_files.each do |f|
+    = link_to f.file_name, admin_po_file_path(f)

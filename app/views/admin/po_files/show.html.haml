@@ -1,0 +1,7 @@
+%h2 #{@po_file.file_name}
+
+%p Created at #{@po_file.created_at.strftime("%m-%d-%y %h:%M")}
+
+%h2 Contents
+%div.contents
+  %pre #{@po_file.load_file}

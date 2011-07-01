@@ -8,6 +8,6 @@
   %h1 Details
   - @po_files.each do |po|
     %div
-      = po.file_name
+      = link_to po.file_name, admin_po_file_path(po)
       \:
       = po.orders.count
