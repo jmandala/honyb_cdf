@@ -1,2 +1,13 @@
-%pre
-  = @po
+%div
+  = "#{@needs_po_count} need Purchase Orders"
+
+%div
+  = "#{@po_files.size} Purchase Order files created"
+
+.details
+  %h1 Details
+  - @po_files.each do |po|
+    %div
+      = po.file_name
+      \:
+      = po.orders.count

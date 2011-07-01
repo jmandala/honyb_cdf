@@ -1,14 +1,15 @@
 class PoFile < ActiveRecord::Base
-  has_many :orders
+  has_many :orders, :autosave => true, :dependent => :nullify
+
   attr_reader :data
 
-  after_create :init_file_name
+  before_create :init_file_name
 
-  def generate
+  def save_data!
     load_data
-    
     FileUtils.mkdir_p(File.dirname(path))
-    File.open(path, 'w') {|f| f.write @data}
+    File.open(path, 'w') { |f| f.write @data }
+    save!
   end
 
   def path
@@ -25,33 +26,38 @@ class PoFile < ActiveRecord::Base
   end
 
   def load_data
+    # initialize the file name
+    save!
+
     count = init_counters
 
     @data = po00.cdf_record + "\n"
 
-    eligible_orders.each do |order|
+    Order.needs_po.limit(10).each do |order|
+      orders << order
       po = order.as_cdf(count[:total_records])
       @data << po.to_s
       update_counters(count, order, po)
     end
 
     @data << po90(count).cdf_record
+
+    save!
   end
 
+
+  def self.generate
+    po_file = PoFile.new
+    po_file.save_data!
+    po_file
+  end
 
   private
 
   def init_file_name
-    self.file_name = prefix + key + ext
+    self.file_name = prefix + sprintf("%011d", PoFile.count+1) + ext
   end
 
-
-  def key
-    if id
-      return key = sprintf("%011d", id)
-    end
-    "tmp"
-  end
 
   def prefix
     "honyb-"
@@ -81,9 +87,6 @@ class PoFile < ActiveRecord::Base
     end
   end
 
-  def eligible_orders
-    Order.complete.limit(1)
-  end
 
   def init_counters
     count = {

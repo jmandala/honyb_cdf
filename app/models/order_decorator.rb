@@ -29,7 +29,11 @@ Order.class_eval do
   end
 
   def total_quantity
-   line_items.inject(0) { |sum, l| sum + l.quantity }
+    line_items.inject(0) { |sum, l| sum + l.quantity }
+  end
+
+  def self.needs_po
+    where("orders.completed_at IS NOT NULL AND orders.po_file_id IS NULL")
   end
 
 end
