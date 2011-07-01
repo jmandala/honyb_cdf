@@ -4,4 +4,7 @@ class CdfHooks < Spree::ThemeSupport::HookListener
      "<%= tab :fulfillment, :po_files, :route => :admin_fulfillment %>"
   end
 
+  insert_after :admin_order_tabs do
+    "<li>Fulfilmlment</li>"
+  end
 end
