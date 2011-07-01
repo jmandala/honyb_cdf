@@ -31,7 +31,6 @@ module Records
     end
 
     def record_code
-      Rails.logger.debug "record_code: "+@options[:name].gsub(/.+?(\d*)/, '\1')
       @options[:name].gsub(/.+?(\d*)/, '\1')
     end
 

@@ -7,3 +7,5 @@
 tmp
 nbproject
 *.swp
+data_lib/in/*
+data_lib/out/*

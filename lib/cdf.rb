@@ -1,7 +1,7 @@
 require 'spree_core'
 require 'cdf_hooks'
 
-# hackery, but it works to include the libs
+# include the ext
 Dir.glob(File.join(File.dirname(__FILE__), "ext/**/*.rb")) do |c|
   Rails.env.production? ? require(c) : load(c)
 end
@@ -18,5 +18,7 @@ module Cdf
     end
 
     config.to_prepare &method(:activate).to_proc
+
   end
+
 end

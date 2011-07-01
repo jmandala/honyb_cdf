@@ -15,7 +15,7 @@ module Records
       end
 
       def total_line_items
-        sprintf "%013d",count[:total_line_items]
+        sprintf "%013d", count[:total_line_items]
       end
 
       def total_purchase_orders
@@ -26,12 +26,10 @@ module Records
         sprintf "%010d", count[:total_units]
       end
 
-
       private
       def count
         @options[:count]
       end
-
 
       def count_format(sym)
         sprintf "%05d", count[sym]

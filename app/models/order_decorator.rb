@@ -1,5 +1,9 @@
 Order.class_eval do
 
+  belongs_to :po_file
+  attr_accessible :po_file
+
+
   def as_cdf(start_sequence = 1)
     Records::Po::Record.new(self, start_sequence)
   end
