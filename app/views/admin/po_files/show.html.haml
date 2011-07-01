@@ -7,3 +7,6 @@
 %h2 Contents
 %div.contents
   %pre #{@po_file.load_file}
+
+
+%div #{button_to 'Generate PO', admin_po_files_path}

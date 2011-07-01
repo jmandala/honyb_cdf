@@ -3,7 +3,7 @@ class PoFile < ActiveRecord::Base
 
   attr_reader :data
 
-  before_create :init_file_name
+  after_create :init_file_name
 
   def save_data!
     load_data
@@ -57,6 +57,7 @@ class PoFile < ActiveRecord::Base
 
   def init_file_name
     self.file_name = prefix + sprintf("%011d", PoFile.count+1) + ext
+    save!
   end
 
 

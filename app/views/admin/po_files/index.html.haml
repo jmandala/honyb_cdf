@@ -4,3 +4,5 @@
 %div
   - @po_files.each do |f|
     = link_to f.file_name, admin_po_file_path(f)
+
+%div #{button_to 'Generate PO', admin_po_files_path}
