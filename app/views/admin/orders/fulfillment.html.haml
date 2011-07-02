@@ -1,0 +1,15 @@
+= render :partial => 'admin/shared/order_tabs', :locals => {:current => "Fulfillment"}
+
+%h2 #{t("fulfillment")}
+
+%h3 #{t("po_files")}
+%div
+  %strong File Name:
+  = link_to @order.po_file.file_name, admin_po_file_path(@order.po_file)
+%div
+  %strong Date:
+  = @order.po_file.created_at.strftime("%m-%d-%y %H:%M")
+
+%h3 #{t("poa_files")}
+%h3 #{t("asn_files")}
+

@@ -5,3 +5,8 @@ en:
   fulfillment: "Fulfillment"
   fulfillments: "Fulfillment"
   po_files: "PO Files"
+  po_file: "PO File"
+  asn_file: "ASN File"
+  asn_files: "ASN Files"
+  poa_file: "POA File"
+  poa_files: "POA Files"
