@@ -5,5 +5,7 @@
     = po_file.orders.count
   %td
     = time_ago_in_words po_file.created_at
+    ago
   %td
-    = po_file.path
+    %small
+      = po_file.path

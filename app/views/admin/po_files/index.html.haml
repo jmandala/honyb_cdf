@@ -1,8 +1,12 @@
 = render :partial => 'admin/shared/fulfillment_sub_menu'
 
+%div.admin_buttons
+  = form_tag(admin_po_files_path) do |f|
+    = button t('create_po_file'), 'add'
+
 %h1 PO Files
 %div
-  %table
+  %table.index
     %thead
       %tr
         %th
@@ -16,5 +20,27 @@
     %tbody
       = render @po_files
 
-= form_tag(admin_po_files_path) do |f|
-  = button t('create_po_file'), 'add'
+= will_paginate(@po_files, :previous_label => "&#171; #{t('previous')}", :next_label => "#{t('next')} &#187;")
+
+
+- content_for :sidebar do
+  .box
+    %h3
+      = t(:search)
+    = form_for [:admin, @search] do |f|
+      - locals = {:f => f}
+      = hook :admin_po_files_index_search, locals do
+        %label
+          = t('date_range')
+
+        .yui-g.date-range-filter
+          .yui-u.sub-field.first
+            = f.spree_date_picker :created_at_greater_than
+            %label.sub
+              = t("start")
+
+          .yui-u.sub-field
+            = f.spree_date_picker :created_at_less_than
+            %label
+              = t("stop")
+        
