@@ -9,7 +9,19 @@ class Admin::PoFilesController < Admin::ResourceController
       format.html { redirect_to location_after_save }
       format.js { render :layout => false }
     end
+  end
 
+  def show
+    begin
+      @po_file.load_file
+      @data = @po_file.data
+    rescue Exception => e
+      flash[:error] = "#{e.message}"
+    end
+  end
+
+  def index
+    
   end
 
 end

@@ -2,7 +2,19 @@
 
 %h1 PO Files
 %div
-  - @po_files.each do |f|
-    = link_to f.file_name, admin_po_file_path(f)
+  %table
+    %thead
+      %tr
+        %th
+          = t('file_name')
+        %th
+          = t('record_count')
+        %th
+          = t('created_at')
+        %th
+          = t('file_path')
+    %tbody
+      = render @po_files
 
-%div #{button_to 'Generate PO', admin_po_files_path}
+= form_tag(admin_po_files_path) do |f|
+  = button t('create_po_file'), 'add'

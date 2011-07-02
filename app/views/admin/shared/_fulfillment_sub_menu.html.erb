@@ -1,6 +1,7 @@
 <% content_for :sub_menu do %>
   <ul id="sub_nav">
     <%= hook :admin_fulfillment_sub_tabs do %>
+      <%= tab :dashboard, :route => :admin_fulfillment,:match_path => '/fulfillment' %>
       <%= tab :po_files, :match_path => '/po_file' %>
     <% end %>
   </ul>

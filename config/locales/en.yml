@@ -2,10 +2,12 @@
 # See http://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
+  dashboard: "Dashboard"
   fulfillment: "Fulfillment"
   fulfillments: "Fulfillment"
   po_files: "PO Files"
   po_file: "PO File"
+  create_po_file: "Generate PO"
   asn_file: "ASN File"
   asn_files: "ASN Files"
   poa_file: "POA File"

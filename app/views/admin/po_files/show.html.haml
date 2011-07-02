@@ -6,7 +6,11 @@
 
 %h2 Contents
 %div.contents
-  %pre #{@po_file.load_file}
+  - if @po_file.data
+    %pre #{@po_file.data}
+  - else
+    &mdash;
 
+= form_tag(admin_po_files_path) do |f|
+  = button_link_to t('continue')
 
-%div #{button_to 'Generate PO', admin_po_files_path}

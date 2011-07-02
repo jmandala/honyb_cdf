@@ -17,6 +17,8 @@ class PoFile < ActiveRecord::Base
   end
 
   def load_file
+    raise ArgumentError, "File not found: #{path}"  unless File.exists?(path)
+
     @data = ''
     File.open(path, 'r') do |file|
       while line = file.gets
