@@ -2,7 +2,11 @@
 
 %div.admin_buttons
   = form_tag(admin_po_files_path) do |f|
-    = button t('create_po_file'), 'add'
+    %div
+      = button t('create_po_file'), 'add'
+    - if @po_files.length >0
+      %div
+        = link_to t('destroy_all_po_files'), purge_admin_po_files_path, :method => :delete
 
 %h1 PO Files
 %div

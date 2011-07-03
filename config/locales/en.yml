@@ -8,6 +8,7 @@ en:
   po_files: "PO Files"
   po_file: "PO File"
   create_po_file: "Generate PO"
+  destroy_all_po_files: "Delete All POs"
   asn_file: "ASN File"
   asn_files: "ASN Files"
   poa_file: "POA File"
