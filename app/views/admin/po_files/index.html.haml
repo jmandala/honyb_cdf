@@ -41,5 +41,11 @@
             = f.spree_date_picker :created_at_less_than
             %label
               = t("stop")
+        %label
+          = t 'order_number'
+        %br
+        = f.text_field :orders_number_starts_with, :size=>25
+
       = hook :admin_orders_index_search_buttons, locals do
-        = button t("search")
+        %p
+          = button t("search")

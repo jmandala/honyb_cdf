@@ -14,7 +14,7 @@ module Records
       end
 
       def po_number
-        sprintf("%22d", @order.id)
+        sprintf("%22s", @order.number)
       end
 
       def line_item
