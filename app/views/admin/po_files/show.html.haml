@@ -1,8 +1,18 @@
 = render :partial => 'admin/shared/fulfillment_sub_menu'
 
+%div.admin_buttons
+  %div #{button_link_to t('back'), admin_po_files_path, :icon => '16x16/8'}
+
+%h1 PO Files
+
 %h2 #{@po_file.file_name}
 
 %p Created at #{@po_file.created_at.strftime("%m-%d-%y %h:%M")}
+%div.field_pair
+  %legend
+    = t('file_path')
+  = @po_file.path
+
 
 %h2 Contents
 %div.contents
@@ -11,6 +21,20 @@
   - else
     &mdash;
 
-= form_tag(admin_po_files_path) do |f|
-  = button_link_to t('continue')
+- content_for :sidebar do
+  .box
+    %h3
+      #{@po_file.orders.count} Orders
+    %table
+      %thead
+        %tr
+          %th ID
+          %th Completed Date
+      %tbody
+      - for order in @po_file.orders do
+        %tr
+          %td
+            = link_to order.id, admin_order_path(order)
+          %td
+            = order.completed_at.strftime("%m-%d-%y")
 
