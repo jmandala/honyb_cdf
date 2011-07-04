@@ -3,8 +3,10 @@
 
 en:
   dashboard: "Dashboard"
+  fulfillment_dashboard: "Fulfillment"
   fulfillment: "Fulfillment"
   fulfillments: "Fulfillment"
+  fulfillment_po_files: "PO Files"
   po_files: "PO Files"
   po_file: "PO File"
   create_po_file: "Generate PO"
@@ -13,3 +15,6 @@ en:
   asn_files: "ASN Files"
   poa_file: "POA File"
   poa_files: "POA Files"
+  fulfillment_poa_files: "POA Files"
+  import_poa_files: "Import POA Files"
+  destroy_all_poa_files: "Delete All POAs"

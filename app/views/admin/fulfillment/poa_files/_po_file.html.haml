@@ -1,0 +1,8 @@
+%tr
+  %td
+    = link_to poa_file.file_name, admin_poa_file_path(po_file)
+  %td
+    -#= poa_file.orders.count
+  %td
+    = time_ago_in_words poa_file.created_at
+    ago

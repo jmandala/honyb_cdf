@@ -1,5 +1,4 @@
-class Admin::PoFilesController < Admin::ResourceController
-
+class Admin::Fulfillment::PoFilesController < Admin::ResourceController
 
   def create
     @object = PoFile.generate
@@ -32,8 +31,9 @@ class Admin::PoFilesController < Admin::ResourceController
       params[:search][:created_at_less_than] = Time.zone.parse(params[:search][:created_at_less_than]).end_of_day rescue ""
     end
 
-    @po_files = PoFile.metasearch(params[:search]).group('po_files.file_name').paginate(:per_page => Spree::Config[:po_files_per_page],
-                                                            :page => params[:page])
+    @po_files = PoFile.metasearch(params[:search]).group('po_files.file_name').paginate(
+        :per_page => Spree::Config[:po_files_per_page],
+        :page => params[:page])
 
     respond_with @po_files
   end

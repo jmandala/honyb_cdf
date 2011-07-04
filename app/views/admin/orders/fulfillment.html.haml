@@ -7,7 +7,7 @@
   - if @order.po_file
     %div
       %strong File Name:
-      = link_to @order.po_file.file_name, admin_po_file_path(@order.po_file)
+      = link_to @order.po_file.file_name, admin_fulfillment_po_file_path(@order.po_file)
     %div
       %strong Date:
       = @order.po_file.created_at.strftime("%m-%d-%y %H:%M")

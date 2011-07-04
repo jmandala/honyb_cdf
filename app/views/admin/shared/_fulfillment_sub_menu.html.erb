@@ -1,8 +1,9 @@
 <% content_for :sub_menu do %>
   <ul id="sub_nav">
     <%= hook :admin_fulfillment_sub_tabs do %>
-      <%= tab :dashboard, :route => :admin_fulfillment,:match_path => '/fulfillment' %>
-      <%= tab :po_files, :match_path => '/po_file' %>
+      <%= tab :fulfillment_dashboard, :match_path => '/fulfillment/dashboard' %>
+      <%= tab :fulfillment_po_files,  :match_path => '/fulfillment/po_file' %>
+      <%= tab :fulfillment_poa_files, :match_path => '/fulfillment/poa_file' %>
     <% end %>
   </ul>
 <% end %>

@@ -1,12 +1,12 @@
 = render :partial => 'admin/shared/fulfillment_sub_menu'
 
 %div.admin_buttons
-  = form_tag(admin_po_files_path) do |f|
+  = form_tag(admin_fulfillment_po_files_path) do |f|
     %div
       = button t('create_po_file'), 'add'
     - if @po_files.length >0
       %div
-        = link_to t('destroy_all_po_files'), purge_admin_po_files_path, :method => :delete
+        = link_to t('destroy_all_po_files'), purge_admin_fulfillment_po_files_path, :method => :delete
 
 %h1 PO Files
 %div
@@ -29,9 +29,9 @@
   .box
     %h3
       = t(:search)
-    = form_for [:admin, @search] do |f|
+    = form_for [:admin_fulfillment, @search] do |f|
       - locals = {:f => f}
-      = hook :admin_po_files_index_search, locals do
+      = hook :admin_fulfillment_po_files_index_search, locals do
         %label
           = t('date_range')
 

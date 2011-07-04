@@ -7,12 +7,12 @@
 %div
   = "#{@po_files.size} Purchase Order files created"
 
-%div #{button_to 'Generate PO', admin_po_files_path}
+%div #{button_to 'Generate PO', admin_fulfillment_po_files_path}
 
 .details
   %h1 Details
   - @po_files.each do |po|
     %div
-      = link_to po.file_name, admin_po_file_path(po)
+      = link_to po.file_name, admin_fulfillment_po_file_path(po)
       \:
       = po.orders.count

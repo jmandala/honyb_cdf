@@ -1,0 +1,51 @@
+= render :partial => 'admin/shared/fulfillment_sub_menu'
+
+%div.admin_buttons
+  = form_tag(admin_fulfillment_poa_files_path) do |f|
+    %div
+      = button t('import_poa_files'), 'add'
+    - if @poa_files.length >0
+      %div
+        = link_to t('destroy_all_poa_files'), purge_admin_fulfillment_poa_files_path, :method => :delete
+
+%h1 POA Files
+%div
+  %table.index
+    %thead
+      %tr
+        %th
+          = sort_link @search, :file_name, t('file_name')
+        %th
+          = t('record_count')
+        %th
+          = sort_link @search, :created_at, t('created_at')
+    %tbody
+      = render @poa_files
+
+= will_paginate(@poa_files, :previous_label => "&#171; #{t('previous')}", :next_label => "#{t('next')} &#187;")
+
+
+- content_for :sidebar do
+  .box
+    %h3
+      = t(:search)
+    = form_for [:admin_fulfillment, @search] do |f|
+      - locals = {:f => f}
+      = hook :admin_fulfillment_poa_files_index_search, locals do
+        %label
+          = t('date_range')
+
+        .yui-g.date-range-filter
+          .yui-u.sub-field.first
+            = f.spree_date_picker :created_at_greater_than
+            %label.sub
+              = t("start")
+
+          .yui-u.sub-field
+            = f.spree_date_picker :created_at_less_than
+            %label
+              = t("stop")
+
+      = hook :admin_fulfillment_poa_files_index_search_buttons, locals do
+        %p
+          = button t("search")

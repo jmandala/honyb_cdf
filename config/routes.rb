@@ -1,11 +1,20 @@
 Rails.application.routes.draw do
 
   namespace :admin do
-    match '/fulfillment' => 'fulfillment#index'
 
-    resources :po_files do
-      collection do
-        delete :purge
+    namespace :fulfillment do
+      match 'dashboard' => 'dashboard#index'
+
+      resources :po_files do
+        collection do
+          delete :purge
+        end
+      end
+
+      resources :poa_files do
+        collection do
+          delete :purge
+        end
       end
     end
 
