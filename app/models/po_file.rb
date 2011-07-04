@@ -4,6 +4,7 @@ class PoFile < ActiveRecord::Base
   attr_reader :data
 
   after_create :init_file_name
+  before_destroy :delete_file
 
   def save_data!
     load_data
@@ -57,8 +58,15 @@ class PoFile < ActiveRecord::Base
 
   private
 
+  def delete_file
+    if File.exists? path
+    FileUtils.rm path
+    end
+    
+  end
+
   def init_file_name
-    self.file_name = prefix + sprintf("%011d", PoFile.count+1) + ext
+    self.file_name = prefix + sprintf("%011d", id) + ext
     save!
   end
 
