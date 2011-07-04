@@ -1,5 +1,5 @@
 class PoFile < ActiveRecord::Base
-  has_many :orders, :autosave => true, :dependent => :nullify
+  has_many :orders, :autosave => true, :dependent => :nullify, :order => 'completed_at asc'
 
   attr_reader :data
 

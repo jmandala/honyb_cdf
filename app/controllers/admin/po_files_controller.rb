@@ -22,7 +22,7 @@ class Admin::PoFilesController < Admin::ResourceController
 
   def index
     params[:search] ||= {}
-    @search = PoFile.metasearch(params[:search])
+    @search = PoFile.metasearch(params[:search], :distinct => true)
 
     if !params[:search][:created_at_greater_than].blank?
       params[:search][:created_at_greater_than] = Time.zone.parse(params[:search][:created_at_greater_than]).beginning_of_day rescue ""
@@ -32,7 +32,7 @@ class Admin::PoFilesController < Admin::ResourceController
       params[:search][:created_at_less_than] = Time.zone.parse(params[:search][:created_at_less_than]).end_of_day rescue ""
     end
 
-    @po_files = PoFile.metasearch(params[:search]).paginate(:per_page => Spree::Config[:po_files_per_page],
+    @po_files = PoFile.metasearch(params[:search]).group('po_files.file_name').paginate(:per_page => Spree::Config[:po_files_per_page],
                                                             :page => params[:page])
 
     respond_with @po_files

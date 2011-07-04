@@ -14,11 +14,11 @@
     %thead
       %tr
         %th
-          = t('file_name')
+          = sort_link @search, :file_name, t('file_name')
         %th
           = t('record_count')
         %th
-          = t('created_at')
+          = sort_link @search, :created_at, t('created_at')
     %tbody
       = render @po_files
 
