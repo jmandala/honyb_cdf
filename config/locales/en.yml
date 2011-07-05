@@ -18,3 +18,7 @@ en:
   fulfillment_poa_files: "POA Files"
   import_poa_files: "Import POA Files"
   destroy_all_poa_files: "Delete All POAs"
+  fulfillment_settings: "Fulfillment Settings"
+  fulfillment_settings_description: "Configure Fulfillment Settings."
+  edit_fulfillment_settings: "Edit Fulfillment Settings"
+

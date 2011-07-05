@@ -11,4 +11,13 @@ class CdfHooks < Spree::ThemeSupport::HookListener
     </li>
     )
   end
+
+  insert_after :admin_configurations_menu do
+    %(
+    <tr>
+        <td><%= link_to t("fulfillment"), admin_fulfillment_settings_path %></td>
+        <td><%= t("fulfillment_settings_description") %></td>
+      </tr>
+    )
+  end
 end

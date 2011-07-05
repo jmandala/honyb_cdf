@@ -16,6 +16,9 @@ Rails.application.routes.draw do
           delete :purge
         end
       end
+
+      resource :settings
+
     end
 
     resources :orders do
@@ -23,6 +26,7 @@ Rails.application.routes.draw do
         get :fulfillment
       end
     end
+
 
   end
 

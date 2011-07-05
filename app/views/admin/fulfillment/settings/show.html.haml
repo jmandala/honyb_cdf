@@ -1,0 +1,27 @@
+= render :partial => 'admin/shared/configuration_menu'
+
+%h1
+  = t "fulfillment_settings"
+
+%table
+  %tr
+    %th{:scope => 'row'}
+      = t "cdf_ship_to_password"
+    %td
+      = Spree::Config[:cdf_ship_to_password]
+  
+  %tr
+    %th{:scope => 'row'}
+      = t "cdf_ship_to_account"
+    %td
+      =  Spree::Config[:cdf_bill_to_account]
+  %tr
+    %th{:scope => 'row'}
+      = t "cdf_bill_to_account"
+    %td
+      =  Spree::Config[:cdf_bill_to_account]
+
+%p
+  = link_to_with_icon 'edit', t("edit"), edit_admin_fulfillment_settings_path, :id => 'admin_fulfillment_settings_link'
+
+

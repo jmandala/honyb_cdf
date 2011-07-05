@@ -1,0 +1,19 @@
+= render :partial => 'admin/shared/configuration_menu'
+
+%h1
+  = t('edit_fulfillment_settings')
+
+= form_tag(admin_fulfillment_settings_path, :method => :put) do
+  %table
+    %tr
+      %th{:scope => 'row'}
+        %label
+          = t "cdf_ship_to_password"
+      %td
+        = text_field_tag('preferences[cdf_ship_to_password]', Spree::Config[:cdf_ship_to_password])
+
+  %p{:class =>"form-buttons"}
+    = button t('update') 
+    = t("or")
+    = link_to t("cancel"), admin_fulfillment_settings_path
+  
