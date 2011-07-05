@@ -3,7 +3,7 @@
 %h1
   = t "fulfillment_settings"
 
-%table
+%table.index.settings
   %tr
     %th{:scope => 'row'}
       = t "cdf_ship_to_password"
@@ -14,12 +14,36 @@
     %th{:scope => 'row'}
       = t "cdf_ship_to_account"
     %td
-      =  Spree::Config[:cdf_bill_to_account]
+      =  Spree::Config[:cdf_ship_to_account]
+
   %tr
     %th{:scope => 'row'}
       = t "cdf_bill_to_account"
     %td
       =  Spree::Config[:cdf_bill_to_account]
+
+
+  %tr
+    %th{:scope => 'row'}
+      = t "cdf_ftp_server"
+    %td
+      =  Spree::Config[:cdf_ftp_server]
+
+
+  %tr
+    %th{:scope => 'row'}
+      = t "cdf_ftp_user"
+    %td
+      =  Spree::Config[:cdf_ftp_user]
+
+
+  %tr
+    %th{:scope => 'row'}
+      = t "cdf_ftp_password"
+    %td
+      ********
+
+
 
 %p
   = link_to_with_icon 'edit', t("edit"), edit_admin_fulfillment_settings_path, :id => 'admin_fulfillment_settings_link'

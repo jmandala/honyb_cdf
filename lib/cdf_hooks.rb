@@ -20,4 +20,18 @@ class CdfHooks < Spree::ThemeSupport::HookListener
       </tr>
     )
   end
+
+  insert_after :admin_configurations_sidebar_menu do
+    %(
+      <li<%== ' class="active"' if controller.controller_name == 'settings' %>><%= link_to t("fulfillment"), admin_fulfillment_settings_path %></li>
+    )
+  end
+
+
+  insert_after :admin_inside_head do
+    %(<%= stylesheet_link_tag 'admin/cdf', :cache => 'admin/cdf' %>)
+  end
+
+
+
 end

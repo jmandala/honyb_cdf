@@ -4,13 +4,45 @@
   = t('edit_fulfillment_settings')
 
 = form_tag(admin_fulfillment_settings_path, :method => :put) do
-  %table
+  %table.index.settings
     %tr
       %th{:scope => 'row'}
         %label
           = t "cdf_ship_to_password"
       %td
         = text_field_tag('preferences[cdf_ship_to_password]', Spree::Config[:cdf_ship_to_password])
+    %tr
+      %th{:scope => 'row'}
+        = t "cdf_ship_to_account"
+      %td
+        = text_field_tag('preferences[cdf_ship_to_account]', Spree::Config[:cdf_ship_to_account])
+
+    %tr
+      %th{:scope => 'row'}
+        = t "cdf_bill_to_account"
+      %td
+        = text_field_tag('preferences[cdf_bill_to_account]',  Spree::Config[:cdf_bill_to_account])
+
+
+    %tr
+      %th{:scope => 'row'}
+        = t "cdf_ftp_server"
+      %td
+        =  text_field_tag('preferences[cdf_ftp_server]', Spree::Config[:cdf_ftp_server])
+
+
+    %tr
+      %th{:scope => 'row'}
+        = t "cdf_ftp_user"
+      %td
+        = text_field_tag('preferences[cdf_ftp_user]',  Spree::Config[:cdf_ftp_user])
+
+
+    %tr
+      %th{:scope => 'row'}
+        = t "cdf_ftp_password"
+      %td
+        = password_field_tag('', Spree::Config[:cdf_ftp_password])
 
   %p{:class =>"form-buttons"}
     = button t('update') 

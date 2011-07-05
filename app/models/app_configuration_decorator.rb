@@ -1,4 +1,6 @@
 AppConfiguration.class_eval do
+  preference :stylesheets, :string, :default => 'screen,cdf'
+
   preference :po_files_per_page, :integer, :default => 30
   preference :poa_files_per_page, :integer, :default => 30
   preference :cdf_ship_to_password, :string, :default => ""
