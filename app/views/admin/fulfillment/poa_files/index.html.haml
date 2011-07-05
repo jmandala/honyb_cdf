@@ -1,14 +1,38 @@
 = render :partial => 'admin/shared/fulfillment_sub_menu'
 
+
 %div.admin_buttons
   = form_tag(admin_fulfillment_poa_files_path) do |f|
     %div
-      = button t('import_poa_files'), 'add'
-    - if @poa_files.length >0
-      %div
-        = link_to t('destroy_all_poa_files'), purge_admin_fulfillment_poa_files_path, :method => :delete
+      = button t('download_poa_files'), 'add'
 
 %h1 POA Files
+
+
+
+- if @pending_files.size > 0
+  %h2 Pending Files
+
+  %div.admin_buttons
+    = form_tag(admin_fulfillment_poa_files_path) do |f|
+      %div
+        = button t('import_poa_files'), 'add'
+
+  %div
+    %table.index
+      %thead
+        %tr
+          %th
+            = t('file_name')
+      %tbody
+        - for file in @pending_files do
+          %tr
+            %td
+              = file.file_name
+
+  = will_paginate(@poa_files, :previous_label => "&#171; #{t('previous')}", :next_label => "#{t('next')} &#187;")
+
+%h2 Imported Files
 %div
   %table.index
     %thead

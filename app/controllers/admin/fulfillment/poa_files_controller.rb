@@ -1,6 +1,4 @@
 class Admin::Fulfillment::PoaFilesController < Admin::ResourceController
-  # To change this template use File | Settings | File Templates.
-
 
   def index
     params[:search] ||= {}
@@ -18,7 +16,18 @@ class Admin::Fulfillment::PoaFilesController < Admin::ResourceController
         :per_page => Spree::Config[:poa_files_per_page],
         :page => params[:page])
 
+    @pending_files = []
     respond_with @poa_files
+  end
+
+  # Download files from CDF
+  def download
+
+  end
+
+  # Import files
+  def import
+
   end
 
 

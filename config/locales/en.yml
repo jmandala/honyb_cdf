@@ -15,6 +15,7 @@ en:
   asn_files: "ASN Files"
   poa_file: "POA File"
   poa_files: "POA Files"
+  download_poa_files: "Download POA Files"
   fulfillment_poa_files: "POA Files"
   import_poa_files: "Import POA Files"
   destroy_all_poa_files: "Delete All POAs"
