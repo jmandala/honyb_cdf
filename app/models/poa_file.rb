@@ -5,6 +5,8 @@ class PoaFile < ActiveRecord::Base
 
   has_many :poa_order_headers, :dependent => :destroy, :autosave => true
 
+  belongs_to :poa_type
+
     # connect to remote server
     # retrieve all files
     # save to data_lib
@@ -93,8 +95,7 @@ class PoaFile < ActiveRecord::Base
 
   def populate_header(p)
     header = p[:header].first
-    poa_type = PoType.find_by_code(header[:poa_type])
-    header[:poa_type_id] = poa_type.id unless poa_type.nil?
+    header[:poa_type_id] = PoaType.find_by_code(header[:poa_type]).try(:id)
     update_from_hash header, :excludes => [:file_name]
   end
 
@@ -112,9 +113,11 @@ class PoaFile < ActiveRecord::Base
 
       po_file = order.po_file
 
-      poa_11 = PoaOrderHeader.find_or_create_by_po_file_id_and_poa_file_id(po_file.id, id)
+      poa_order_header = PoaOrderHeader.find_or_create_by_po_file_id_and_poa_file_id(po_file.id, id)
 
-      poa_11.update_from_hash(data)
+      data[:po_status_id] = PoStatus.find_by_code(data[:po_status]).try(:id)
+
+      poa_order_header.update_from_hash(data)
     end
   end
 

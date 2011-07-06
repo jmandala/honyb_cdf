@@ -4,5 +4,6 @@ class PoaOrderHeader < ActiveRecord::Base
 
   belongs_to :poa_file
   belongs_to :po_file
+  belongs_to :po_status
 
 end
