@@ -28,16 +28,16 @@ class Admin::Fulfillment::PoaFilesController < Admin::ResourceController
     respond_with @poa_files
   end
 
-  # Import files
+    # Import files
   def import
-
+    flash[:notice] = "Imported #{@object.file_name}"
+    redirect_to location_after_save
   end
 
 
   def location_after_save
     admin_fulfillment_poa_files_path
   end
-
 
 
 end

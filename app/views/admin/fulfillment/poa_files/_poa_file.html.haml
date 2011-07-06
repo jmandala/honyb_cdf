@@ -5,6 +5,8 @@
     - if poa_file.imported_at
       = time_ago_in_words poa_file.imported_at
       ago
+    - else
+      = link_to_with_icon 'add', t('import_now'), import_admin_fulfillment_poa_file_path(poa_file), method: :post
   %td
     = time_ago_in_words poa_file.created_at
     ago

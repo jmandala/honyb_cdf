@@ -11,6 +11,13 @@ class PoaFile < ActiveRecord::Base
 
   end
 
+  # Read the file data and build the record
+  def populate
+    return if import_at
+
+  end
+
+
   def path
     "#{CdfConfig::data_lib_in_root(created_at.strftime("%Y"))}/#{file_name}"
   end
