@@ -1,6 +1,8 @@
 class PoFile < ActiveRecord::Base
   has_many :orders, :autosave => true, :dependent => :nullify, :order => 'completed_at asc'
 
+  has_many :poa_11s, :dependent => :destroy, :order => 'created_at asc'
+
   attr_reader :data
 
   after_create :init_file_name
@@ -37,7 +39,7 @@ class PoFile < ActiveRecord::Base
 
     @data = po00.cdf_record + "\n"
 
-    Order.needs_po.limit(10).each do |order|
+    Order.needs_po.limit(100).each do |order|
       orders << order
       po = order.as_cdf(count[:total_records])
       @data << po.to_s

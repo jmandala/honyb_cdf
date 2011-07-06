@@ -1,6 +1,9 @@
 require 'fixed_width'
 
 class PoaFile < ActiveRecord::Base
+  include Updateable
+
+  has_many :poa_11s, :dependent => :destroy, :autosave => true
 
     # connect to remote server
     # retrieve all files
@@ -20,7 +23,9 @@ class PoaFile < ActiveRecord::Base
   def populate
     #todo! parse & load
     p = parsed
-    init_header p[:header].first
+    populate_header(p)
+    populate_poa_11(p)
+
     save!
   end
 
@@ -67,7 +72,7 @@ class PoaFile < ActiveRecord::Base
         h.spacer 4
       end
 
-      d.poa11 do |l|
+      d.poa_11 do |l|
         l.trap { |line| line[0, 2] == '11' }
         l.template :boundary
         l.toc 13
@@ -86,15 +91,31 @@ class PoaFile < ActiveRecord::Base
 
   private
 
-  def init_header(header)
-    save_keys header, [:file_name]
+  def populate_header(p)
+    header = p[:header].first
+    poa_type = PoType.find_by_code(header[:poa_type])
+    header[:poa_type_id] = poa_type.id unless poa_type.nil?
+    update_from_hash header, :excludes => [:file_name]
   end
 
-  def save_keys(record, excludes = [])
-    record.keys.each do |k|
-      logger.debug "Looking at attribute #{k}: #{record[k]}"
-      next if excludes.include? k
-      write_attribute(k.to_s, record[k]) if has_attribute? k
+  def populate_poa_11(p)
+    p[:poa_11].each do |data|
+      order = Order.find_by_number(data[:po_number])
+
+      if order.nil?
+        raise ActiveRecord::RecordNotFound.new("No order found with number: #{data[:po_number]}")
+      end
+
+      if order.po_file.nil?
+        raise ActiveRecord::RecordNotFound.new("No PO File found for order number: #{data[:po_number]}")
+      end
+
+      po_file = order.po_file
+
+      poa_11 = Poa11.find_or_create_by_po_file_id_and_poa_file_id(po_file.id, id)
+
+      poa_11.update_from_hash(data)
+
     end
   end
 

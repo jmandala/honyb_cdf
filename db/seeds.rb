@@ -1,5 +1,9 @@
 require 'csv'
 
+PoFile.delete_all
+PoaFile.delete_all
+Poa11.delete_all
+
 ### Create POA_Files for any records without them, in the Data_Lib ###
 Dir.glob(CdfConfig::current_data_lib_in + "/*.fbc").each do |f|
   file_name = File.basename(f)

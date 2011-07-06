@@ -1,6 +1,11 @@
 class Admin::Fulfillment::PoFilesController < Admin::ResourceController
 
   def create
+    if Order.needs_po.count == 0
+      flash[:notice] = 'No Orders need POs'
+      return redirect_to location_after_save
+    end
+
     @object = PoFile.generate
 
     flash[:notice] = flash_message_for(@object, :successfully_created)
@@ -42,7 +47,8 @@ class Admin::Fulfillment::PoFilesController < Admin::ResourceController
     # Deletes all PoFiles
   def purge
     count = PoFile.count
-    PoFile.find(:all).each { |f| f.destroy }
+    Order.update_all('po_file_id = NULL', 'po_file_id IS NOT NULL')
+    PoFile.delete_all
     flash[:notice] = "Deleted #{count} PoFiles"
 
     redirect_to location_after_save

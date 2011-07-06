@@ -1,6 +1,7 @@
 Order.class_eval do
 
   belongs_to :po_file
+
   attr_accessible :po_file
 
 
@@ -33,7 +34,7 @@ Order.class_eval do
   end
 
   def self.needs_po
-    where("orders.completed_at IS NOT NULL AND orders.po_file_id IS NULL")
+    where("orders.completed_at IS NOT NULL AND orders.po_file_id IS NULL").order('completed_at asc')
   end
 
 end
