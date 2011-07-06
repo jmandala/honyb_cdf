@@ -1,5 +1,34 @@
-# For each file in the datalib IN, create a POA_File if none exists
+### Create POA_Files for any records without them, in the Data_Lib ###
 Dir.glob(CdfConfig::current_data_lib_in + "/*.fbc").each do |f|
   file_name = File.basename(f)
   PoaFile.create(:file_name => file_name) unless PoaFile.find_by_file_name(file_name)
 end
+
+
+### Create PO Types ###
+PoType.find_or_create_by_code(0,
+                              :name => 'Purchase Order',
+                              :description => "Process all PO's for fulfillment"
+)
+PoType.find_or_create_by_code(1,
+                              :name => 'Request Confirmation (POA)',
+                              :description => "Ingram will return the oldest unconfirmed POA. See specification for further details."
+)
+PoType.find_or_create_by_code(2, :name => 'Reserved for future use')
+PoType.find_or_create_by_code(3,
+                              :name => 'Stock Status Request',
+                              :description => "Check Ingram inventory levels without fulfillment (placing an order). The POA provides DCInventory Information. The PO is canceled, no inventory is allocated, and nothing is shipped."
+)
+PoType.find_or_create_by_code(4, :name => 'Reserved for future use')
+PoType.find_or_create_by_code(5,
+                              :name => 'Specific Confirmation',
+                              :description => "Ingram will return the POA for a specific PO based on your order placement method. See specification for further details."
+)
+PoType.find_or_create_by_code(7,
+                              :name => 'Request Confirmation',
+                              :description => "Ingram will return the oldest unconfirmed POA. See specification for futher details. **This PO Type is only available to Clients submitting their orders via a webservice."
+)
+PoType.find_or_create_by_code(8,
+                              :name => 'Test Purchase Order',
+                              :description => "Should a client need to do some testing with our systems after they begin sending live orders, a PO Type 8 will allow them to receive test POA's, ASN's, and INV's without fulfillment of the order. POType 8 orders will be canceled. No inventory will be allocated and nothing will be shipped."
+)
