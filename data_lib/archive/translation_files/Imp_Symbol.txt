@@ -1,0 +1,7 @@
+CRSM,"Small Cross" 
+CRLG,"Large Cross" 
+DVSM,"Small Dove" 
+DVLG,"Large Dove" 
+OBSM,"Small Open Book"
+OBLG,"Large Open Book" 
+PHLG,"Praying Hands" 

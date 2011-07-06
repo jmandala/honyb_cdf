@@ -1,0 +1,9 @@
+No Mainframe,The mainframe that processes orders is down. ,"We will process your order, you will just have to check back later for your confirmation file.",FTP,User Folder
+Confirmation Not Ready,You have submitted a confirmation for a file that is not ready yet.  ,Try requesting the confirmation again later.,FTP,User Folder
+"Order Accepted, Post Back For Confirmation",Means the same thing as mainframe down and system down.  ,Wait a while and try back for your confirmation only.  Do not re-send your order.,FTP,User Folder
+System Unavailable,The interpreters are down on our system. Your order has been accepted and will be processed later.  ,Wait a while and try back for your confirmation only.  Do not re-send your order.,FTP,User Folder
+Unable To Create A Track Record,We could not create a track record to get the order going through our system.  Your order will be picked up and processed later.   ,Wait a while and try back for your confirmation only.  Do not re-send your order.,FTP,User Folder
+System Unavailable for Scheduled Maintenance. We apologize for the inconvenience.,Scheduled Maintenance - system is unavailable.,Re-send theorder�when the maintenance window is complete.,WebService,
+"Correlation ID, # was not found in MQ during allotted wait time of #",did not respond in the configured time frame,We were unable to provide a confirmation within 60 seconds. Wait a while and try back for your confirmation only.� Do not re-send your order.,WebService,
+Improper length of file - length not divisible by 80,The number of characters in the file is not divisible by 80,Check and correct the request file or order and try again.,WebService,
+System Unavailable. Sorry for the inconvenience,,"A system error has occurred.� It is safe to re-send your order.� If the problem persists, contact Tech Support.",WebService,

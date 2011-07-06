@@ -1,3 +1,5 @@
+require 'csv'
+
 ### Create POA_Files for any records without them, in the Data_Lib ###
 Dir.glob(CdfConfig::current_data_lib_in + "/*.fbc").each do |f|
   file_name = File.basename(f)
@@ -32,3 +34,13 @@ PoType.find_or_create_by_code(8,
                               :name => 'Test Purchase Order',
                               :description => "Should a client need to do some testing with our systems after they begin sending live orders, a PO Type 8 will allow them to receive test POA's, ASN's, and INV's without fulfillment of the order. POType 8 orders will be canceled. No inventory will be allocated and nothing will be shipped."
 )
+
+CSV.foreach(CdfConfig::po_status_file) do |row|
+  Rails.logger.info "Update Row: #{row}"
+  PoStatus.find_or_create_by_code(row[0], :name => row[1])
+end
+
+CSV.foreach(CdfConfig::poa_status_file) do |row|
+  Rails.logger.info "Update Row: #{row}"
+  PoaStatus.find_or_create_by_code(row[0], :name => row[1])
+end

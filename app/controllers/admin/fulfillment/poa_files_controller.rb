@@ -3,7 +3,6 @@ class Admin::Fulfillment::PoaFilesController < Admin::ResourceController
   def show
     begin
       @poa_file.load_file
-      @data = @poa_file.data
     rescue Exception => e
       flash[:error] = e.message
     end
@@ -34,7 +33,7 @@ class Admin::Fulfillment::PoaFilesController < Admin::ResourceController
     flash[:notice] = "Imported #{@object.file_name}."
 
     respond_with(@object) do |format|
-      format.html { redirect_to admin_fulfillment_poa_file_path }
+      format.html { render :show }
       format.js { render :layout => false }
     end
 

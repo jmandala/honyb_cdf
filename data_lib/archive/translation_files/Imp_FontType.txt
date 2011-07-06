@@ -1,0 +1,4 @@
+B,"Block, mixed case (initial cap)"
+L,"Lower Case"
+S,"Script, mixed case (initial cap)"
+U,"Upper Case"

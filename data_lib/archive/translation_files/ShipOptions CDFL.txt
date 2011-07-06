@@ -1,0 +1,10 @@
+"### 2ND DAY AIR","12","2nd Day Air",Domestic
+"### 3 DAY SELECT","17","3 Day Select",Domestic
+"### UPS","10","Ground",Domestic
+"### NEXT DAY AIR","11","Next Day Air",Domestic
+"### NEXT DAY AIR SAVER","1A","Next Day Air Saver",Domestic
+"### USA ECONOMY","21","Economy Mail",Domestic
+"### USA EXPEDITED","24","Expedited Mail",Domestic
+"### INTL COURIER","MC","INTL Courier (trackable)",International
+"### INTL PRIORITY","MP","INTL Priority (non-trackable)",International
+"### INTL W/DEL CONFIRMATION", "MT","INTL with Delivery Confirmation", International

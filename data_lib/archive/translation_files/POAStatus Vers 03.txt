@@ -1,0 +1,18 @@
+00,Predicted to Ship 100% of ordered product
+01,"Cancelled, Item Not Stocked "
+02,"Cancelled, temporarily Out of Stock (OS), no Backorder"
+03,"Out of Stock (OS), Backordered per Client request"
+05,"Cancelled, Invalid Item Number, Item is Restricted, Invalid Backorder Code, Imprint/Index Code or Text,"
+06,"Partial Ship, remainder Backordered per Client request"
+08,"Cancelled, Invalid Quantity (Qty Ordered = zero qty or value is not numeric )"
+10,"Cancelled, Not Stocked at the DC Specified"
+12,Not Yet Received (NYR) - backorder per Client request
+13,"Cancelled, Out of Stock Indefinitely (OSI), no backorder allowed"
+14,"Cancelled, Out of Print (OP), no backorder allowed"
+22,"Cancelled, Invalid Backorder Cancellation Date",
+23,"Cancelled, Invalid Backorder Code",
+24,"Partial Ship, Out of Stock (OS), no Backorder specified by Client",
+25,"Secondary, Partial Ship, Out of Stock (OS), no Backorder specified by Client",
+26,"Canceled, Not Yet Received (NYR), no Backorder specified by Client",
+42,"Cancelled, Item Cannot be Imprinted"
+43,"Cancelled, Missing Imprint Information"

@@ -1,0 +1,6 @@
+PO DC Code,POA DC Code,ASN DC Code, INV DC SAN,DC Name
+N,N,NV,1697978,"La Vergne, Tennessee"
+C,C,CI,2544105,"Chambersburg, Pennsylvania"
+D,D,DD,6304788,"Fort Wayne, Indiana"
+E,E,EE,6308740,"Roseburg, Oregon"
+,,,,Use Account Profile. Order will shop the primary DC or primary/secondary DC based on DC Pairs indicator. 

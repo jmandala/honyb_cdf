@@ -1,0 +1,5 @@
+B,"Back - center bottom back"
+C,"Center - bottom front"
+L,"Lower right (default)"
+S,"Snap - center on snap"
+T,"Top - center top front"

@@ -2,26 +2,26 @@ require 'fixed_width'
 
 class PoaFile < ActiveRecord::Base
 
-  attr_reader :data
-
-
-  # connect to remote server
-  # retrieve all files
-  # save to data_lib
-  # create records for each file
+    # connect to remote server
+    # retrieve all files
+    # save to data_lib
+    # create records for each file
   def self.download
 
   end
 
-  # Read the file data and build the record
+    # Read the file data and build the record
   def parsed
     spec
-    @parsed = FixedWidth.parse(File.new(path), :poa_file)
+    FixedWidth.parse(File.new(path), :poa_file)
   end
 
 
   def populate
     #todo! parse & load
+    p = parsed
+    init_header p[:header].first
+    save!
   end
 
 
@@ -29,8 +29,10 @@ class PoaFile < ActiveRecord::Base
     "#{CdfConfig::data_lib_in_root(created_at.strftime("%Y"))}/#{file_name}"
   end
 
-  def load_file
-    raise ArgumentError, "File not found: #{path}"  unless File.exists?(path)
+  def data
+    raise ArgumentError, "File not found: #{path}" unless File.exists?(path)
+
+    return @data unless @data.nil? || @data.empty?
 
     @data = ''
     File.open(path, 'r') do |file|
@@ -50,7 +52,7 @@ class PoaFile < ActiveRecord::Base
       end
 
       d.header(:align => :left) do |h|
-        h.trap { |line| line[0,2] == '02' }
+        h.trap { |line| line[0, 2] == '02' }
         h.template :boundary
         h.file_source_san 7
         h.spacer 5
@@ -66,7 +68,7 @@ class PoaFile < ActiveRecord::Base
       end
 
       d.poa11 do |l|
-        l.trap { |line| line[0,2] == '11' }
+        l.trap { |line| line[0, 2] == '11' }
         l.template :boundary
         l.toc 13
         l.po_number 22
@@ -78,6 +80,21 @@ class PoaFile < ActiveRecord::Base
         l.po_cancellation_date 6
         l.spacer 5
       end
+    end
+  end
+
+
+  private
+
+  def init_header(header)
+    save_keys header, [:file_name]
+  end
+
+  def save_keys(record, excludes = [])
+    record.keys.each do |k|
+      logger.debug "Looking at attribute #{k}: #{record[k]}"
+      next if excludes.include? k
+      write_attribute(k.to_s, record[k]) if has_attribute? k
     end
   end
 
