@@ -14,7 +14,7 @@ class PoFile < ActiveRecord::Base
   end
 
   def path
-    "#{CdfConfig::current_data_lib_out}/#{file_name}"
+    "#{CdfConfig::data_lib_out_root(created_at.strftime("%Y"))}/#{file_name}"
   end
 
   def load_file

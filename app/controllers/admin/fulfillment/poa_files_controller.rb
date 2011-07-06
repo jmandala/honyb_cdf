@@ -1,5 +1,14 @@
 class Admin::Fulfillment::PoaFilesController < Admin::ResourceController
 
+  def show
+    begin
+      @poa_file.load_file
+      @data = @poa_file.data
+    rescue Exception => e
+      flash[:error] = e.message
+    end
+  end
+
   def index
     params[:search] ||= {}
     @search = PoaFile.metasearch(params[:search], :distinct => true)
