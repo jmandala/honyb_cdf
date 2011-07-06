@@ -30,8 +30,14 @@ class Admin::Fulfillment::PoaFilesController < Admin::ResourceController
 
     # Import files
   def import
-    flash[:notice] = "Imported #{@object.file_name}"
-    redirect_to location_after_save
+    @object.populate
+    flash[:notice] = "Imported #{@object.file_name}."
+
+    respond_with(@object) do |format|
+      format.html { redirect_to admin_fulfillment_poa_file_path }
+      format.js { render :layout => false }
+    end
+
   end
 
 

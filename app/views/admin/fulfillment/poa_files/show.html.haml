@@ -13,6 +13,9 @@
     = t('file_path')
   = @poa_file.path
 
+%h2 Parsed
+%pre #{@poa_file.parsed.to_yaml}
+
 
 %h2 Contents
 %div.contents
