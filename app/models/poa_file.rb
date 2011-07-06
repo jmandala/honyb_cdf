@@ -3,7 +3,7 @@ require 'fixed_width'
 class PoaFile < ActiveRecord::Base
   include Updateable
 
-  has_many :poa_11s, :dependent => :destroy, :autosave => true
+  has_many :poa_order_headers, :dependent => :destroy, :autosave => true
 
     # connect to remote server
     # retrieve all files
