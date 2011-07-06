@@ -82,7 +82,7 @@ class PoaFile < ActiveRecord::Base
         l.icg_ship_to_account_number 7
         l.icg_san 7
         l.po_status 1
-        l.po_acknowledgement_date 6
+        l.acknowledgement_date 6
         l.po_date 6
         l.po_cancellation_date 6
         l.spacer 5
