@@ -22,4 +22,6 @@ en:
   fulfillment_settings: "Fulfillment Settings"
   fulfillment_settings_description: "Configure Fulfillment Settings."
   edit_fulfillment_settings: "Edit Fulfillment Settings"
-
+  import_all_files: "Import All"
+  import_file: "Import"
+  no_files: "No Files"

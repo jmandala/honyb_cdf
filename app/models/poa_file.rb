@@ -1,3 +1,6 @@
 class PoaFile < ActiveRecord::Base
-  # To change this template use File | Settings | File Templates.
+
+  def self.pending
+    [PoaFile.new({:file_name => 'sample.txt'})]
+  end
 end

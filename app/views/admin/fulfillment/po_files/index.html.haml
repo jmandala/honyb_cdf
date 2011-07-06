@@ -21,6 +21,9 @@
           = sort_link @search, :created_at, t('created_at')
     %tbody
       = render @po_files
+  - if @po_files.size == 0
+    = t('no_files')
+
 
 = will_paginate(@po_files, :previous_label => "&#171; #{t('previous')}", :next_label => "#{t('next')} &#187;")
 

@@ -48,4 +48,9 @@ class Admin::Fulfillment::PoFilesController < Admin::ResourceController
     redirect_to location_after_save
   end
 
+  def location_after_save
+    admin_fulfillment_po_files_path
+  end
+
+
 end

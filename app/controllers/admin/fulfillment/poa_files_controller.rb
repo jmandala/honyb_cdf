@@ -16,19 +16,19 @@ class Admin::Fulfillment::PoaFilesController < Admin::ResourceController
         :per_page => Spree::Config[:poa_files_per_page],
         :page => params[:page])
 
-    @pending_files = []
     respond_with @poa_files
-  end
-
-  # Download files from CDF
-  def download
-
   end
 
   # Import files
   def import
 
   end
+
+
+  def location_after_save
+    admin_fulfillment_poa_files_path
+  end
+
 
 
 end

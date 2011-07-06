@@ -15,6 +15,10 @@ Rails.application.routes.draw do
         collection do
           delete :purge
         end
+
+        member do
+          post :import
+        end
       end
 
       resource :settings

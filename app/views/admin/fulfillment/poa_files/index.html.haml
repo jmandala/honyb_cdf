@@ -10,43 +10,28 @@
 
 
 
-- if @pending_files.size > 0
-  %h2 Pending Files
+= form_tag(admin_fulfillment_poa_files_path) do |f|
 
-  %div.admin_buttons
-    = form_tag(admin_fulfillment_poa_files_path) do |f|
-      %div
-        = button t('import_poa_files'), 'add'
+  %div
+    = button t('import_all_files'), 'add'
 
   %div
     %table.index
       %thead
         %tr
           %th
-            = t('file_name')
+            = sort_link @search, :file_name, t('file_name')
+          %th
+            = t('imported_at')
+          %th
+            = sort_link @search, :created_at, t('created_at')
       %tbody
-        - for file in @pending_files do
-          %tr
-            %td
-              = file.file_name
+        = render @poa_files
 
-  = will_paginate(@poa_files, :previous_label => "&#171; #{t('previous')}", :next_label => "#{t('next')} &#187;")
+    - if @poa_files.size == 0
+      = t('no_files')
 
-%h2 Imported Files
-%div
-  %table.index
-    %thead
-      %tr
-        %th
-          = sort_link @search, :file_name, t('file_name')
-        %th
-          = t('record_count')
-        %th
-          = sort_link @search, :created_at, t('created_at')
-    %tbody
-      = render @poa_files
-
-= will_paginate(@poa_files, :previous_label => "&#171; #{t('previous')}", :next_label => "#{t('next')} &#187;")
+    = will_paginate(@poa_files, :previous_label => "&#171; #{t('previous')}", :next_label => "#{t('next')} &#187;")
 
 
 - content_for :sidebar do
