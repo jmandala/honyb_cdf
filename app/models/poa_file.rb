@@ -24,7 +24,7 @@ class PoaFile < ActiveRecord::Base
     #todo! parse & load
     p = parsed
     populate_header(p)
-    populate_poa_11(p)
+    populate_poa_order_header(p)
 
     save!
   end
@@ -72,7 +72,7 @@ class PoaFile < ActiveRecord::Base
         h.spacer 4
       end
 
-      d.poa_11 do |l|
+      d.poa_order_header do |l|
         l.trap { |line| line[0, 2] == '11' }
         l.template :boundary
         l.toc 13
@@ -98,12 +98,12 @@ class PoaFile < ActiveRecord::Base
     update_from_hash header, :excludes => [:file_name]
   end
 
-  def populate_poa_11(p)
-    p[:poa_11].each do |data|
+  def populate_poa_order_header(p)
+    p[:poa_order_header].each do |data|
       order = Order.find_by_number(data[:po_number])
 
       if order.nil?
-        raise ActiveRecord::RecordNotFound.new("No order found with number: #{data[:po_number]}")
+        raise ActiveRecord::RecordNotFound.new("No Order found with number: #{data[:po_number]}")
       end
 
       if order.po_file.nil?
@@ -112,10 +112,9 @@ class PoaFile < ActiveRecord::Base
 
       po_file = order.po_file
 
-      poa_11 = Poa11.find_or_create_by_po_file_id_and_poa_file_id(po_file.id, id)
+      poa_11 = PoaOrderHeader.find_or_create_by_po_file_id_and_poa_file_id(po_file.id, id)
 
       poa_11.update_from_hash(data)
-
     end
   end
 

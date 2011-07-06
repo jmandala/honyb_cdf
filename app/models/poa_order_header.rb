@@ -1,5 +1,5 @@
 # Purchase Order Header Record
-class Poa11 < ActiveRecord::Base
+class Poa_Order_Header < ActiveRecord::Base
   include Updateable
 
   belongs_to :poa_file
