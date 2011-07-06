@@ -14,7 +14,7 @@ class PoFile < ActiveRecord::Base
   end
 
   def path
-    "#{CdfConfig::po_path}/#{file_name}"
+    "#{CdfConfig::current_data_lib_out}/#{file_name}"
   end
 
   def load_file

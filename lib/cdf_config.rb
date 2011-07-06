@@ -4,12 +4,17 @@ class CdfConfig
     "#{Cdf::Engine::config.root}/data_lib"
   end
 
-  def self.po_path_root
-    "#{self.data_lib_path}/out"
+  def self.data_lib_out_root(year='')
+    if year.empty?
+      return "#{self.data_lib_path}/out"
+    end
+    
+    "#{self.data_lib_path}/out/#{year}"
+
   end
 
-  def self.po_path
-    "#{self.po_path_root}/#{self.this_year}"
+  def self.current_data_lib_out
+    self.data_lib_out_root self.this_year
   end
 
   private
