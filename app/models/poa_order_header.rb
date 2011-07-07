@@ -49,13 +49,13 @@ class PoaOrderHeader < ActiveRecord::Base
   end
 
   def self.find_self(order, poa_file)
-    self.find_by_order_id_and_poa_file_id(order.id, poa_file.id)
+    self.where(:order_id => order, :poa_file_id => poa_file).first
   end
 
   def self.find_self!(order, poa_file)
     object = self.find_self(order, poa_file)
-    if object.nil?
-      self.create(:order => order, :poa_file => poa_file)
-    end
+    return object unless object.nil?
+
+    self.create(:order => order, :poa_file => poa_file)
   end
 end

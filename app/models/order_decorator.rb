@@ -37,4 +37,13 @@ Order.class_eval do
     where("orders.completed_at IS NOT NULL AND orders.po_file_id IS NULL").order('completed_at asc')
   end
 
+  def self.find_by_po_number!(po_number)
+    order = self.find_by_number(po_number)
+
+    if order.nil?
+      raise ActiveRecord::RecordNotFound.new("No Order found with number: #{data[:po_number]}")
+    end
+  end
+
+
 end

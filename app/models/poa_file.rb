@@ -37,6 +37,8 @@ class PoaFile < ActiveRecord::Base
 
     PoaOrderHeader.populate(p, self)
     PoaVendorRecord.populate(p, self)
+    PoaShipToName.populate(p, self)
+    PoaAddressLine.populate(p, self)
 
     save!
   end
@@ -91,6 +93,8 @@ class PoaFile < ActiveRecord::Base
 
       PoaOrderHeader.spec(d)
       PoaVendorRecord.spec(d)
+      PoaShipToName.spec(d)
+      PoaAddressLine.spec(d)
 
     end
   end
