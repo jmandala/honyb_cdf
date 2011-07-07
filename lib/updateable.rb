@@ -10,9 +10,9 @@ module Updateable
     excludes = options[:excludes] || []
 
     new_attributes.each do |k, v|
-      logger.debug "Looking at attribute #{k}: #{new_attributes[k]}"
       next if excludes.include? k
       update_attribute(k.to_s, v) if has_attribute? k
+      logger.debug "INVALID KEY: #{k} is not valid for #{self.class}" if !has_attribute? k
     end
   end
 

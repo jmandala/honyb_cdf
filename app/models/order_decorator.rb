@@ -40,9 +40,9 @@ Order.class_eval do
   def self.find_by_po_number!(po_number)
     order = self.find_by_number(po_number)
 
-    if order.nil?
-      raise ActiveRecord::RecordNotFound.new("No Order found with number: #{data[:po_number]}")
-    end
+    raise ActiveRecord::RecordNotFound.new("No Order found with number: #{data[:po_number]}") if order.nil?
+    
+    order
   end
 
 

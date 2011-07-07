@@ -1,7 +1,7 @@
 class PoFile < ActiveRecord::Base
   has_many :orders, :autosave => true, :dependent => :nullify, :order => 'completed_at asc'
 
-  has_many :poa_11s, :dependent => :destroy, :order => 'created_at asc'
+  has_many :poa_files, :dependent => :destroy, :order => 'created_at asc'
 
   attr_reader :data
 

@@ -18,9 +18,12 @@ class PoaCityStateZip < ActiveRecord::Base
     end
   end
 
-  def after_populate(data)
+  def before_populate(data)
     state = State.find_by_abbr(data[:recipient_state_province])
+    data[:state_id] = state.id unless state.nil?
+
     country = Country.find_by_iso(data[:country])
+    data[:country_id] = country.id unless country.nil?
   end
 
 end

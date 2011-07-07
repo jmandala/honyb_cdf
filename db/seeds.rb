@@ -1,9 +1,8 @@
 require 'csv'
 
 Order.update_all('po_file_id = NULL', 'po_file_id IS NOT NULL')
-PoFile.delete_all
-PoaFile.delete_all
-PoaOrderHeader.delete_all
+PoFile.all.each {|p| p.destroy}
+PoaFile.all.each {|p| p.destroy}
 
 ### Create POA_Files for any records without them, in the Data_Lib ###
 Dir.glob(CdfConfig::current_data_lib_in + "/*.fbc").each do |f|

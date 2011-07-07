@@ -40,6 +40,7 @@ class PoaFile < ActiveRecord::Base
     PoaShipToName.populate(p, self)
     PoaAddressLine.populate(p, self)
     PoaCityStateZip.populate(p, self)
+    #PoaLineItem.populate(p, self)
 
     save!
   end
@@ -97,6 +98,7 @@ class PoaFile < ActiveRecord::Base
       PoaShipToName.spec(d)
       PoaAddressLine.spec(d)
       PoaCityStateZip.spec(d)
+      PoaLineItem.spec(d)
 
     end
   end

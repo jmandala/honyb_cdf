@@ -35,16 +35,18 @@ class PoaOrderHeader < ActiveRecord::Base
   def self.populate(p, poa_file)
     p[:poa_order_header].each do |data|
 
-      data[:po_status_id] = PoStatus.find_by_code(data[:po_status]).try(:id)
 
       order = Order.find_by_number(data[:po_number])
 
       raise ActiveRecord::RecordNotFound.new("No Order found with number: #{data[:po_number]}") if order.nil?
 
-      poa_order_header = self.find_self!(order, poa_file)
+      object = self.find_self!(order, poa_file)
 
-      poa_order_header.update_from_hash(data)
+      object.update_from_hash(data)
 
+      object.po_status = PoStatus.find_by_code(data[:po_status])
+
+      object.save!
     end
   end
 
