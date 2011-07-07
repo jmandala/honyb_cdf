@@ -4,7 +4,7 @@ class PoaFile < ActiveRecord::Base
   include Updateable
 
   has_many :poa_order_headers, :dependent => :destroy, :autosave => true
-  has_one :poa_control_total, :dependent => :destroy, :autosave => true
+  has_one :poa_file_control_total, :dependent => :destroy, :autosave => true
   belongs_to :poa_type
   belongs_to :po_file
 
@@ -40,7 +40,13 @@ class PoaFile < ActiveRecord::Base
     PoaShipToName.populate(p, self)
     PoaAddressLine.populate(p, self)
     PoaCityStateZip.populate(p, self)
-    #PoaLineItem.populate(p, self)
+    PoaLineItem.populate(p, self)
+    PoaAdditionalDetail.populate(p, self)
+    PoaLineItemTitleRecord.populate(p, self)
+    PoaLineItemPubRecord.populate(p, self)
+    PoaItemNumberPriceRecord.populate(p, self)
+    #PoaOrderControlTotal.populate(p, self)
+    #PoaFileControlTotal.populate(p, self)
 
     save!
   end
@@ -99,7 +105,12 @@ class PoaFile < ActiveRecord::Base
       PoaAddressLine.spec(d)
       PoaCityStateZip.spec(d)
       PoaLineItem.spec(d)
-
+      PoaAdditionalDetail.spec(d)
+      PoaLineItemTitleRecord.spec(d)
+      PoaLineItemPubRecord.spec(d)
+      PoaItemNumberPriceRecord.spec(d)
+      PoaOrderControlTotal.spec(d)
+      #PoaFileControlTotal.spec(d)
     end
   end
 

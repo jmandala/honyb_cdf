@@ -15,6 +15,7 @@ class PoaOrderHeader < ActiveRecord::Base
   has_many :poa_line_item_title_records, :autosave => true, :dependent => :destroy
   has_many :poa_line_item_pub_records, :autosave => true, :dependent => :destroy
   has_many :poa_item_number_price_records, :autosave => true, :dependent => :destroy
+  has_one :poa_order_control_total, :autosave => true, :dependent => :destroy
 
   def self.spec(d)
     d.poa_order_header do |l|
@@ -34,7 +35,6 @@ class PoaOrderHeader < ActiveRecord::Base
 
   def self.populate(p, poa_file)
     p[:poa_order_header].each do |data|
-
 
       order = Order.find_by_number(data[:po_number])
 

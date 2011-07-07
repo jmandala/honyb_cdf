@@ -5,9 +5,7 @@ class PoaLineItem < ActiveRecord::Base
   belongs_to :poa_order_header
   belongs_to :poa_status
   belongs_to :dc_code
-  belongs_to :product
-
-  after_save :save_debug
+  belongs_to :line_item
 
   def self.spec(d)
     d.poa_line_item do |l|
@@ -23,16 +21,15 @@ class PoaLineItem < ActiveRecord::Base
     end
   end
 
-  def after_populate(data)
-    #logger.debug "#{data[:line_item_po_number]} : #{line_item_po_number}"
-    #logger.debug "after populate poa_line_item"
-    #dc_code = DcCode.find_by_poa_dc_code(data[:dc_code])
-    #logger.debug "Looked for DcCode with code: #{data[:dc_code]}. Found: #{dc_code.inspect}"
+  def before_populate(data)
+    poa_status = PoaStatus.find_by_code(data[:poa_status])
+    data[:poa_status_id] = poa_status.id unless poa_status.nil?
 
-    #poa_status = PoaStatus.find_by_code(data[:poa_status])
+    dc_code = DcCode.find_by_poa_dc_code(data[:dc_code])
+    data[:dc_code_id] = dc_code.id unless dc_code.nil?
+
+    line_item = LineItem.find_by_id(data[:line_item_po_number])
+    data[:line_item_id] = line_item.id unless line_item.nil?
   end
 
-  def save_debug
-    #logger.debug inspect
-  end
 end
