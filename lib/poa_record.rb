@@ -24,7 +24,13 @@ module PoaRecord
   def populate(p, poa_file, section = self.model_name.i18n_key)
     return if p.nil? || p[section].nil?
     p[section].each do |data|
-      self.find_or_create(data, poa_file).update_from_hash(data)
+      object = self.find_or_create(data, poa_file)
+      object.update_from_hash(data)
+      begin
+        object.send(:after_populate, data)
+      rescue NameError => e
+        end
+      object
     end
   end
 
