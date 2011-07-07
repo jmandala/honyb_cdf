@@ -4,8 +4,9 @@ class PoaFile < ActiveRecord::Base
   include Updateable
 
   has_many :poa_order_headers, :dependent => :destroy, :autosave => true
-
+  has_one :poa_control_total, :dependent => :destroy, :autosave => true
   belongs_to :poa_type
+  belongs_to :po_file
 
     # connect to remote server
     # retrieve all files
@@ -28,9 +29,14 @@ class PoaFile < ActiveRecord::Base
 
     header = p[:header].first
     header[:poa_type_id] = PoaType.find_by_code(header[:poa_type]).try(:id)
+    po_file = PoFile.find_by_file_name(p[:file_name])
+
     update_from_hash header, :excludes => [:file_name]
 
-    PoaOrderHeader.populate(p)
+    logger.debug "PO File could not be found with name: '#{p[:file_name]}'" if po_file.nil?
+
+    PoaOrderHeader.populate(p, self)
+    PoaVendorRecord.populate(p, self)
 
     save!
   end
@@ -56,14 +62,20 @@ class PoaFile < ActiveRecord::Base
 
   def spec
     FixedWidth.define :poa_file do |d|
-      d.template :boundary do |t|
+      d.template :poa_defaults do |t|
         t.record_code 2
         t.sequence_number 5
       end
 
+      d.template :poa_defaults_plus do |t|
+        t.record_code 2
+        t.sequence_number 5
+        t.po_number 22
+      end
+
       d.header(:align => :left) do |h|
         h.trap { |line| line[0, 2] == '02' }
-        h.template :boundary
+        h.template :poa_defaults
         h.file_source_san 7
         h.spacer 5
         h.file_source_name 13
@@ -78,7 +90,8 @@ class PoaFile < ActiveRecord::Base
       end
 
       PoaOrderHeader.spec(d)
-      
+      PoaVendorRecord.spec(d)
+
     end
   end
 

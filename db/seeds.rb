@@ -48,11 +48,24 @@ PoaType.find_or_create_by_code(5, :description => 'Exception Acknowledgement - r
 
 
 CSV.foreach(CdfConfig::po_status_file) do |row|
-  Rails.logger.info "Update Row: #{row}"
   PoStatus.find_or_create_by_code(row[0], :name => row[1])
 end
 
 CSV.foreach(CdfConfig::poa_status_file) do |row|
-  Rails.logger.info "Update Row: #{row}"
   PoaStatus.find_or_create_by_code(row[0], :name => row[1])
 end
+
+CSV.foreach(CdfConfig::dc_codes_file, :headers => true) do |row|
+ DcCode.find_or_create_by_po_dc_code(row[0],
+                                           :poa_dc_code => row[1],
+                                           :asn_dc_code => row[2],
+                                           :inv_dc_san => row[3],
+                                           :dc_name => row[4]
+  )
+end
+
+CdfBindingCode.find_or_create_by_code('M', :name => 'Mass Market')
+CdfBindingCode.find_or_create_by_code('A', :name => 'Audio Products')
+CdfBindingCode.find_or_create_by_code('T', :name => 'Trade Paper')
+CdfBindingCode.find_or_create_by_code('H', :name => 'Hard Cover')
+CdfBindingCode.find_or_create_by_code('', :name => 'Other')

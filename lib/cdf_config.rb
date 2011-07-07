@@ -45,6 +45,10 @@ class CdfConfig
     File.join(self.translation_files, 'POAStatus Vers 03.txt')
   end
 
+  def self.dc_codes_file
+    File.join(self.translation_files, 'DCCodes CDFL.txt')
+  end
+
 
   private
 
