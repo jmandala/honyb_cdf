@@ -109,8 +109,8 @@ class PoaFile < ActiveRecord::Base
       PoaLineItemTitleRecord.spec(d)
       PoaLineItemPubRecord.spec(d)
       PoaItemNumberPriceRecord.spec(d)
-      PoaOrderControlTotal.spec(d)
-      #PoaFileControlTotal.spec(d)
+      #PoaOrderControlTotal.spec(d)
+      PoaFileControlTotal.spec(d)
     end
   end
 
