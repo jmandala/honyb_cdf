@@ -31,7 +31,6 @@ class FixedWidth
     def parse_line(line)
       @definition.sections.each do |section|
         if section.match(line)
-          Rails.logger.debug "#{section.name}:#{line}"
           fill_content(section, line)
           break
         end

@@ -1,5 +1,3 @@
-require 'fixed_width'
-
 class PoaFile < ActiveRecord::Base
   include Updateable
 
@@ -23,18 +21,18 @@ class PoaFile < ActiveRecord::Base
   end
 
 
-  def populate
-    #todo! parse & load
-    p = parsed
-
+  def populate_file_header(p)
     header = p[:header].first
     header[:poa_type_id] = PoaType.find_by_code(header[:poa_type]).try(:id)
     po_file = PoFile.find_by_file_name(p[:file_name])
-
     update_from_hash header, :excludes => [:file_name]
+    logger.warn "PO File could not be found with name: '#{p[:file_name]}'" if po_file.nil?
+  end
 
-    logger.debug "PO File could not be found with name: '#{p[:file_name]}'" if po_file.nil?
+  def import
+    p = parsed
 
+    populate_file_header(p)
     PoaOrderHeader.populate(p, self)
     PoaVendorRecord.populate(p, self)
     PoaShipToName.populate(p, self)
@@ -45,9 +43,10 @@ class PoaFile < ActiveRecord::Base
     PoaLineItemTitleRecord.populate(p, self)
     PoaLineItemPubRecord.populate(p, self)
     PoaItemNumberPriceRecord.populate(p, self)
-    #PoaOrderControlTotal.populate(p, self)
-    #PoaFileControlTotal.populate(p, self)
+    PoaOrderControlTotal.populate(p, self)
+    PoaFileControlTotal.populate(p, self)
 
+    self.imported_at = Time.now
     save!
   end
 

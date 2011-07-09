@@ -4,14 +4,10 @@ module PoaRecord
 
 
   def find_self(poa_order_header, sequence_number)
-    Rails.logger.debug "find_self"
-
     self.where(:poa_order_header_id => poa_order_header.id, :sequence_number => sequence_number).first
   end
 
   def find_self!(poa_order_header, sequence_number)
-    Rails.logger.debug "find_self!"
-
     object = self.find_self(poa_order_header, sequence_number)
     return object unless object.nil?
 
@@ -19,8 +15,7 @@ module PoaRecord
   end
 
   def find_or_create(data, poa_file)
-    Rails.logger.debug "find_or_create"
-    order = Order.find_by_po_number!(data[:po_number])
+    order = Order.find_by_po_number!(data[:po_number].strip!)
     poa_order_header = PoaOrderHeader.find_self(order, poa_file)
 
     self.find_self!(poa_order_header, data[:sequence_number])
@@ -32,7 +27,6 @@ module PoaRecord
       object = self.find_or_create(data, poa_file)
       begin
         object.send(:before_populate, data)
-        Rails.logger.debug data.to_yaml
       rescue NameError => e
       end
 

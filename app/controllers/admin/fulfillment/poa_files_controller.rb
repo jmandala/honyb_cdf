@@ -29,11 +29,15 @@ class Admin::Fulfillment::PoaFilesController < Admin::ResourceController
 
     # Import files
   def import
-    @object.populate
-    flash[:notice] = "Imported #{@object.file_name}."
+    begin
+    @object.import
+      flash[:notice] = "Imported #{@object.file_name}."
+    rescue Exception => e
+      flash[:error] = "Failed to import #{@object.file_name}. #{e.message}"
+    end
 
     respond_with(@object) do |format|
-      format.html { render :show }
+      format.html { redirect_to admin_fulfillment_poa_file_path }
       format.js { render :layout => false }
     end
 

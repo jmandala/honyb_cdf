@@ -3,11 +3,20 @@
 %div.admin_buttons
   %div #{button_link_to t('back'), admin_fulfillment_poa_files_path, :icon => '16x16/8'}
 
-%h1 POA Files
+%h1 POA Files Man!
 
 %h2 #{@poa_file.file_name}
 
 %p Created at #{@poa_file.created_at.strftime("%m-%d-%y %h:%M")}
+%div
+  Imported at
+  - if @poa_file.imported_at
+    #{@poa_file.created_at.strftime("%m-%d-%y %h:%M")}
+    %div
+      = link_to_with_icon 'add', t('import_now'), import_admin_fulfillment_poa_file_path(@poa_file), method: :post
+  - else
+    &mdash;
+    
 %div.field_pair
   %legend
     = t('file_path')
@@ -15,7 +24,6 @@
 
 %h2 Parsed
 %pre #{@poa_file.parsed.to_yaml}
-
 
 %h2 Contents
 %div.contents

@@ -36,7 +36,7 @@ class PoaOrderHeader < ActiveRecord::Base
   def self.populate(p, poa_file)
     p[:poa_order_header].each do |data|
 
-      order = Order.find_by_number(data[:po_number])
+      order = Order.find_by_number(data[:po_number].strip!)
 
       raise ActiveRecord::RecordNotFound.new("No Order found with number: #{data[:po_number]}") if order.nil?
 
