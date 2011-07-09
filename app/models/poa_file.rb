@@ -99,6 +99,7 @@ class PoaFile < ActiveRecord::Base
         h.spacer 4
       end
 
+
       PoaOrderHeader.spec(d)
       PoaVendorRecord.spec(d)
       PoaShipToName.spec(d)
@@ -109,7 +110,7 @@ class PoaFile < ActiveRecord::Base
       PoaLineItemTitleRecord.spec(d)
       PoaLineItemPubRecord.spec(d)
       PoaItemNumberPriceRecord.spec(d)
-      #PoaOrderControlTotal.spec(d)
+      PoaOrderControlTotal.spec(d)
       PoaFileControlTotal.spec(d)
     end
   end

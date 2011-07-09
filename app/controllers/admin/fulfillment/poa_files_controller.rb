@@ -2,7 +2,7 @@ class Admin::Fulfillment::PoaFilesController < Admin::ResourceController
 
   def show
     begin
-      @poa_file.load_file
+      @poa_file
     rescue Exception => e
       flash[:error] = e.message
     end

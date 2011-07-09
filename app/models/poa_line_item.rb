@@ -8,8 +8,12 @@ class PoaLineItem < ActiveRecord::Base
   belongs_to :line_item
 
   def self.spec(d)
-    d.poa_line_item do |l|
-      l.trap {|line| line[0,2] == '40'}
+    d.poa_line_item(:singular => false) do |l|
+      l.trap do |line|
+        puts @singular
+        line[0,2] == '40'
+
+      end
       l.template :poa_defaults_plus
       l.line_item_po_number 10
       l.spacer 12
