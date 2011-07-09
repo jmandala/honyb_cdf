@@ -1,9 +1,8 @@
 Order.class_eval do
 
   belongs_to :po_file
-
-  attr_accessible :po_file
-
+  has_many :poa_order_headers, :dependent => :restrict
+  has_many :poa_files, :through => :poa_order_headers
 
   def as_cdf(start_sequence = 1)
     Records::Po::Record.new(self, start_sequence)

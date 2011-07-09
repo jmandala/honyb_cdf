@@ -26,3 +26,5 @@ en:
   import_file: "Import"
   import_now: "Import Now"
   no_files: "No Files"
+  poa_type: "POA Type"
+  file_name: "File Name"

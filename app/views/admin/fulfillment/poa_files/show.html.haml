@@ -3,9 +3,14 @@
 %div.admin_buttons
   %div #{button_link_to t('back'), admin_fulfillment_poa_files_path, :icon => '16x16/8'}
 
-%h1 POA Files Man!
+%h1 POA Files
 
 %h2 #{@poa_file.file_name}
+
+%div
+  %legend
+    = t 'poa_type'
+  #{@poa_file.poa_type.description}
 
 %p Created at #{@poa_file.created_at.strftime("%m-%d-%y %h:%M")}
 %div
@@ -33,19 +38,19 @@
     &mdash;
 
 - content_for :sidebar do
-  -#.box
-  -#  %h3
-  -#    #{@poa_file.orders.count} Orders
-  -#  %table
-  -#    %thead
-  -#      %tr
-  -#        %th ID
-  -#        %th Completed Date
-  -#    %tbody
-  -#    - for order in @poa_file.orders do
-  -#      %tr
-  -#        %td
-  -#          = link_to order.number, admin_order_path(order)
-  -#        %td
-  -#          = order.completed_at.strftime("%m-%d-%y")
-  -#
+  .box
+    %h3
+      #{@poa_file.orders.count} Orders
+    %table
+      %thead
+        %tr
+          %th ID
+          %th Completed Date
+      %tbody
+      - for order in @poa_file.orders do
+        %tr
+          %td
+            = link_to order.number, fulfillment_admin_order_path(order)
+          %td
+            = order.completed_at.strftime("%m-%d-%y")
+

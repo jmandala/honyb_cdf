@@ -5,6 +5,7 @@ class PoaFile < ActiveRecord::Base
   has_one :poa_file_control_total, :dependent => :destroy, :autosave => true
   belongs_to :poa_type
   belongs_to :po_file
+  has_many :orders, :through => :poa_order_headers
 
     # connect to remote server
     # retrieve all files

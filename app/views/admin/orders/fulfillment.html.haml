@@ -14,8 +14,21 @@
   - else
     &mdash;
 
-%h3 #{t("poa_files")}
-%div   &mdash;
+%h3 #{@order.poa_files.count} #{t("poa_files")}
+%table
+  %thead
+    %tr
+      %th
+        = t 'file_name'
+      %th
+        = t 'imported_at'
+  %tbody
+  - for poa_file in @order.poa_files do
+    %tr
+      %td
+        = link_to poa_file.file_name, admin_fulfillment_poa_file_path(poa_file)
+      %td
+        = time_ago_in_words(poa_file.imported_at)
 
 %h3 #{t("asn_files")}
 %div   &mdash;
