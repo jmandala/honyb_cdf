@@ -4,6 +4,7 @@ Rails.application.routes.draw do
 
     namespace :fulfillment do
       match 'dashboard' => 'dashboard#index'
+      resource :settings
 
       resources :po_files do
         collection do
@@ -21,7 +22,16 @@ Rails.application.routes.draw do
         end
       end
 
-      resource :settings
+      resources :asn_files do
+        collection do
+          delete :purge
+        end
+
+        member do
+          post :import
+        end
+      end
+
 
     end
 
