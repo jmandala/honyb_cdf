@@ -10,6 +10,12 @@ Dir.glob(CdfConfig::current_data_lib_in + "/*.fbc").each do |f|
   PoaFile.create(:file_name => file_name) unless PoaFile.find_by_file_name(file_name)
 end
 
+### Create ASN_Files for any records without them, in the Data_Lib ###
+Dir.glob(CdfConfig::current_data_lib_in + "/*.pbs").each do |f|
+  file_name = File.basename(f)
+  AsnFile.create(:file_name => file_name) unless AsnFile.find_by_file_name(file_name)
+end
+
 
 ### Create PO Types ###
 PoType.find_or_create_by_code(0,
@@ -68,3 +74,15 @@ CdfBindingCode.find_or_create_by_code('A', :name => 'Audio Products')
 CdfBindingCode.find_or_create_by_code('T', :name => 'Trade Paper')
 CdfBindingCode.find_or_create_by_code('H', :name => 'Hard Cover')
 CdfBindingCode.find_or_create_by_code('', :name => 'Other')
+
+AsnOrderStatus.find_or_create_by_code('00', :description => 'Shipped')
+AsnOrderStatus.find_or_create_by_code('26', :description => 'Canceled')
+AsnOrderStatus.find_or_create_by_code('28', :description => 'Partial Shipment')
+AsnOrderStatus.find_or_create_by_code('95', :description => 'Backorder canceled by date')
+AsnOrderStatus.find_or_create_by_code('96', :description => 'Backorder canceled by client')
+
+AsnSlashCode.find_or_create_by_code('Slash', :description => '(SLN 04 - price qualifier "SR"')
+AsnSlashCode.find_or_create_by_code('11', :description => 'Unable to commit')
+AsnSlashCode.find_or_create_by_code('12', :description => 'Slash/Cancel')
+AsnSlashCode.find_or_create_by_code('A1', :description => 'Auto-Slash')
+AsnSlashCode.find_or_create_by_code('S1', :description => 'DC Slash (warehouse)')

@@ -1,0 +1,58 @@
+= render :partial => 'admin/shared/fulfillment_sub_menu'
+
+
+%div.admin_buttons
+  = form_tag(admin_fulfillment_asn_files_path) do |f|
+    %div
+      = button t('download_asn_files'), 'add'
+
+%h1 asn Files
+
+= form_tag(admin_fulfillment_asn_files_path) do |f|
+
+  %div
+    = button t('import_all_files'), 'add'
+
+  %div
+    %table.index
+      %thead
+        %tr
+          %th
+            = sort_link @search, :file_name, t('file_name')
+          %th
+            = t('imported_at')
+          %th
+            = sort_link @search, :created_at, t('created_at')
+      %tbody
+        = render @collection
+
+    - if @collection.size == 0
+      = t('no_files')
+
+    = will_paginate(@collection, :previous_label => "&#171; #{t('previous')}", :next_label => "#{t('next')} &#187;")
+
+
+- content_for :sidebar do
+  .box
+    %h3
+      = t(:search)
+    = form_for [:admin_fulfillment, @search] do |f|
+      - locals = {:f => f}
+      = hook :admin_fulfillment_asn_files_index_search, locals do
+        %label
+          = t('date_range')
+
+        .yui-g.date-range-filter
+          .yui-u.sub-field.first
+            = f.spree_date_picker :created_at_greater_than
+            %label.sub
+              = t("start")
+
+          .yui-u.sub-field
+            = f.spree_date_picker :created_at_less_than
+            %label
+              = t("stop")
+
+      = hook :admin_fulfillment_asn_files_index_search_buttons, locals do
+        %p
+          = button t("search")
