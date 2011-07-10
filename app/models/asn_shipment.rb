@@ -6,16 +6,25 @@ class AsnShipment < ActiveRecord::Base
   belongs_to :order
 
   def self.spec(d)
-    d.poa_line_item(:singular => false) do |l|
-      l.trap {|line| line[0,2] == '40' }
+    d.asn_shipment do |l|
+      l.trap {|line| line[0,2] == 'OR' }
       l.template :asn_defaults
-      l.line_item_po_number 10
-      l.spacer 12
-      l.line_item_item_number 20
+      l.spacer 8
+      l.order_status_code 2
+      l.order_subtotal 8
+      l.spacer 8
+      l.spacer 8
+      l.spacer 8
+      l.order_discount_amount 8
+      l.sales_tax 8
+      l.shipping_and_handling 8
+      l.order_total 8
+      l.freight_charge 8
       l.spacer 3
-      l.spacer 3
-      l.poa_status 2
-      l.dc_code 1
+      l.total_item_detail_count 4
+      l.shipment_date 8
+      l.consumer_po_number 22
+      l.spacer 56
     end
   end
 

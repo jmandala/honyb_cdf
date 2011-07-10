@@ -7,11 +7,6 @@
 
 %h2 #{@asn_file.file_name}
 
-%div
-  %legend
-    = t 'asn_type'
-  #{@asn_file.asn_type.description}
-
 %p Created at #{@asn_file.created_at.strftime("%m-%d-%y %h:%M")}
 %div
   Imported at

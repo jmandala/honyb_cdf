@@ -1,4 +1,4 @@
-class Admin::Fulfillment::PoaFilesController < Admin::Fulfillment::ImportController
+class Admin::Fulfillment::AsnFilesController < Admin::Fulfillment::ImportController
 
 
 
