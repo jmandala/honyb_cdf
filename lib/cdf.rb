@@ -6,6 +6,11 @@ Dir.glob(File.join(File.dirname(__FILE__), "ext/**/*.rb")) do |c|
   Rails.env.production? ? require(c) : load(c)
 end
 
+# include the ext
+Dir.glob(File.join(File.dirname(__FILE__), "fixed_width/**/*.rb")) do |c|
+  Rails.env.production? ? require(c) : load(c)
+end
+
 module Cdf
   class Engine < Rails::Engine
 

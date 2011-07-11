@@ -10,7 +10,7 @@
 %div
   %legend
     = t 'poa_type'
-  #{@poa_file.poa_type.description}
+  #{@poa_file.poa_type.try(:description)}
 
 %p Created at #{@poa_file.created_at.strftime("%m-%d-%y %h:%M")}
 %div
