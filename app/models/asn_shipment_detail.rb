@@ -5,7 +5,10 @@ class AsnShipmentDetail < ActiveRecord::Base
   belongs_to :line_item
   belongs_to :order
   belongs_to :asn_file
-  belongs_to :product
+  has_one :product, :through => :line_item
+  belongs_to :asn_order_status_code
+  belongs_to :asn_shipping_method_code
+  belongs_to :dc_code
 
   def self.spec(d)
     d.asn_shipment_detail do |l|
@@ -35,13 +38,22 @@ class AsnShipmentDetail < ActiveRecord::Base
   end
 
   def before_populate(data)
-    poa_status = PoaStatus.find_by_code(data[:poa_status])
-    data[:poa_status_id] = poa_status.id unless poa_status.nil?
+    status = AsnOrderStatus.find_by_code(data[:item_detail_status_code])
+    data[:asn_order_status_id] = status.id unless status.nil?
 
-    dc_code = DcCode.find_by_poa_dc_code(data[:dc_code])
+    slash_code = AsnSlashCode.find_by_code(data[:shipping_method_or_slash_reason_code])
+    data[:asn_slash_code_id] = slash_code.id unless slash_code.nil?
+
+    shipping_method_code = AsnSlashCode.find_by_code(data[:shipping_method_or_slash_reason_code])
+    data[:asn_slash_code_id] = slash_code.id unless slash_code.nil?
+
+    order = Order.find_by_number(data[:client_order_number])
+    data[:order_id] = order.id unless order.nil?
+
+    dc_code = DcCode.find_by_poa_dc_code(data[:shipping_warehouse_code])
     data[:dc_code_id] = dc_code.id unless dc_code.nil?
 
-    line_item = LineItem.find_by_id(data[:line_item_po_number])
+    line_item = LineItem.find_by_id(data[:line_item_id_number])
     data[:line_item_id] = line_item.id unless line_item.nil?
   end
 

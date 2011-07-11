@@ -1,5 +1,8 @@
 LineItem.class_eval do
 
+  has_many :asn_shipping_details, :dependent => :restrict
+  has_many :poa_line_items, :dependent => :restrict
+
   def gift_wrap?
     order.gift_wrap?
   end

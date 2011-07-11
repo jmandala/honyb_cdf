@@ -49,6 +49,10 @@ class CdfConfig
     File.join(self.translation_files, 'DCCodes CDFL.txt')
   end
 
+  def self.states_file
+    File.join(self.translation_files, 'State.txt')
+  end
+
   private
 
   def self.this_year

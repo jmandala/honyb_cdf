@@ -29,14 +29,10 @@ class AsnShipment < ActiveRecord::Base
   end
 
   def before_populate(data)
-    poa_status = PoaStatus.find_by_code(data[:poa_status])
-    data[:poa_status_id] = poa_status.id unless poa_status.nil?
+    status = AsnOrderStatus.find_by_code(data[:order_status_code])
+    data[:asn_order_status_id] = status.id unless status.nil?
 
-    dc_code = DcCode.find_by_poa_dc_code(data[:dc_code])
-    data[:dc_code_id] = dc_code.id unless dc_code.nil?
-
-    line_item = LineItem.find_by_id(data[:line_item_po_number])
-    data[:line_item_id] = line_item.id unless line_item.nil?
+    order = Order.find_by_number(data[:client_order_number])
+    data[:order_id] = order.id unless order.nil?
   end
-
 end
