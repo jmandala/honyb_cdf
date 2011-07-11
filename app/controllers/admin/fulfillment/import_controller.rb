@@ -26,6 +26,8 @@ class Admin::Fulfillment::ImportController < Admin::ResourceController
       flash[:notice] = "Imported #{@object.file_name}."
     rescue Exception => e
       flash[:error] = "Failed to import #{@object.file_name}. #{e.message}"
+      logger.error e.backtrace
+      raise e
     end
 
     respond_with(@object) do |format|

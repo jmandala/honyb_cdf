@@ -1,6 +1,6 @@
 class AsnShipmentDetail < ActiveRecord::Base
   include Updateable
-  extend PoaRecord
+  extend AsnRecord
 
   belongs_to :line_item
   belongs_to :order
@@ -45,7 +45,7 @@ class AsnShipmentDetail < ActiveRecord::Base
     data[:asn_slash_code_id] = slash_code.id unless slash_code.nil?
 
     shipping_method_code = AsnSlashCode.find_by_code(data[:shipping_method_or_slash_reason_code])
-    data[:asn_slash_code_id] = slash_code.id unless slash_code.nil?
+    data[:asn_shipping_code_id] = shipping_method_code.id unless slash_code.nil?
 
     order = Order.find_by_number(data[:client_order_number])
     data[:order_id] = order.id unless order.nil?

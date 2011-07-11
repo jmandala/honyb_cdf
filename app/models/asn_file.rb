@@ -21,18 +21,15 @@ class AsnFile < ActiveRecord::Base
 
 
   def populate_file_header(p)
-    header = p[:header].first
-    header[:poa_type_id] = PoaType.find_by_code(header[:poa_type]).try(:id)
-    po_file = PoFile.find_by_file_name(p[:file_name])
-    update_from_hash header, :excludes => [:file_name]
-    logger.warn "PO File could not be found with name: '#{p[:file_name]}'" if po_file.nil?
+    update_from_hash p[:header].first
   end
 
   def import
     p = parsed
 
     populate_file_header(p)
-    PoaOrderHeader.populate(p, self)
+    AsnShipment.populate(p, self)
+    AsnShipmentDetail.populate(p, self)
 
     self.imported_at = Time.now
     save!

@@ -1,6 +1,6 @@
 class AsnShipment < ActiveRecord::Base
   include Updateable
-  extend PoaRecord
+  extend AsnRecord
 
   belongs_to :asn_file
   belongs_to :order
