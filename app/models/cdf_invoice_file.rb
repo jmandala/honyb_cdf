@@ -1,28 +1,37 @@
-class AsnFile < ActiveRecord::Base
+class CdfInvoiceFile < ActiveRecord::Base
   include Updateable
 
-  has_many :orders, :through => :asn_shipments
-  has_many :asn_shipments, :dependent => :destroy
-  has_many :asn_shipment_details, :dependent => :destroy
+  has_many :orders, :through => :cdf_invoice_detail_totals
+  has_many :cdf_invoice_detail_totals
 
-  FixedWidth.define :asn_file do |d|
-    d.template :asn_defaults do |t|
+  FixedWidth.define :cdf_invoice_file do |d|
+    d.template :cdf_invoice_defaults do |t|
       t.record_code 2
-      t.client_order_id 22
+      t.sequence 5
+      t.invoice_number 8
     end
 
     d.header(:align => :left) do |h|
-      h.trap { |line| line[0, 2] == 'CR' }
+      h.trap { |line| line[0, 2] == '01' }
       h.record_code 2
-      h.company_account_id_number 10
-      h.total_order_count 8
-      h.file_version_number 10
-      h.spacer 170
+      h.sequence 5
+      h.ingram_san 12
+      h.file_source 13
+      h.creation_date 6
+      h.file_name 22
+      h.spacer 20
     end
 
-    AsnShipment.spec d
-    AsnShipmentDetail.spec d
+    CdfInvoiceHeader.spec d
+    CdfInvoiceDetailTotal.spec d
+    CdfInvoiceIsbnDetail.spec d
+    CdfInvoiceEanDetail.spec d
+    CdfInvoiceFreightAndFee.spec d
+    CdfInvoiceTotal.spec d
+    CdfInvoiceTrailer.spec d
+    CdfInvoiceFileTrailer.spec d
   end
+
 
     # connect to remote server
     # retrieve all files
@@ -34,8 +43,9 @@ class AsnFile < ActiveRecord::Base
 
     # Read the file data and build the record
   def parsed
-    FixedWidth.parse(File.new(path), :asn_file)
+    FixedWidth.parse(File.new(path), :cdf_invoice_file)
   end
+
 
   def populate_file_header(p)
     update_from_hash p[:header].first
@@ -43,11 +53,7 @@ class AsnFile < ActiveRecord::Base
 
   def import
     p = parsed
-
     populate_file_header(p)
-    AsnShipment.populate(p, self)
-    AsnShipmentDetail.populate(p, self)
-
     self.imported_at = Time.now
     save!
   end
@@ -69,5 +75,6 @@ class AsnFile < ActiveRecord::Base
     end
     @data
   end
+
 
 end

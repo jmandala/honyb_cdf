@@ -12,6 +12,6 @@ module CdfTable
     t.string :sequence, :limit => 5
     t.integer :invoice_number
     t.timestamps
-
+    t.references :cdf_invoice_file
   end
 end

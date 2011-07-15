@@ -16,7 +16,6 @@ Dir.glob(CdfConfig::current_data_lib_in + "/*.pbs").each do |f|
   AsnFile.create(:file_name => file_name) unless AsnFile.find_by_file_name(file_name)
 end
 
-
 ### Create PO Types ###
 PoType.find_or_create_by_code(0,
                               :name => 'Purchase Order',

@@ -36,7 +36,6 @@ class CdfConfig
     self.data_lib_in_root self.this_year
   end
 
-
   def self.po_status_file
     File.join(self.translation_files, 'POStatus Vers 03.txt')
   end

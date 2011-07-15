@@ -7,6 +7,50 @@ class PoaFile < ActiveRecord::Base
   belongs_to :po_file
   has_many :orders, :through => :poa_order_headers
 
+  FixedWidth.define :poa_file do |d|
+    d.template :poa_defaults do |t|
+      t.record_code 2
+      t.sequence_number 5
+    end
+
+    d.template :poa_defaults_plus do |t|
+      t.record_code 2
+      t.sequence_number 5
+      t.po_number 22
+    end
+
+    d.header(:align => :left) do |h|
+      h.trap { |line| line[0, 2] == '02' }
+      h.template :poa_defaults
+      h.file_source_san 7
+      h.spacer 5
+      h.file_source_name 13
+      h.poa_creation_date 6
+      h.electronic_control_unit 5
+      h.file_name 17
+      h.format_version 3
+      h.destination_san 7
+      h.spacer 5
+      h.poa_type 1
+      h.spacer 4
+    end
+
+
+    PoaOrderHeader.spec d
+    PoaVendorRecord.spec d
+    PoaShipToName.spec d
+    PoaAddressLine.spec d
+    PoaCityStateZip.spec d
+    PoaLineItem.spec d
+    PoaAdditionalDetail.spec d
+    PoaLineItemTitleRecord.spec d
+    PoaLineItemPubRecord.spec d
+    PoaItemNumberPriceRecord.spec d
+    PoaOrderControlTotal.spec d
+    PoaFileControlTotal.spec d
+  end
+
+
     # connect to remote server
     # retrieve all files
     # save to data_lib
@@ -17,7 +61,6 @@ class PoaFile < ActiveRecord::Base
 
     # Read the file data and build the record
   def parsed
-    spec
     FixedWidth.parse(File.new(path), :poa_file)
   end
 
@@ -70,49 +113,5 @@ class PoaFile < ActiveRecord::Base
   end
 
 
-  def spec
-    FixedWidth.define :poa_file do |d|
-      d.template :poa_defaults do |t|
-        t.record_code 2
-        t.sequence_number 5
-      end
-
-      d.template :poa_defaults_plus do |t|
-        t.record_code 2
-        t.sequence_number 5
-        t.po_number 22
-      end
-
-      d.header(:align => :left) do |h|
-        h.trap { |line| line[0, 2] == '02' }
-        h.template :poa_defaults
-        h.file_source_san 7
-        h.spacer 5
-        h.file_source_name 13
-        h.poa_creation_date 6
-        h.electronic_control_unit 5
-        h.file_name 17
-        h.format_version 3
-        h.destination_san 7
-        h.spacer 5
-        h.poa_type 1
-        h.spacer 4
-      end
-
-
-      PoaOrderHeader.spec(d)
-      PoaVendorRecord.spec(d)
-      PoaShipToName.spec(d)
-      PoaAddressLine.spec(d)
-      PoaCityStateZip.spec(d)
-      PoaLineItem.spec(d)
-      PoaAdditionalDetail.spec(d)
-      PoaLineItemTitleRecord.spec(d)
-      PoaLineItemPubRecord.spec(d)
-      PoaItemNumberPriceRecord.spec(d)
-      PoaOrderControlTotal.spec(d)
-      PoaFileControlTotal.spec(d)
-    end
-  end
 
 end

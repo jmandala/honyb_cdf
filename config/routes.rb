@@ -32,6 +32,17 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :cdf_invoice_files do
+        collection do
+          delete :purge
+          post :load
+        end
+
+        member do
+          post :import
+        end
+      end
+
 
     end
 

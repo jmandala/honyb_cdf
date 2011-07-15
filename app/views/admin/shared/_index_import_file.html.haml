@@ -1,4 +1,4 @@
-= render :partial => 'admin/shared/fulfillment_sub_menu'
+= render 'admin/shared/fulfillment_sub_menu'
 
 %div.admin_buttons
   = form_tag(send("admin_fulfillment_#{type}_files_path")) do |f|
@@ -23,7 +23,8 @@
           %th
             = sort_link @search, :created_at, t('created_at')
       %tbody
-        = render @collection
+        - for import_file in @collection do
+          = render 'admin/shared/import_file', :import_file => import_file, :type => type
 
     - if @collection.size == 0
       = t('no_files')
