@@ -1,4 +1,4 @@
-= render :partial => 'admin/shared/order_tabs', :locals => {:current => "Fulfillment"}
+= render 'admin/shared/order_tabs', :current => "Fulfillment"
 
 %h2 #{t("fulfillment")}
 
@@ -6,29 +6,17 @@
 %div
   - if @order.po_file
     %div
-      %strong File Name:
+      %strong #{t 'file_name'}:
       = link_to @order.po_file.file_name, admin_fulfillment_po_file_path(@order.po_file)
     %div
-      %strong Date:
+      %strong #{t 'date'}:
       = @order.po_file.created_at.strftime("%m-%d-%y %H:%M")
   - else
     &mdash;
 
-%h3 #{@order.poa_files.count} #{t("poa_files")}
-%table
-  %thead
-    %tr
-      %th
-        = t 'file_name'
-      %th
-        = t 'imported_at'
-  %tbody
-  - for poa_file in @order.poa_files do
-    %tr
-      %td
-        = link_to poa_file.file_name, admin_fulfillment_poa_file_path(poa_file)
-      %td
-        = time_ago_in_words(poa_file.imported_at)
+= render 'import_file', :type => "poa"
 
-%h3 #{t("asn_files")}
-%div   &mdash;
+= render 'import_file', :type => "asn"
+
+%h3 #{t 'asn_shipments'}
+= render 'asn_shipment', :asn_shipments => @order.asn_shipments

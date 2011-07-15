@@ -3,15 +3,15 @@
 %div.admin_buttons
   %div #{button_link_to t('back'), admin_fulfillment_asn_files_path, :icon => '16x16/8'}
 
-%h1 asn Files
+%h1 #{t 'asn_files'}
 
 %h2 #{@asn_file.file_name}
 
-%p Created at #{@asn_file.created_at.strftime("%m-%d-%y %h:%M")}
+%p #{t 'created_at'} #{@asn_file.created_at.strftime("%m-%d-%y %H:%M")}
 %div
-  Imported at
+  #{t 'imported_at'}
   - if @asn_file.imported_at
-    #{@asn_file.created_at.strftime("%m-%d-%y %h:%M")}
+    #{@asn_file.created_at.strftime("%m-%d-%y %H:%M")}
     %div
       = link_to_with_icon 'add', t('import_now'), import_admin_fulfillment_asn_file_path(@asn_file), method: :post
   - else
@@ -22,10 +22,10 @@
     = t('file_path')
   = @asn_file.path
 
-%h2 Parsed
+%h2 #{t 'parsed'}
 %pre #{@asn_file.parsed.to_yaml}
 
-%h2 Contents
+%h2 #{t 'contents'}
 %div.contents
   - if @asn_file.data
     %pre #{@asn_file.data}
@@ -35,12 +35,12 @@
 - content_for :sidebar do
   .box
     %h3
-      #{@asn_file.orders.count} Orders
+      #{@asn_file.orders.count} #{t 'orders'}
     %table
       %thead
         %tr
-          %th ID
-          %th Completed Date
+          %th #{t 'id'}
+          %th #{t 'completed_date'}
       %tbody
       - for order in @asn_file.orders do
         %tr

@@ -3,18 +3,18 @@
 %div.admin_buttons
   %div #{button_link_to t('back'), admin_fulfillment_po_files_path, :icon => '16x16/8'}
 
-%h1 PO Files
+%h1 #{t 'po_files'}
 
 %h2 #{@po_file.file_name}
 
-%p Created at #{@po_file.created_at.strftime("%m-%d-%y %h:%M")}
+%p #{t 'created_at'} #{@po_file.created_at.strftime("%m-%d-%y %h:%M")}
 %div.field_pair
   %legend
     = t('file_path')
   = @po_file.path
 
 
-%h2 Contents
+%h2 #{t 'contents'}
 %div.contents
   - if @po_file.data
     %pre #{@po_file.data}
@@ -24,15 +24,15 @@
 - content_for :sidebar do
   .box
     %h3
-      #{@po_file.poa_files.count} POA Files
+      #{@po_file.poa_files.count} #{t 'poa_files'}
       
     %h3
-      #{@po_file.orders.count} Orders
+      #{@po_file.orders.count} #{t 'orders'}
     %table
       %thead
         %tr
-          %th ID
-          %th Completed Date
+          %th #{t 'id'}
+          %th #{t 'completed_date'}
       %tbody
       - for order in @po_file.orders do
         %tr

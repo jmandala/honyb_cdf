@@ -4,6 +4,7 @@ class AsnShipment < ActiveRecord::Base
 
   belongs_to :asn_file
   belongs_to :order
+  belongs_to :asn_order_status
 
   def self.spec(d)
     d.asn_shipment do |l|

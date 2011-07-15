@@ -1,0 +1,32 @@
+%table
+  %thead
+    %tr
+      %th #{t 'file_name'}
+      %th #{t 'status'}
+      %th #{t 'freight_charge'}
+      %th #{t 'amount'}
+      %th #{t 'subtotal'}
+      %th #{t 'total'}
+      %th #{t 'sales_tax'}
+      %th #{t 'ship_date'}
+      %th #{t 'item_count'}
+      %th #{t 'shipping_and_handling'}
+  %tbody
+    - for asn_shipment in asn_shipments do
+      %tr
+        %td #{asn_shipment.asn_file.file_name}
+        %td #{asn_shipment.asn_order_status.description}
+        %td
+          = number_to_currency asn_shipment.freight_charge
+        %td
+          = number_to_currency asn_shipment.order_discount_amount
+        %td 
+          = number_to_currency asn_shipment.order_subtotal
+        %td
+          = number_to_currency asn_shipment.order_total
+        %td
+          = number_to_currency asn_shipment.sales_tax
+        %td #{asn_shipment.shipment_date.strftime("%m/%d/%Y")}
+        %td #{asn_shipment.total_item_detail_count}
+        %td
+          = number_to_currency asn_shipment.shipping_and_handling

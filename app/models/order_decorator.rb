@@ -3,6 +3,9 @@ Order.class_eval do
   belongs_to :po_file
   has_many :poa_order_headers, :dependent => :restrict
   has_many :poa_files, :through => :poa_order_headers
+  has_many :asn_shipments
+  has_many :asn_shipment_details
+  has_many :asn_files, :through => :asn_shipments
 
   def as_cdf(start_sequence = 1)
     Records::Po::Record.new(self, start_sequence)

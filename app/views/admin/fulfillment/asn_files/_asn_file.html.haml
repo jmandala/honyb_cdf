@@ -4,9 +4,9 @@
   %td
     - if asn_file.imported_at
       = time_ago_in_words asn_file.imported_at
-      ago
+      #{t 'ago'}
     - else
       = link_to_with_icon 'add', t('import_now'), import_admin_fulfillment_asn_file_path(asn_file), method: :post
   %td
     = time_ago_in_words asn_file.created_at
-    ago
+    #{t 'ago'}
