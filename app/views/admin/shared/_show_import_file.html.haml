@@ -12,11 +12,14 @@
   #{t 'imported_at'}
   - if import_file.imported_at
     #{import_file.created_at.strftime("%m-%d-%y %H:%M")}
-    %div
-      = link_to_with_icon 'add', t('import_now'), send("import_admin_fulfillment_#{type}_file_path", import_file), method: :post
   - else
     &mdash;
-    
+
+  = form_tag(send("import_admin_fulfillment_#{type}_file_path".to_sym, import_file)) do |f|
+    %div
+      = button t('import_now'), 'add'
+
+
 %div.field_pair
   %legend
     = t('file_path')
@@ -25,12 +28,12 @@
 %h2 #{t 'parsed'}
 %pre #{import_file.parsed.to_yaml}
 
-- #%h2 #{t 'contents'}
-- #%div.contents
-- #- if import_file.data
-- #  %pre #{import_file.data}
-- #- else
-- #  &mdash;
+%h2 #{t 'contents'}
+%div.contents
+- if import_file.data
+  %pre #{import_file.data}
+- else
+  &mdash;
 
 - content_for :sidebar do
   .box

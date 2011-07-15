@@ -1,5 +1,5 @@
 class PoaFile < ActiveRecord::Base
-  include Updateable
+  include Importable
 
   has_many :poa_order_headers, :dependent => :destroy, :autosave => true
   has_one :poa_file_control_total, :dependent => :destroy, :autosave => true
@@ -7,7 +7,20 @@ class PoaFile < ActiveRecord::Base
   belongs_to :po_file
   has_many :orders, :through => :poa_order_headers
 
-  FixedWidth.define :poa_file do |d|
+  collaborator PoaOrderHeader
+  collaborator PoaVendorRecord
+  collaborator PoaShipToName
+  collaborator PoaAddressLine
+  collaborator PoaCityStateZip
+  collaborator PoaLineItem
+  collaborator PoaAdditionalDetail
+  collaborator PoaLineItemTitleRecord
+  collaborator PoaLineItemPubRecord
+  collaborator PoaItemNumberPriceRecord
+  collaborator PoaOrderControlTotal
+  collaborator PoaFileControlTotal
+
+  import_format do |d|
     d.template :poa_defaults do |t|
       t.record_code 2
       t.sequence_number 5
@@ -35,35 +48,7 @@ class PoaFile < ActiveRecord::Base
       h.spacer 4
     end
 
-
-    PoaOrderHeader.spec d
-    PoaVendorRecord.spec d
-    PoaShipToName.spec d
-    PoaAddressLine.spec d
-    PoaCityStateZip.spec d
-    PoaLineItem.spec d
-    PoaAdditionalDetail.spec d
-    PoaLineItemTitleRecord.spec d
-    PoaLineItemPubRecord.spec d
-    PoaItemNumberPriceRecord.spec d
-    PoaOrderControlTotal.spec d
-    PoaFileControlTotal.spec d
   end
-
-
-    # connect to remote server
-    # retrieve all files
-    # save to data_lib
-    # create records for each file
-  def self.download
-
-  end
-
-    # Read the file data and build the record
-  def parsed
-    FixedWidth.parse(File.new(path), :poa_file)
-  end
-
 
   def populate_file_header(p)
     header = p[:header].first
@@ -72,46 +57,6 @@ class PoaFile < ActiveRecord::Base
     update_from_hash header, :excludes => [:file_name]
     logger.warn "PO File could not be found with name: '#{p[:file_name]}'" if po_file.nil?
   end
-
-  def import
-    p = parsed
-
-    populate_file_header(p)
-    PoaOrderHeader.populate(p, self)
-    PoaVendorRecord.populate(p, self)
-    PoaShipToName.populate(p, self)
-    PoaAddressLine.populate(p, self)
-    PoaCityStateZip.populate(p, self)
-    PoaLineItem.populate(p, self)
-    PoaAdditionalDetail.populate(p, self)
-    PoaLineItemTitleRecord.populate(p, self)
-    PoaLineItemPubRecord.populate(p, self)
-    PoaItemNumberPriceRecord.populate(p, self)
-    PoaOrderControlTotal.populate(p, self)
-    PoaFileControlTotal.populate(p, self)
-
-    self.imported_at = Time.now
-    save!
-  end
-
-  def path
-    "#{CdfConfig::data_lib_in_root(created_at.strftime("%Y"))}/#{file_name}"
-  end
-
-  def data
-    raise ArgumentError, "File not found: #{path}" unless File.exists?(path)
-
-    return @data unless @data.nil? || @data.empty?
-
-    @data = ''
-    File.open(path, 'r') do |file|
-      while line = file.gets
-        @data << line
-      end
-    end
-    @data
-  end
-
 
 
 end

@@ -5,6 +5,11 @@
     %div
       = button t("download_#{type}_files"), 'add'
 
+  = form_tag(send("load_admin_fulfillment_#{type}_files_path")) do |f|
+    %div
+      = button t("load_#{type}_files"), 'add'
+
+
 %h1 #{t "#{type}_files"}
 
 = form_tag(send("admin_fulfillment_#{type}_files_path")) do |f|

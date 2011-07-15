@@ -1,6 +1,5 @@
 class Admin::Fulfillment::ImportController < Admin::ResourceController
 
-  
   def index
     params[:search] ||= {}
     @search = model_class.metasearch(params[:search], :distinct => true)
