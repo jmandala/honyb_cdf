@@ -5,12 +5,13 @@ class Admin::Fulfillment::CdfInvoiceFilesController < Admin::Fulfillment::Import
   # POST
   def load
     count = 0
-    Dir.glob(CdfConfig::current_data_lib_in + "/*.bin").each do |f|
+
+    model_class.files.each do |f|
       file_name = File.basename(f)
 
-      next if CdfInvoiceFile.find_by_file_name(file_name)
+      next if model_class.find_by_file_name(file_name)
 
-      CdfInvoiceFile.create(:file_name => file_name)
+      model_class.create(:file_name => file_name)
       count += 1
     end
 
@@ -20,8 +21,6 @@ class Admin::Fulfillment::CdfInvoiceFilesController < Admin::Fulfillment::Import
       format.html { redirect_to admin_fulfillment_cdf_invoice_files_path }
       format.js { render :layout => false }
     end
-
-
   end
 
 end

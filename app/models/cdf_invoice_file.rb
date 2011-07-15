@@ -13,6 +13,8 @@ class CdfInvoiceFile < ActiveRecord::Base
   collaborator CdfInvoiceTrailer
   collaborator CdfInvoiceFileTrailer
 
+  file_mask '/*.bin'
+
   import_format do |d|
     d.template :cdf_invoice_defaults do |t|
       t.record_code 2

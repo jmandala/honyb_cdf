@@ -60,6 +60,10 @@ module Importable
         self.model_name.i18n_key
       end
 
+      def self.file_mask(mask)
+        @@mask = mask
+      end
+
       def self.import_format
         FixedWidth.define definition_name do |d|
           yield d
@@ -68,7 +72,11 @@ module Importable
             klass.spec d
           end
         end
+      end
 
+      def self.files
+        Rails.logger.debug "FileMask: #{@@mask}"
+        Dir.glob(CdfConfig::current_data_lib_in + "/**/" + @@mask)
       end
     end
   end
