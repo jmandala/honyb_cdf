@@ -22,15 +22,15 @@
     = t('file_path')
   = import_file.path
 
-%h2 #{t 'parsed'}
-%pre #{import_file.parsed.to_yaml}
+- #%h2 #{t 'parsed'}
+- #%pre #{import_file.parsed.to_yaml}
 
-%h2 #{t 'contents'}
-%div.contents
-  - if import_file.data
-    %pre #{import_file.data}
-  - else
-    &mdash;
+- #%h2 #{t 'contents'}
+- #%div.contents
+- #- if import_file.data
+- #  %pre #{import_file.data}
+- #- else
+- #  &mdash;
 
 - content_for :sidebar do
   .box

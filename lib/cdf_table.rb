@@ -7,4 +7,11 @@ module CdfTable
     t.timestamps
   end
 
+  def default_inv_columns(t)
+    t.string :record_code, :limit => 2
+    t.string :sequence, :limit => 5
+    t.integer :invoice_number
+    t.timestamps
+
+  end
 end
