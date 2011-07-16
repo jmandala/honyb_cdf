@@ -22,7 +22,7 @@ class Admin::Fulfillment::ImportController < Admin::ResourceController
     # Import files
   def import
     begin
-    @object.import
+      @object.import
       flash[:notice] = "Imported #{@object.file_name}."
     rescue Exception => e
       flash[:error] = "Failed to import #{@object.file_name}. #{e.message}"
@@ -39,5 +39,28 @@ class Admin::Fulfillment::ImportController < Admin::ResourceController
 
   def location_after_save
     polymorphic_url(@object, :action => 'admin_fulfillment')
+  end
+
+    # Adds any files that are in the archive/in directory
+    # which are not yet added
+    # POST
+  def load
+    count = 0
+
+    model_class.files.each do |f|
+      file_name = File.basename(f)
+
+      next if model_class.find_by_file_name(file_name)
+
+      model_class.create(:file_name => file_name)
+      count += 1
+    end
+
+    flash[:notice] = "Loaded #{count} files."
+
+    respond_to do |format|
+      format.html { redirect_to send("admin_fulfillment_#{object_name}s_path") }
+      format.js { render :layout => false }
+    end
   end
 end

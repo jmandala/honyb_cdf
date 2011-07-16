@@ -20,6 +20,8 @@ class PoaFile < ActiveRecord::Base
   collaborator PoaOrderControlTotal
   collaborator PoaFileControlTotal
 
+  file_mask '/*.fbc'
+
   import_format do |d|
     d.template :poa_defaults do |t|
       t.record_code 2
