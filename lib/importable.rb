@@ -33,15 +33,17 @@ module Importable
     Rails.logger.debug p
 
     populate_file_header p
-
+    errors = []
     self.class.collaborators.each do |klass|
       Rails.logger.debug "importing #{klass.name}"
-      klass.populate p, self
-
+      err = klass.populate p, self
+      err.each {|e| errors << e}
     end
 
     self.imported_at = Time.now
     save!
+
+    errors
   end
 
 

@@ -33,7 +33,7 @@ class AsnShipment < ActiveRecord::Base
     status = AsnOrderStatus.find_by_code(data[:order_status_code])
     data[:asn_order_status_id] = status.id unless status.nil?
 
-    order = Order.find_by_number(data[:client_order_number])
+    order = Order.find_by_number(data[:client_order_id])
     data[:order_id] = order.id unless order.nil?
   end
 end

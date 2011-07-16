@@ -22,8 +22,23 @@ class Admin::Fulfillment::ImportController < Admin::ResourceController
     # Import files
   def import
     begin
-      @object.import
+      errors = @object.import
       flash[:notice] = "Imported #{@object.file_name}."
+      if !errors.empty?
+        @message = ""
+        errors.each do |e|
+          @message << e.message + ' '
+        end
+        flash[:error] = "#{errors.count} Errors occurred"
+
+        respond_with(@object) do |format|
+          format.html { redirect_to polymorphic_url([:admin, :fulfillment, object_name])
+ }
+          format.js { render :layout => false }
+        end
+        return
+
+      end
     rescue Exception => e
       flash[:error] = "Failed to import #{@object.file_name}. #{e.message}"
       logger.error e.backtrace

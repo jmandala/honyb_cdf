@@ -1,5 +1,15 @@
 = render :partial => 'admin/shared/fulfillment_sub_menu'
 
+
+- for order in Order.needs_po do
+  %div
+    = link_to order.number, admin_order_path(order)
+    = order.line_items.count
+    - for line_item in order.line_items do
+      %div
+        = line_item.variant.name
+    = order.completed_at
+
 %div.admin_buttons
   = form_tag(admin_fulfillment_po_files_path) do |f|
     %div

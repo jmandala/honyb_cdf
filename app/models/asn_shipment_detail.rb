@@ -47,7 +47,7 @@ class AsnShipmentDetail < ActiveRecord::Base
     shipping_method_code = AsnSlashCode.find_by_code(data[:shipping_method_or_slash_reason_code])
     data[:asn_shipping_code_id] = shipping_method_code.id unless slash_code.nil?
 
-    order = Order.find_by_number(data[:client_order_number])
+    order = Order.find_by_number(data[:client_order_id])
     data[:order_id] = order.id unless order.nil?
 
     dc_code = DcCode.find_by_poa_dc_code(data[:shipping_warehouse_code])
