@@ -9,15 +9,13 @@ Rails.application.routes.draw do
       resources :po_files do
         collection do
           delete :purge
-          post :load
-
         end
       end
 
       resources :poa_files do
         collection do
           delete :purge
-          post :load
+          post :load_files
 
         end
 
@@ -29,8 +27,7 @@ Rails.application.routes.draw do
       resources :asn_files do
         collection do
           delete :purge
-          post :load
-
+          post :load_files
         end
 
         member do
@@ -41,7 +38,7 @@ Rails.application.routes.draw do
       resources :cdf_invoice_files do
         collection do
           delete :purge
-          post :load
+          post :load_files
         end
 
         member do

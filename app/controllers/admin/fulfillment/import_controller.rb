@@ -44,7 +44,7 @@ class Admin::Fulfillment::ImportController < Admin::ResourceController
     # Adds any files that are in the archive/in directory
     # which are not yet added
     # POST
-  def load
+  def load_files
     count = 0
 
     model_class.files.each do |f|
