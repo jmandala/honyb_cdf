@@ -17,4 +17,9 @@ Gem::Specification.new do |s|
 
   s.add_dependency('spree_core', '>= 0.60.1')
   s.add_dependency('haml')
+  s.add_dependency('haml')
+  
+  s.add_dependency('webrat')
+  s.add_dependency('cucumber-rails')
+  s.add_dependency('rspec-rails')
 end

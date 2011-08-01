@@ -1,21 +1,5 @@
 require 'csv'
 
-Order.update_all('po_file_id = NULL', 'po_file_id IS NOT NULL')
-PoFile.all.each { |p| p.destroy }
-PoaFile.all.each { |p| p.destroy }
-
-### Create POA_Files for any records without them, in the Data_Lib ###
-Dir.glob(CdfConfig::current_data_lib_in + "/*.fbc").each do |f|
-  file_name = File.basename(f)
-  PoaFile.create(:file_name => file_name) unless PoaFile.find_by_file_name(file_name)
-end
-
-### Create ASN_Files for any records without them, in the Data_Lib ###
-Dir.glob(CdfConfig::current_data_lib_in + "/*.pbs").each do |f|
-  file_name = File.basename(f)
-  AsnFile.create(:file_name => file_name) unless AsnFile.find_by_file_name(file_name)
-end
-
 ### Create PO Types ###
 PoType.find_or_create_by_code(0,
                               :name => 'Purchase Order',
