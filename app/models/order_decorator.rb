@@ -7,6 +7,13 @@ Order.class_eval do
   has_many :asn_shipment_details
   has_many :asn_files, :through => :asn_shipments
 
+  register_update_hook :update_auth_before_ship
+
+  def update_auth_before_ship
+    # todo: update authorized_total
+  end
+
+
   def as_cdf(start_sequence = 1)
     Records::Po::Record.new(self, start_sequence)
   end
