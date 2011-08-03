@@ -8,19 +8,9 @@ class PoFile < ActiveRecord::Base
   after_create :init_file_name
   before_destroy :delete_file
 
-  def save_data!
-    load_data
-    FileUtils.mkdir_p(File.dirname(path))
-    File.open(path, 'w') { |f| f.write @data }
-    save!
-  end
-
-  def path
-    "#{CdfConfig::data_lib_out_root(created_at.strftime("%Y"))}/#{file_name}"
-  end
 
   def load_file
-    raise ArgumentError, "File not found: #{path}"  unless File.exists?(path)
+    raise ArgumentError, "File not found: #{path}" unless File.exists?(path)
 
     @data = ''
     File.open(path, 'r') do |file|
@@ -58,23 +48,28 @@ class PoFile < ActiveRecord::Base
     po_file
   end
 
-  private
+  def save_data!
+    load_data
+    FileUtils.mkdir_p(File.dirname(path))
+    File.open(path, 'w') { |f| f.write @data }
+    save!
+  end
 
   def delete_file
     if File.exists? path
-    FileUtils.rm path
+      FileUtils.rm path
     end
-    
+
   end
 
   def init_file_name
-    self.file_name = prefix + sprintf("%011d", id) + ext
+    self.file_name = prefix + created_at.strftime("%y%m%d%H%M%S") + ext
     save!
   end
 
 
   def prefix
-    "honyb-"
+    "hb-"
   end
 
   def ext
@@ -114,6 +109,10 @@ class PoFile < ActiveRecord::Base
       count[i.to_s] = 0
     end
     count
+  end
+
+  def path
+    "#{CdfConfig::data_lib_out_root(created_at.strftime("%Y"))}/#{file_name}"
   end
 
 end

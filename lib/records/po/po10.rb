@@ -22,7 +22,7 @@ module Records
       end
 
       def ingram_bill_to_account_number
-        "1234567"
+        Spree::Config[:cdf_bill_to_account]
       end
 
       def order_date
@@ -37,26 +37,32 @@ module Records
         cdf_date(@order.completed_at + 3.months)
       end
 
-        # N = do not backorder
-        # B = Backorder only Not Yet Released (NYR) items.
-        # Y = Backorder all items that are not available to ship
-        # Blank = default
+      # N = do not backorder
+      # B = Backorder only Not Yet Released (NYR) items.
+      # Y = Backorder all items that are not available to ship
+      # Blank = default
+      BACKORDER_CODE = {
+          :do_not_backorder => 'N',
+          :backorder_only_not_yet_released => 'B',
+          :backorder_all => 'Y'
+      }
+
       def backorder_code
-        "N" # do not backorder
+        BACKORDER_CODE[:do_not_backorder]
       end
 
-        # DDC FulFillment or "Split Line Ordering"
-        # Must be "N"
+      # DDC FulFillment or "Split Line Ordering"
+      # Must be "N"
       def ddc_fulfillment
         "N"
       end
 
-        # Must be "Y", indicates presence of records 30 through 38
+      # Must be "Y", indicates presence of records 30 through 38
       def ship_to_indicator
         "Y"
       end
 
-        # Must be "Y"
+      # Must be "Y"
       def bill_to_indicator
         "Y"
       end
