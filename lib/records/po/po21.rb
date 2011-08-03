@@ -15,6 +15,23 @@ module Records
           :test_purchase_order => '8'
       }
 
+
+      # The POA Type allows you to define the amount of detail that will be returned in the POA.
+      # It is specified in the PO file and returned in the POA File Header to indicate which records
+      # will be included in the POA file. One of the following codes should be entered in the PO Record 21, position 44
+      # 1 = Full Acknowledgement -- all records
+      # 2 = no 42 and 43 records
+      # 3 = no 44 records
+      # 4 = no 42, 43, or 44 records
+      # 5 = Exception Acknowledgement -- report only the lines where an exception has occurred
+      POA_TYPE = {
+          :full_acknowledgement => '1',
+          :no_42_and_43_records => '2',
+          :no_44_records => '3',
+          :no_42_43_or_44_records => '4',
+          :exception_acknowledgement => '5'
+      }
+
       # EL = Multi-shipment: Allow immediate shipment of all in-stockt itles
       # for every warehouse shopped. Backorders will allocate AND SHIP as stock
       # becomes available. On the cancel date unallocated lines will be cancelled.
@@ -55,15 +72,15 @@ module Records
 
 
       def ingram_ship_to_account_number
-        Spree::Config[:cdf_ship_to_account]
+        Spree::Config[:cdf_ship_to_account].ljust_trim 7
       end
 
       def po_type
-        PO_TYPE[:test_purchase_order]
+        PO_TYPE[:test_purchase_order].ljust_trim 1
       end
 
       def order_type
-        ORDER_TYPE[:release_when_full]
+        ORDER_TYPE[:release_when_full].ljust_trim 2
       end
 
       # Distribution Center code. Blank to use default
@@ -76,28 +93,12 @@ module Records
         "Y"
       end
 
-      # The POA Type allows you to define the amount of detail that will be returned in the POA.
-      # It is specified in the PO file and returned in the POA File Header to indicate which records
-      # will be included in the POA file. One of the following codes should be entered in the PO Record 21, position 44
-      # 1 = Full Acknowledgement -- all records
-      # 2 = no 42 and 43 records
-      # 3 = no 44 records
-      # 4 = no 42, 43, or 44 records
-      # 5 = Exception Acknowledgement -- report only the lines where an exception has occurred
-      POA_TYPE = {
-          :full_acknowledgement => '1',
-          :no_42_and_43_records => '2',
-          :no_44_records => '3',
-          :no_42_43_or_44_records => '4',
-          :exception_acknowledgement => '5'
-      }
-
       def poa_type
-        POA_TYPE[:full_acknowledgement]
+        POA_TYPE[:full_acknowledgement].ljust_trim 1
       end
 
       def ship_to_password
-        Spree::Config[:cdf_ship_to_password]
+        Spree::Config[:cdf_ship_to_password].ljust_trim 8
       end
 
       # Address   Shipping Method     Big BISAC Code Sent     ASN Allow PO Box

@@ -1,3 +1,5 @@
+require 'net/ftp'
+
 class PoFile < ActiveRecord::Base
   has_many :orders, :autosave => true, :dependent => :nullify, :order => 'completed_at asc'
 
@@ -115,4 +117,13 @@ class PoFile < ActiveRecord::Base
     "#{CdfConfig::data_lib_out_root(created_at.strftime("%Y"))}/#{file_name}"
   end
 
+  def put
+    raise ArgumentError, "File not found: #{path}" unless File.exists?(path)
+
+    Net::FTP.open(Spree::Config[:cdf_ftp_server]) do |ftp|
+      ftp.login Spree::Config[:cdf_ftp_user], Spree::Config[:cdf_ftp_password]
+      ftp.chdir 'incoming'
+      ftp.put File.new(path, 'r')
+    end
+  end
 end
