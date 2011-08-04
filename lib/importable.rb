@@ -23,7 +23,7 @@ module Importable
     update_from_hash p[:header].first
   end
 
-    # Read the file data and build the record
+  # Read the file data and build the record
   def parsed
     FixedWidth.parse(File.new(path), self.class.definition_name)
   end
@@ -37,7 +37,7 @@ module Importable
     self.class.collaborators.each do |klass|
       Rails.logger.debug "importing #{klass.name}"
       err = klass.populate p, self
-      err.each {|e| errors << e}
+      err.each { |e| errors << e }
     end
 
     self.imported_at = Time.now
@@ -45,7 +45,6 @@ module Importable
 
     errors
   end
-
 
   def self.included(base)
     base.class_eval do
@@ -80,6 +79,66 @@ module Importable
         Rails.logger.debug "FileMask: #{@@mask}"
         Dir.glob(CdfConfig::current_data_lib_in + "/**/" + @@mask)
       end
+
+      def self.name_from_path(file)
+        file.split[file.split.length-1]
+      end
+
+      # Returns an array of remote file names including only files with an extension of @@ext
+      def self.remote_files
+        client = CdfFtpClient.new
+        files = []
+        client.connect do |ftp|
+          files = remote_file_list ftp
+        end
+        files
+      end
+
+      def self.remote_file_list(ftp)
+        ftp.chdir 'outgoing'
+        return files_from_dir_list(ftp.list("*#{@@ext}"))
+      end
+
+      # Returns a list of files that were downloaded
+      def self.download
+        CdfConfig::ensure_path CdfConfig::current_data_lib_in
+
+        files = []
+        CdfFtpClient.new.connect do |ftp|
+          remote_file_list(ftp).each do |file|
+            local_path = create_path file
+
+            ftp.gettextfile(file, local_path)
+
+            # to do: Error if file already exists
+            files << self.find_or_create_by_file_name(file)
+          end
+        end
+
+        logger.debug 'done'
+
+        files
+      end
+
+      def self.files_from_dir_list(list)
+        files = []
+        list.each do |file|
+          file_name = self.name_from_path(file)
+          if file_name =~ /#{@@ext}$/
+            files << file_name
+          end
+        end
+        return files
+      end
+
+      def self.create_path(file_name)
+        File.join CdfConfig::current_data_lib_in, file_name
+      end
+
+      def self.needs_import
+        where("#{self.table_name}.imported_at IS NULL")
+      end
+
     end
   end
 end
