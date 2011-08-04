@@ -70,19 +70,26 @@ class PoaFile < ActiveRecord::Base
   end
 
   def self.remote_files
+    client = CdfFtpClient.new
     files = []
-    self.connect do |ftp|
+    client.connect do |ftp|
       ftp.chdir 'outgoing'
       files = self.poa_files(ftp)
     end
     files
   end
 
+  def self.name_from_path(file)
+    file.split[file.split.length-1]
+  end
+
   def self.poa_files(ftp)
     files = []
+    
 
-    ftp.list do |file|
-      file_name = file.split[file.split.length-1]
+    ftp.list("*#{@@ext}").each do |file|
+      logger.debug file
+      file_name = self.name_from_path(file)
       if file_name =~ /#{@@ext}$/
         files << file_name
       end
