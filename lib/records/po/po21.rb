@@ -15,7 +15,6 @@ module Records
           :test_purchase_order => '8'
       }
 
-
       # The POA Type allows you to define the amount of detail that will be returned in the POA.
       # It is specified in the PO file and returned in the POA File Header to indicate which records
       # will be included in the POA file. One of the following codes should be entered in the PO Record 21, position 44
@@ -76,7 +75,14 @@ module Records
       end
 
       def po_type
-        PO_TYPE[:test_purchase_order].ljust_trim 1
+        Spree::Config[:cdf_test_mode] ||= 'false'
+
+        if Spree::Config[:cdf_test_mode] == 'true'
+          PO_TYPE[:test_purchase_order].ljust_trim 1
+        else
+          PO_TYPE[:purchase_order].ljust_trim 1
+        end
+
       end
 
       def order_type

@@ -7,7 +7,6 @@ class PoaOrderControlTotal < ActiveRecord::Base
   def self.spec(d)
     d.poa_order_control_total do |l|
       l.trap do |line|
-        puts "The line: #{line}"
         line[0, 2] == '59'
       end
       l.template :poa_defaults_plus

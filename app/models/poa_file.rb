@@ -140,11 +140,25 @@ class PoaFile < ActiveRecord::Base
     where("poa_files.imported_at IS NULL")
   end
 
-  def self.import
+  def self.import(opt = :log_error)
+    imported = []
     self.needs_import.select do |importable|
-      importable.import
-      importable
+      begin
+        importable.import
+      rescue StandardError => e
+        logger.error "Failed to import: #{importable.file_name}: #{importable.data}"
+        logger.error e
+
+        raise e if opt == :die_on_error
+      end
+
+      imported << importable
     end
+    imported
+  end
+
+  def self.import!
+    self.import(:die_on_error)
   end
 
 end
