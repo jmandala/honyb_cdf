@@ -14,7 +14,7 @@ module Records
       end
 
       def po_number
-        sprintf("%22s", @order.number)
+        @order.number.ljust_trim 22
       end
 
       def line_item

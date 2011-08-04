@@ -79,11 +79,13 @@ module Records
           Spree::Config.set({:cdf_test_mode => 'false'})
         end
 
+        # Never send test orders while in TEST_MODE
         if Spree::Config.get(:cdf_test_mode) == 'true'
-          PO_TYPE[:test_purchase_order].ljust_trim 1
-        else
-          PO_TYPE[:purchase_order].ljust_trim 1
+          return PO_TYPE[:purchase_order].ljust_trim(1)
         end
+
+        # todo: make a way to pass in the PO_TYPE
+        PO_TYPE[:purchase_order].ljust_trim 1
 
       end
 
