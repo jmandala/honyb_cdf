@@ -127,7 +127,7 @@ class PoFile < ActiveRecord::Base
     raise ArgumentError, "File not found: #{path}" unless File.exists?(path)
 
     Net::FTP.open(Spree::Config[:cdf_ftp_server]) do |ftp|
-      ftp.login Spree::Config[:cdf_ftp_user], Spree::Config[:cdf_ftp_password]
+      ftp.login Spree::Config.get(:cdf_ftp_user), Spree::Config.get(:cdf_ftp_password)
       ftp.chdir 'incoming'
       ftp.put File.new(path, 'r')
 
