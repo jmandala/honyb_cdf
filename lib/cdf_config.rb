@@ -52,6 +52,10 @@ class CdfConfig
     File.join(self.translation_files, 'State.txt')
   end
 
+  def self.ensure_path(path)
+    FileUtils.mkdir_p path
+  end
+
   private
 
   def self.this_year

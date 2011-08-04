@@ -53,7 +53,7 @@ Order.class_eval do
     order = self.find_by_number(po_number)
 
     raise ActiveRecord::RecordNotFound.new("No Order found with number: #{po_number}") if order.nil?
-    
+
     order
   end
 

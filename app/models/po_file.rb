@@ -1,10 +1,14 @@
 require 'net/ftp'
 
 class PoFile < ActiveRecord::Base
+
+  #noinspection RailsParamDefResolve
   has_many :orders, :autosave => true, :dependent => :nullify, :order => 'completed_at asc'
 
+  #noinspection RailsParamDefResolve
   has_many :poa_files, :dependent => :destroy, :order => 'created_at asc'
 
+  #noinspection RubyResolve
   attr_reader :data
 
   after_create :init_file_name
@@ -44,6 +48,8 @@ class PoFile < ActiveRecord::Base
   end
 
 
+  # Generates a new PoFile for every order that is ready for
+  # shipment
   def self.generate
     po_file = PoFile.new
     po_file.save_data!
@@ -124,6 +130,12 @@ class PoFile < ActiveRecord::Base
       ftp.login Spree::Config[:cdf_ftp_user], Spree::Config[:cdf_ftp_password]
       ftp.chdir 'incoming'
       ftp.put File.new(path, 'r')
+
+      matches = ftp.list.keep_if {|f| f =~ /(#{file_name})/}
+
+      if !matches
+        raise Error, "File #{file_name} was not found in FTP after it was put!"
+      end
     end
   end
 end

@@ -1,4 +1,8 @@
+#noinspection RailsParamDefResolve
+require 'net/ftp'
+
 class PoaFile < ActiveRecord::Base
+  #noinspection RubyResolve
   include Importable
 
   has_many :poa_order_headers, :dependent => :destroy, :autosave => true
@@ -20,7 +24,8 @@ class PoaFile < ActiveRecord::Base
   collaborator PoaOrderControlTotal
   collaborator PoaFileControlTotal
 
-  file_mask '/*.fbc'
+  @@ext = '.fbc'
+  file_mask "/*@@ext"
 
   import_format do |d|
     d.template :poa_defaults do |t|
@@ -60,5 +65,86 @@ class PoaFile < ActiveRecord::Base
     logger.warn "PO File could not be found with name: '#{p[:file_name]}'" if po_file.nil?
   end
 
+  def self.create_path(file_name)
+    File.join CdfConfig::current_data_lib_in, file_name
+  end
+
+  def self.remote_files
+    files = []
+    self.connect do |ftp|
+      ftp.chdir 'outgoing'
+      files = self.poa_files(ftp)
+    end
+    files
+  end
+
+  def self.poa_files(ftp)
+    files = []
+
+    ftp.list do |file|
+      file_name = file.split[file.split.length-1]
+      if file_name =~ /#{@@ext}$/
+        files << file_name
+      end
+    end
+    files
+  end
+
+  def self.retrieve_count
+    remote_files.size
+  end
+
+  def self.connect
+    if !block_given?
+      raise ArgumentError.new('Need to pass a block to self#connect')
+    end
+
+    Net::FTP.open(Spree::Config[:cdf_ftp_server]) do |ftp|
+      ftp.login Spree::Config[:cdf_ftp_user], Spree::Config[:cdf_ftp_password]
+
+      yield ftp
+
+    end
+
+  end
+
+  def self.retrieve
+    CdfConfig::ensure_path CdfConfig::current_data_lib_in
+
+    files = []
+    self.connect do |ftp|
+      ftp.chdir 'outgoing'
+
+      self.poa_files(ftp).each do |file|
+        logger.debug "Remote: #{file}"
+        file_name = file.split[file.split.length-1]
+        path = create_path file_name
+
+        logger.debug "Downloading #{file_name} -> #{path}"
+        ftp.gettextfile(file_name, path)
+        logger.debug 'Downloading complete'
+
+        # to do: Error if file already exists
+        files << self.find_or_create_by_file_name(file_name)
+        logger.debug 'done poafile create'
+      end
+      logger.debug 'done list'
+    end
+
+    logger.debug 'done'
+
+    files
+  end
+
+  def self.needs_import
+    where("poa_files.imported_at IS NULL")
+  end
+
+  def self.import
+    self.needs_import.select do |importable|
+      importable.import
+      importable
+    end
+  end
 
 end
