@@ -11,7 +11,7 @@ module Records
       def cdf_record
         cdf = super
         cdf << file_source_san
-        cdf << reserved(7)
+        cdf << reserved(5)
         cdf << file_source_name
         cdf << creation_date
         cdf << file_name
@@ -27,7 +27,7 @@ module Records
       end
 
       def file_source_name
-        "HonyB".ljust_trim 22
+        "HonyB".ljust_trim 13
       end
 
       def format_version

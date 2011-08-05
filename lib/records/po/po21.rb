@@ -60,13 +60,18 @@ module Records
         cdf << order_type
         cdf << dc_code
         cdf << reserved(1)
-        cdf << greenlight
-        cdf << po_type
+        cdf << green_light
+        cdf << reserved(1)
+        cdf << poa_type
         cdf << ship_to_password
         cdf << shipping_method
         cdf << reserved(1)
         cdf << allow_split_order_across_dc
         cdf << reserved(1)
+
+        raise Error.new('invalid length for record') if cdf.length != 80
+
+        cdf
       end
 
 
@@ -95,11 +100,11 @@ module Records
 
       # Distribution Center code. Blank to use default
       def dc_code
-        reserved 1
+        ' '
       end
 
       # "Y" or "N". Greenlight titles are usually low demand titles with a short-discount (less than 35%)
-      def greenlight
+      def green_light
         "Y"
       end
 

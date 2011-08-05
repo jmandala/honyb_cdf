@@ -65,6 +65,9 @@ class PoaFile < ActiveRecord::Base
     logger.warn "PO File could not be found with name: '#{p[:file_name]}'" if po_file.nil?
   end
 
+  def self.needs_import
+    where("poa_files.imported_at IS NULL")
+  end
 
   def self.import(opt = :log_error)
     imported = []
