@@ -112,7 +112,7 @@ module Importable
             # to do: Error if file already exists
             files << self.find_or_create_by_file_name(file)
 
-            ftp.rm file
+            ftp.delete file
 
           end
         end
