@@ -19,6 +19,9 @@ module Records
         cdf << reserved(6)
         cdf << reserved(1)
         cdf << reserved(5)
+
+        PoBase.ensure_length cdf
+
       end
 
       def ingram_bill_to_account_number

@@ -131,11 +131,12 @@ class PoFile < ActiveRecord::Base
       ftp.chdir 'incoming'
       ftp.put File.new(path, 'r')
 
-      matches = ftp.list.keep_if {|f| f =~ /(#{file_name})/}
+      matches = ftp.list.keep_if { |f| f =~ /(#{file_name})/ }
 
       if !matches
         raise Error, "File #{file_name} was not found in FTP after it was put!"
       end
     end
   end
+
 end

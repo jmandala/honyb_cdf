@@ -9,6 +9,9 @@ module Records
         cdf << total_line_items
         cdf << total_units_ordered
         cdf << reserved(26)
+
+        PoBase.ensure_length cdf
+
       end
 
       def total_purchase_order_records

@@ -12,6 +12,9 @@ module Records
         cdf << suppress_price_indicator
         cdf << order_level_gift_wrap
         cdf << reserved(30)
+
+        PoBase.ensure_length cdf
+
       end
 
       def gift_wrap_fee

@@ -10,6 +10,9 @@ module Records
         cdf << order_quantity
         cdf << clients_proprietary_item_number
         cdf << reserved(7)
+
+        PoBase.ensure_length cdf
+
       end
 
         # The list price or discounted price to the consumer used to recalculate

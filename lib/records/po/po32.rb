@@ -8,6 +8,9 @@ module Records
         cdf = super
         cdf << recipient_address_line
         cdf << reserved(16)
+
+        PoBase.ensure_length cdf
+
       end
 
       def recipient_address_line

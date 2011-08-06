@@ -11,7 +11,8 @@ module Records
         for i in 0..8 do
           cdf << count_format(i.to_s)
         end
-        cdf
+
+        PoBase.ensure_length cdf
       end
 
       def total_line_items

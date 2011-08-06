@@ -69,9 +69,7 @@ module Records
         cdf << allow_split_order_across_dc
         cdf << reserved(1)
 
-        raise Error.new('invalid length for record') if cdf.length != 80
-
-        cdf
+        PoBase.ensure_length cdf
       end
 
 

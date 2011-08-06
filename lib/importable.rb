@@ -107,11 +107,13 @@ module Importable
         CdfFtpClient.new.connect do |ftp|
           remote_file_list(ftp).each do |file|
             local_path = create_path file
-
             ftp.gettextfile(file, local_path)
-
+            
             # to do: Error if file already exists
             files << self.find_or_create_by_file_name(file)
+
+            ftp.rm file
+
           end
         end
 

@@ -9,6 +9,9 @@ module Records
         cdf << recipient_name
         cdf << reserved(15)
         cdf << address_validation
+
+        PoBase.ensure_length cdf
+        
       end
 
         # Allow Ingram to validate and scrub address information

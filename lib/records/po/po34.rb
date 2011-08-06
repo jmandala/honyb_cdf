@@ -11,6 +11,9 @@ module Records
         cdf << recipient_postal_code
         cdf << recipient_country
         cdf << reserved(9)
+        
+        PoBase.ensure_length cdf
+
       end
 
       def recipient_city

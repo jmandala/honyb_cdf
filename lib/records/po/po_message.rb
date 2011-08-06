@@ -4,6 +4,9 @@ module Records
       def cdf_record
         cdf = super
         cdf << message
+
+        PoBase.ensure_length cdf
+
       end
 
       def message

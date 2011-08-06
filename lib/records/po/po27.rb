@@ -8,6 +8,9 @@ module Records
         cdf = super
         cdf << purchaser_address_line
         cdf << reserved(16)
+
+        PoBase.ensure_length cdf
+
       end
 
       def purchaser_address_line

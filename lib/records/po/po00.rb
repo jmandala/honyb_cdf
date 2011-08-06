@@ -20,6 +20,8 @@ module Records
         cdf << reserved(5)
         cdf << vendor_flag_name
         cdf << product_description
+        
+        PoBase.ensure_length cdf
       end
 
       def file_source_san

@@ -8,6 +8,9 @@ module Records
         cdf = super
         cdf << purchaser_phone_number
         cdf << reserved(26)
+
+        PoBase.ensure_length cdf
+
       end
 
 

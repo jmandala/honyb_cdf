@@ -9,6 +9,9 @@ module Records
         cdf = super
         cdf << recipient_phone_number
         cdf << reserved(26)
+
+        PoBase.ensure_length cdf
+        
       end
 
       def recipient_phone_number

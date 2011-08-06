@@ -10,6 +10,9 @@ module Records
         cdf << freight_tax_percent
         cdf << freight_amount
         cdf << reserved(28)
+
+        PoBase.ensure_length cdf
+
       end
 
 

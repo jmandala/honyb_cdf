@@ -1,6 +1,7 @@
 module Records
   module Po
 
+
     class PoBase < Records::Base
 
       def initialize(order, sequence, args)
@@ -20,6 +21,12 @@ module Records
       def line_item
         @options[:line_item]
       end
+
+      def self.ensure_length(cdf)
+        raise StandardError.new("Invalid Line Length '#{cdf.to_s.length}': #{cdf.to_s}") if cdf.to_s.length % 80 > 0
+        cdf
+      end
+
 
     end
   end

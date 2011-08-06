@@ -12,6 +12,9 @@ module Records
         cdf << special_action_code
         cdf << reserved("N")
         cdf << item_number_type
+
+        PoBase.ensure_length cdf
+
       end
 
       def line_item_po_number
