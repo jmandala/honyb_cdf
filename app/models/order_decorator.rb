@@ -14,7 +14,7 @@ Order.class_eval do
   end
 
 
-  def as_cdf(start_sequence = 1)
+  def as_cdf(start_sequence = 2)
     Records::Po::Record.new(self, start_sequence)
   end
 

@@ -35,7 +35,7 @@ class PoFile < ActiveRecord::Base
 
     @data = po00.cdf_record + "\n"
 
-    Order.needs_po.limit(100).each do |order|
+    Order.needs_po.limit(25).each do |order|
       orders << order
       po = order.as_cdf(count[:total_records])
       @data << po.to_s
@@ -107,7 +107,7 @@ class PoFile < ActiveRecord::Base
 
   def init_counters
     count = {
-        :total_records => 1,
+        :total_records => 2, # one for the header and one for the first order
         :total_purchase_orders => 0,
         :total_line_items => 0,
         :total_units => 0
