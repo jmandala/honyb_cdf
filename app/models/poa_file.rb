@@ -24,8 +24,8 @@ class PoaFile < ActiveRecord::Base
   collaborator PoaOrderControlTotal
   collaborator PoaFileControlTotal
 
-  @@ext = '.fbc'
-  file_mask "/*@@ext"
+  define_ext '.fbc'
+  define_length 80
 
   import_format do |d|
     d.template :poa_defaults do |t|
@@ -65,29 +65,6 @@ class PoaFile < ActiveRecord::Base
     logger.warn "PO File could not be found with name: '#{p[:file_name]}'" if po_file.nil?
   end
 
-  def self.needs_import
-    where("poa_files.imported_at IS NULL")
-  end
 
-  def self.import(opt = :log_error)
-    imported = []
-    self.needs_import.select do |importable|
-      begin
-        importable.import
-      rescue StandardError => e
-        logger.error "Failed to import: #{importable.file_name}: #{importable.data}"
-        logger.error e
-
-        raise e if opt == :die_on_error
-      end
-
-      imported << importable
-    end
-    imported
-  end
-
-  def self.import!
-    self.import(:die_on_error)
-  end
 
 end

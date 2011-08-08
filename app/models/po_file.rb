@@ -130,10 +130,11 @@ class PoFile < ActiveRecord::Base
     begin
       Net::FTP.open(Spree::Config.get(:cdf_ftp_server)) do |ftp|
         ftp.login Spree::Config.get(:cdf_ftp_user), Spree::Config.get(:cdf_ftp_password)
-        ftp.put "incoming/#{File.new(path)}"
+        ftp.chdir 'incoming'
+        ftp.put File.new(path)
       end
     rescue StandardError => e
-      log.error e
+      logger.error e
     end
 
   end

@@ -7,7 +7,8 @@ class AsnFile < ActiveRecord::Base
 
   collaborator AsnShipment, AsnShipmentDetail
 
-  file_mask '/*.pbs'
+  define_ext '.pbs'
+  define_length 200
 
 
   import_format do |d|
