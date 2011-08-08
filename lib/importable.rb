@@ -65,7 +65,6 @@ module Importable
 
     # Returns an array of remote file names including only files with an extension of @@ext
     def remote_files
-      puts "this is the class: #{self.class}"
       client = CdfFtpClient.new
       files = []
       client.connect do |ftp|
@@ -108,7 +107,7 @@ module Importable
     def add_delimiters(path)
       data = read_contents path
       return if data.length <= record_length
-      delimited_data = data.scan(/#{record_length}/).join("\r\n")
+      delimited_data = data.scan(/.{#{record_length}}/).join("\r\n")
       File.open(path, 'w') { |f| f.write(delimited_data) }
     end
 
@@ -133,8 +132,6 @@ module Importable
 
 
     def read_contents(path)
-      puts "the class is #{self.class}"
-
       out = ''
       File.open(path, 'r') do |file|
         while line = file.gets
@@ -142,11 +139,6 @@ module Importable
         end
       end
       out
-    end
-
-
-    def class_method
-      puts 'the class method'
     end
 
   end
@@ -193,15 +185,6 @@ module Importable
   end
 
 
-  def instance_method
-    puts 'the instance method'
-  end
-
-  def combo
-    instance_method
-    puts self.class
-    self.class.class_method
-  end
 
 end
 
