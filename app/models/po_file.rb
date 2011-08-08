@@ -33,7 +33,7 @@ class PoFile < ActiveRecord::Base
 
     count = init_counters
 
-    @data = po00.cdf_record + "\n"
+    @data = po00.cdf_record + Records::Base::LINE_TERMINATOR
 
     Order.needs_po.limit(25).each do |order|
       orders << order
@@ -126,17 +126,16 @@ class PoFile < ActiveRecord::Base
   def put
     raise ArgumentError, "File not found: #{path}" unless File.exists?(path)
 
-    Net::FTP.open(Spree::Config[:cdf_ftp_server]) do |ftp|
-      ftp.login Spree::Config.get(:cdf_ftp_user), Spree::Config.get(:cdf_ftp_password)
-      ftp.chdir 'incoming'
-      ftp.put File.new(path, 'r')
-
-      matches = ftp.list.keep_if { |f| f =~ /(#{file_name})/ }
-
-      if !matches
-        raise Error, "File #{file_name} was not found in FTP after it was put!"
+    logger.info "put file #{file_name} to #{Spree::Config.get(:cdf_ftp_server)}"
+    begin
+      Net::FTP.open(Spree::Config.get(:cdf_ftp_server)) do |ftp|
+        ftp.login Spree::Config.get(:cdf_ftp_user), Spree::Config.get(:cdf_ftp_password)
+        ftp.put "incoming/#{File.new(path)}"
       end
+    rescue StandardError => e
+      log.error e
     end
+
   end
 
 end

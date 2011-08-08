@@ -1,6 +1,8 @@
 module Records
   class Base
 
+    LINE_TERMINATOR = "\r\n"
+
     def initialize(sequence, args = {})
       @sequence = sequence
       @options = args

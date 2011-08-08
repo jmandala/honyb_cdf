@@ -1,7 +1,6 @@
 module Records
   module Po
     class Record < Records::Base
-
       attr_reader :count
 
       def initialize(order, start_sequence)
@@ -15,7 +14,11 @@ module Records
 
         update_counters_for record
 
-        record.cdf_record + "\n"
+        data = record.cdf_record
+
+        return '' if data.nil?
+
+        data + LINE_TERMINATOR
       end
 
       def to_s
@@ -55,7 +58,7 @@ module Records
       end
 
       def marketing_message
-        "HonyB Is Direct Commerce"
+        "HonyB Books"
       end
 
       private

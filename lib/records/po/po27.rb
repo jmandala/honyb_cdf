@@ -5,12 +5,19 @@ module Records
     class Po27 < PoBase
 
       def cdf_record
+        return nil unless has_purchaser_address_line
+
+
         cdf = super
         cdf << purchaser_address_line
         cdf << reserved(16)
 
         PoBase.ensure_length cdf
 
+      end
+
+      def has_purchaser_address_line
+        purchaser_address_line.strip.length > 0
       end
 
       def purchaser_address_line

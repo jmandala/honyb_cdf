@@ -5,6 +5,8 @@ module Records
     class Po32 < PoBase
 
       def cdf_record
+        return nil unless has_recipient_address_line
+
         cdf = super
         cdf << recipient_address_line
         cdf << reserved(16)
@@ -12,6 +14,11 @@ module Records
         PoBase.ensure_length cdf
 
       end
+
+      def has_recipient_address_line
+        recipient_address_line.strip.length > 0
+      end
+
 
       def recipient_address_line
         @order.ship_address.send(address_line).ljust_trim 35
