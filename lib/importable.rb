@@ -148,6 +148,10 @@ module Importable
       out
     end
 
+    def import_all
+      self.needs_import.each { |i| i.import }
+    end
+
   end
 
 
