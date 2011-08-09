@@ -36,11 +36,9 @@ class PoaOrderHeader < ActiveRecord::Base
   def self.populate(p, poa_file)
     p[:poa_order_header].each do |data|
 
-      order = Order.find_by_number(data[:po_number].strip!)
+      order = Order.find_by_number!(data[:po_number].strip!)
 
-      raise ActiveRecord::RecordNotFound.new("No Order found with number: #{data[:po_number]}") if order.nil?
-
-      object = self.find_self!(order, poa_file)
+      object = find_self!(order, poa_file)
 
       object.update_from_hash(data)
 
@@ -51,13 +49,12 @@ class PoaOrderHeader < ActiveRecord::Base
   end
 
   def self.find_self(order, poa_file)
-    self.where(:order_id => order, :poa_file_id => poa_file).first
+    where(:order_id => order, :poa_file_id => poa_file).first
   end
 
   def self.find_self!(order, poa_file)
-    object = self.find_self(order, poa_file)
+    object = find_self(order, poa_file)
     return object unless object.nil?
-
-    self.create(:order => order, :poa_file => poa_file)
+    create(:order => order, :poa_file => poa_file)
   end
 end

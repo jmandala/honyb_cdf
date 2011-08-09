@@ -7,9 +7,10 @@ class PoaFile < ActiveRecord::Base
 
   has_many :poa_order_headers, :dependent => :destroy, :autosave => true
   has_one :poa_file_control_total, :dependent => :destroy, :autosave => true
+  has_many :orders, :through => :poa_order_headers
+
   belongs_to :poa_type
   belongs_to :po_file
-  has_many :orders, :through => :poa_order_headers
 
   has_many :versions, :class_name => 'PoaFile', :foreign_key =>  'parent_id', :autosave => true
   belongs_to :parent, :class_name => 'PoaFile'
@@ -63,21 +64,12 @@ class PoaFile < ActiveRecord::Base
   def populate_file_header(p)
     header = p[:header].first
 
-    puts "poa_type #{header[:poa_type]}"
+    self.class.as_cdf_date header, :poa_creation_date
 
-    self.poa_type = PoaType.find_by_code(header[:poa_type])
-    self.po_file = find_po_file(header[:file_name])
+    self.poa_type = PoaType.find_by_code!(header[:poa_type])
+    self.po_file = PoFile.find_by_file_name!(header[:file_name].downcase!)
 
     update_from_hash header, :excludes => [:file_name]
-    logger.warn "PO File could not be found with name: '#{p[:file_name]}'" if po_file.nil?
-  end
-
-  def find_po_file(file_name)
-    po_file = PoFile.find_by_file_name(file_name.downcase)
-    if po_file.nil?
-      raise StandardError.new("Failed to import POA File: Could not find PoFile with name #{file_name}")
-    end
-    po_file
   end
 
 end

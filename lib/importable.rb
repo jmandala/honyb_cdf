@@ -156,6 +156,13 @@ module Importable
       imported
     end
 
+    def as_cdf_date(hash, key)
+      hash[key] = parse_cdf_date hash[key]
+    end
+
+    def parse_cdf_date(s)
+      Time.strptime(s, "%y%m%d")
+    end
   end
 
 

@@ -49,13 +49,4 @@ Order.class_eval do
         order('completed_at asc')
   end
 
-  def self.find_by_po_number!(po_number)
-    order = self.find_by_number(po_number)
-
-    raise ActiveRecord::RecordNotFound.new("No Order found with number: #{po_number}") if order.nil?
-
-    order
-  end
-
-
 end
