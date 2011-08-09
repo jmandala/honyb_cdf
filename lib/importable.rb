@@ -149,7 +149,11 @@ module Importable
     end
 
     def import_all
-      self.needs_import.each { |i| i.import }
+      imported = []
+      self.needs_import.each do |i|
+        imported << i.import
+      end
+      imported
     end
 
   end
@@ -183,7 +187,6 @@ module Importable
     populate_file_header p
     imported = []
     self.class.collaborators.each do |klass|
-      puts "importing #{klass.name}"
       imported << klass.populate(p, self)
     end
 
