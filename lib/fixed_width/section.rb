@@ -39,6 +39,7 @@ class FixedWidth
     end
 
     def template(name)
+      puts "in template: #{name}"
       template = @definition.templates[name]
       raise ArgumentError.new("Template '#{name}' not found as a known template.") unless template
       @columns += template.columns

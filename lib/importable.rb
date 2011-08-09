@@ -45,6 +45,7 @@ module Importable
 
     def import_format
       FixedWidth.define definition_name do |d|
+        puts "defining fixed width: #{definition_name}"
         yield d
 
         self.collaborators.each do |klass|

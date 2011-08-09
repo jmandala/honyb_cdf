@@ -62,12 +62,22 @@ class PoaFile < ActiveRecord::Base
 
   def populate_file_header(p)
     header = p[:header].first
-    header[:poa_type_id] = PoaType.find_by_code(header[:poa_type]).try(:id)
-    po_file = PoFile.find_by_file_name(p[:file_name])
+
+    puts "poa_type #{header[:poa_type]}"
+
+    self.poa_type = PoaType.find_by_code(header[:poa_type])
+    self.po_file = find_po_file(header[:file_name])
+
     update_from_hash header, :excludes => [:file_name]
     logger.warn "PO File could not be found with name: '#{p[:file_name]}'" if po_file.nil?
   end
 
-
+  def find_po_file(file_name)
+    po_file = PoFile.find_by_file_name(file_name.downcase)
+    if po_file.nil?
+      raise StandardError.new("Failed to import POA File: Could not find PoFile with name #{file_name}")
+    end
+    po_file
+  end
 
 end

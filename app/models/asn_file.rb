@@ -5,11 +5,11 @@ class AsnFile < ActiveRecord::Base
   has_many :asn_shipments, :dependent => :destroy
   has_many :asn_shipment_details, :dependent => :destroy
 
-  collaborator AsnShipment, AsnShipmentDetail
+  collaborator AsnShipment
+  collaborator AsnShipmentDetail
 
   define_ext '.pbs'
   define_length 200
-
 
   import_format do |d|
     d.template :asn_defaults do |t|
@@ -25,9 +25,5 @@ class AsnFile < ActiveRecord::Base
       h.file_version_number 10
       h.spacer 170
     end
-
   end
-
-
-
 end

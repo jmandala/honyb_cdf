@@ -32,11 +32,10 @@ class PoFile < ActiveRecord::Base
     save!
 
     count = init_counters
-
     @data = po00.cdf_record + Records::Base::LINE_TERMINATOR
 
     Order.needs_po.limit(25).each do |order|
-      orders << order
+      self.orders << order
       po = order.as_cdf(count[:total_records])
       @data << po.to_s
       update_counters(count, order, po)
@@ -77,11 +76,11 @@ class PoFile < ActiveRecord::Base
 
 
   def prefix
-    "hb-"
+    ''
   end
 
   def ext
-    ".fbo"
+    '.fbo'
   end
 
   def po00
