@@ -38,8 +38,6 @@ class FixedWidth
             value.lstrip
           when :left
             value.rstrip
-          when :none
-            value
         end
       end
     rescue
@@ -71,7 +69,7 @@ class FixedWidth
     end
 
     def assert_valid_options(options)
-      unless options[:align].nil? || [:left, :right, :none].include?(options[:align])
+      unless options[:align].nil? || [:left, :right].include?(options[:align])
         raise ArgumentError.new("Option :align only accepts :right (default) or :left")
       end
     end
