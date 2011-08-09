@@ -93,10 +93,17 @@ module Importable
 
           add_delimiters local_path
 
-          # to do: Error if file already exists
-          file = self.find_or_create_by_file_name(file)
 
-          files << file
+          import_file = self.find_by_file_name(file)
+
+          if import_file
+            import_file = import_file.archive_with_new_file file
+          else
+            import_file = self.create(:file_name => file)
+          end
+
+          
+          files << import_file
           ftp.delete file
         end
       end
@@ -168,23 +175,52 @@ module Importable
 
   def import
     p = parsed
-    Rails.logger.debug p
 
     populate_file_header p
-    errors = []
+    imported = []
     self.class.collaborators.each do |klass|
-      Rails.logger.debug "importing #{klass.name}"
-      err = klass.populate p, self
-      err.each { |e| errors << e }
+      puts "importing #{klass.name}"
+      imported << klass.populate(p, self)
     end
 
     self.imported_at = Time.now
     save!
 
-    errors
+    imported
   end
 
+  def import!
+    errors = self.import
 
+    if errors
+      raise StandardError, 'failed to import'
+    end
+  end
+
+  def archive_with_new_file(file)
+    import_file = self.class.create(:file_name => file)
+    import_file.versions << self
+
+    create_archive import_file
+  end
+
+  def create_archive(parent)
+    new_path = self.class.create_path archive_file_name
+    FileUtils.mv(orig_path, new_path)
+
+    self.file_name = archive_file_name
+    self.parent = parent
+    save!
+  end
+
+  def archive_file_name
+    count = versions.count > 0 ? versions.count : 1
+    "#{file_name}.#{count}"
+  end
+
+  def orig_path
+    self.class.create_path file_name
+  end
 
 end
 

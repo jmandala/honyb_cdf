@@ -11,6 +11,9 @@ class PoaFile < ActiveRecord::Base
   belongs_to :po_file
   has_many :orders, :through => :poa_order_headers
 
+  has_many :versions, :class_name => 'PoaFile', :foreign_key =>  'parent_id', :autosave => true
+  belongs_to :parent, :class_name => 'PoaFile'
+
   collaborator PoaOrderHeader
   collaborator PoaVendorRecord
   collaborator PoaShipToName
