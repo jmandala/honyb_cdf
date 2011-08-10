@@ -91,8 +91,7 @@ module Importable
           local_path = create_path file
           ftp.gettextfile(file, local_path)
 
-          add_delimiters local_path
-
+          write_data_with_delimiters local_path
 
           import_file = self.find_by_file_name(file)
 
@@ -111,11 +110,22 @@ module Importable
       files
     end
 
-    def add_delimiters(path)
-      data = read_contents path
+    # Updates the contents of path to include record terminators
+    def write_data_with_delimiters(path)
+      data = read_contents(path)
+      write_data path, data
+    end
+
+    # Returns data with record terminators
+    def add_delimiters(data)
       return if data.length <= record_length
-      delimited_data = data.scan(/.{#{record_length}}/).join("\r\n")
-      File.open(path, 'w') { |f| f.write(delimited_data) }
+      data.scan(/.{#{record_length}}/).join("\r\n")
+    end
+
+    # Writes data to path, adding record terminators
+    def write_data(path, data)
+      data = add_delimiters data
+      File.open(path, 'w') { |f| f.write(data) }
     end
 
     def files_from_dir_list(list)
@@ -139,13 +149,7 @@ module Importable
 
 
     def read_contents(path)
-      out = ''
-      File.open(path, 'r') do |file|
-        while line = file.gets
-          out << line
-        end
-      end
-      out
+      File.read path
     end
 
     def import_all
@@ -225,6 +229,10 @@ module Importable
 
   def orig_path
     self.class.create_path file_name
+  end
+
+  def write_data(data)
+    self.class.write_data path, data
   end
 
 end
