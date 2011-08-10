@@ -1,9 +1,9 @@
+# Record 42
 class PoaLineItemTitleRecord < ActiveRecord::Base
   include Updateable
   extend PoaRecord
 
   belongs_to :poa_order_header
-
   belongs_to :cdf_binding_code
 
   def self.spec(d)
@@ -17,7 +17,7 @@ class PoaLineItemTitleRecord < ActiveRecord::Base
   end
 
   def before_populate(data)
-    cdf_binding_code = CdfBindingCode.find_by_code(data[:binding_code])
+    cdf_binding_code = CdfBindingCode.find_by_code!(data[:binding_code])
     data[:cdf_binding_code_id] = cdf_binding_code.id unless cdf_binding_code.nil?
   end
 end
