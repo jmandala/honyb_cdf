@@ -11,6 +11,7 @@ module Updateable
 
     new_attributes.each do |k, v|
       next if excludes.include? k
+      v = v.strip if v.respond_to? :strip
       update_attribute(k.to_s, v) if has_attribute? k
     end
   end
