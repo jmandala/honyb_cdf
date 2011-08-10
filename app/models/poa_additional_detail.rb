@@ -14,5 +14,13 @@ class PoaAdditionalDetail < ActiveRecord::Base
       l.dc_inventory_information 40
     end
   end
+
+  def dc_inventory_information
+    read_attribute(:dc_inventory_information).strip
+  end
+
+  def before_populate(data)
+    self.class.as_cdf_date data, :availability_date
+  end
 end
 

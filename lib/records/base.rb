@@ -1,4 +1,5 @@
 module Records
+
   class Base
 
     LINE_TERMINATOR = "\r\n"
@@ -41,4 +42,5 @@ module Records
     end
 
   end
+
 end

@@ -1,6 +1,7 @@
 # Purchase Order Header Record
 class PoaOrderHeader < ActiveRecord::Base
   include Updateable
+  include Records
 
   belongs_to :poa_file
   belongs_to :po_status
@@ -35,15 +36,13 @@ class PoaOrderHeader < ActiveRecord::Base
 
   def self.populate(p, poa_file)
     p[:poa_order_header].each do |data|
-
       order = Order.find_by_number!(data[:po_number].strip!)
-
       object = find_self!(order, poa_file)
-
+      [:acknowledgement_date, :po_cancellation_date, :po_date].each do |key|
+        as_cdf_date data, key
+      end
       object.update_from_hash(data)
-
-      object.po_status = PoStatus.find_by_code(data[:po_status])
-
+      object.po_status = PoStatus.find_by_code!(data[:po_status])
       object.save!
     end
   end

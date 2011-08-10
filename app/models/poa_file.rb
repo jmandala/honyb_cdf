@@ -4,6 +4,7 @@ require 'net/ftp'
 class PoaFile < ActiveRecord::Base
   #noinspection RubyResolve
   include Importable
+  include Records
 
   has_many :poa_order_headers, :dependent => :destroy, :autosave => true
   has_one :poa_file_control_total, :dependent => :destroy, :autosave => true
@@ -63,12 +64,9 @@ class PoaFile < ActiveRecord::Base
 
   def populate_file_header(p)
     header = p[:header].first
-
     self.class.as_cdf_date header, :poa_creation_date
-
     self.poa_type = PoaType.find_by_code!(header[:poa_type])
     self.po_file = PoFile.find_by_file_name!(header[:file_name].downcase!)
-
     update_from_hash header, :excludes => [:file_name]
   end
 

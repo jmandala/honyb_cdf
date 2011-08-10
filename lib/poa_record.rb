@@ -1,4 +1,5 @@
 module PoaRecord
+  include Records
   # To change this template use File | Settings | File Templates.
   extend ActiveModel::Naming
 
