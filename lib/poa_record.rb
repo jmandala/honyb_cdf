@@ -1,25 +1,20 @@
 module PoaRecord
   include Records
-  # To change this template use File | Settings | File Templates.
   extend ActiveModel::Naming
 
-  def find_self(poa_order_header, sequence_number)
-    where(:poa_order_header_id => poa_order_header.id, :sequence_number => sequence_number).first
+  def find_self(poa_file, sequence_number)
+    joins(:poa_order_header => :poa_file).
+        where('poa_files.id' => poa_file.id, :sequence_number => sequence_number.strip).first
   end
 
-  def find_self!(poa_order_header, sequence_number)
-    object = find_self(poa_order_header, sequence_number)
+  
+  def find_or_create(data, poa_file)
+    object = find_self poa_file, data[:sequence_number]
     return object unless object.nil?
 
-    create(:poa_order_header_id => poa_order_header.id, :sequence_number => sequence_number)
-  end
-
-  def find_or_create(data, poa_file)
     order = Order.find_by_number!(data[:po_number].strip!)
-
     poa_order_header = PoaOrderHeader.find_self(order, poa_file)
-
-    find_self!(poa_order_header, data[:sequence_number])
+    create(:poa_order_header_id => poa_order_header.id, :sequence_number => data[:sequence_number])
   end
 
   def populate(p, poa_file, section = self.model_name.i18n_key)
