@@ -168,9 +168,7 @@ module Importable
 
   def data
     raise ArgumentError, "File not found: #{path}" unless File.exists?(path)
-
     return @data unless @data.nil? || @data.empty?
-
     @data = self.class.read_contents path
   end
 

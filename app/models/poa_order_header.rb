@@ -57,4 +57,10 @@ class PoaOrderHeader < ActiveRecord::Base
     return object unless object.nil?
     create(:order => order, :poa_file => poa_file)
   end
+
+  def vendor_message()
+    message = ""
+    self.poa_vendor_records.each { |v| message << v.vendor_message }
+    message.gsub(/\s+/, ' ')
+  end
 end
