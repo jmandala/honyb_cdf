@@ -61,6 +61,6 @@ class PoaOrderHeader < ActiveRecord::Base
   def vendor_message()
     message = ""
     self.poa_vendor_records.each { |v| message << v.vendor_message }
-    message.gsub(/\s+/, ' ')
+    message.gsub(/\s+/, ' ').strip
   end
 end

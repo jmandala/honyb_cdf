@@ -6,6 +6,8 @@ class PoaLineItem < ActiveRecord::Base
   belongs_to :poa_status
   belongs_to :dc_code
   belongs_to :line_item
+  delegate_belongs_to :poa_order_header, :order
+  delegate_belongs_to :line_item, :variant
 
   def self.spec(d)
     d.poa_line_item(:singular => false) do |l|
@@ -22,14 +24,10 @@ class PoaLineItem < ActiveRecord::Base
   end
 
   def before_populate(data)
-    poa_status = PoaStatus.find_by_code(data[:poa_status])
-    data[:poa_status_id] = poa_status.id unless poa_status.nil?
-
-    dc_code = DcCode.find_by_poa_dc_code(data[:dc_code])
-    data[:dc_code_id] = dc_code.id unless dc_code.nil?
-
-    line_item = LineItem.find_by_id(data[:line_item_po_number])
-    data[:line_item_id] = line_item.id unless line_item.nil?
+    self.poa_status = PoaStatus.find_by_code!(data[:poa_status])
+    self.dc_code = DcCode.find_by_poa_dc_code!(data[:dc_code])
+    self.line_item = LineItem.find_by_id!(data[:line_item_po_number])
+    self.save!
   end
 
 end

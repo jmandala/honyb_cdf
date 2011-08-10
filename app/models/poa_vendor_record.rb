@@ -13,4 +13,8 @@ class PoaVendorRecord< ActiveRecord::Base
     end
   end
 
+  def vendor_message
+    read_attribute(:vendor_message).strip
+  end
+
 end
