@@ -6,7 +6,7 @@ class PoaLineItemPubRecord < ActiveRecord::Base
 
   def self.spec(d)
     d.poa_line_item_pub_record do |l|
-      l.trap {|line| line[0,2] == '43'}
+      l.trap { |line| line[0, 2] == '43' }
       l.template :poa_defaults_plus
       l.publisher_name 20
       l.publication_release_date 4
@@ -18,7 +18,10 @@ class PoaLineItemPubRecord < ActiveRecord::Base
   end
 
   def before_populate(data)
-    data[:publication_release_date] = Time.strptime(data[:publication_release_date], "%m%y")
+    if !data[:publication_release_date].empty?
+      data[:publication_release_date] = Time.strptime(data[:publication_release_date], "%m%y")
+    end
+
   end
 
 end
