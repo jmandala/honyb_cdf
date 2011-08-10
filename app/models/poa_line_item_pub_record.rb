@@ -17,4 +17,8 @@ class PoaLineItemPubRecord < ActiveRecord::Base
     end
   end
 
+  def before_populate(data)
+    data[:publication_release_date] = Time.strptime(data[:publication_release_date], "%m%y")
+  end
+
 end
