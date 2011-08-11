@@ -4,7 +4,9 @@ module PoaRecord
 
   def find_self(poa_file, sequence_number)
     joins(:poa_order_header => :poa_file).
-        where('poa_files.id' => poa_file.id, :sequence_number => sequence_number.strip).first
+        where('poa_files.id' => poa_file.id, :sequence_number => sequence_number.strip).
+        readonly(false).
+        first
   end
 
   

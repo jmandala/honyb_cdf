@@ -18,6 +18,9 @@ class PoaOrderHeader < ActiveRecord::Base
   has_many :poa_item_number_price_records, :autosave => true, :dependent => :destroy
   has_one :poa_order_control_total, :autosave => true, :dependent => :destroy
 
+  delegate :number, :to => :order, :prefix => true
+
+
   def self.spec(d)
     d.poa_order_header do |l|
       l.trap { |line| line[0, 2] == '11' }
