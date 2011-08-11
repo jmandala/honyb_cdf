@@ -1,6 +1,5 @@
 class PoaVendorRecord< ActiveRecord::Base
-  include Updateable
-  extend PoaRecord
+  include PoaRecord
 
   belongs_to :poa_order_header
 

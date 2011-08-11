@@ -1,7 +1,7 @@
 class PoaAdditionalDetail < ActiveRecord::Base
   include Updateable
   include Records
-  extend PoaRecord
+  include PoaRecord
   
   belongs_to :poa_order_header
   belongs_to :poa_line_item

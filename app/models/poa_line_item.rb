@@ -1,8 +1,6 @@
 # Record Code 40
 class PoaLineItem < ActiveRecord::Base
-  include Updateable
-  extend PoaRecord
-
+  include PoaRecord
   belongs_to :poa_order_header
   belongs_to :poa_status
   belongs_to :dc_code

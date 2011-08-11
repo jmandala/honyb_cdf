@@ -1,8 +1,8 @@
 class PoaLineItemPubRecord < ActiveRecord::Base
-  include Updateable
-  extend PoaRecord
-
+  include PoaRecord
   belongs_to :poa_order_header
+  belongs_to :poa_line_item
+  delegate :poa_file, :to => :poa_order_header
 
   def self.spec(d)
     d.poa_line_item_pub_record do |l|
