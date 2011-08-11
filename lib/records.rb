@@ -9,7 +9,8 @@ module Records
   module ClassMethods
 
     def as_cdf_date(hash, key)
-      hash[key] = parse_cdf_date hash[key]
+      value = hash[key]
+      hash[key] = parse_cdf_date value if value.to_i > 0
     end
 
     def parse_cdf_date(s)

@@ -28,7 +28,7 @@ class PoaLineItem < ActiveRecord::Base
   def before_populate(data)
     self.poa_status = PoaStatus.find_by_code!(data[:poa_status])
     self.dc_code = DcCode.find_by_poa_dc_code!(data[:dc_code])
-    self.line_item = LineItem.find_by_id!(data[:line_item_po_number])
+    self.line_item = LineItem.find_by_id!(data[:line_item_po_number].strip)
     self.save!
   end
 

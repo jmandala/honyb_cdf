@@ -10,7 +10,7 @@ module PoaRecord
         first
   end
 
-  
+
   def find_or_create(data, poa_file)
     object = find_self poa_file, data[:sequence_number]
     return object unless object.nil?
@@ -25,8 +25,10 @@ module PoaRecord
     p[section].each do |data|
       object = find_or_create(data, poa_file)
       begin
-        object.send(:before_populate, data)
-      rescue NameError => e
+        object.send(:before_populate, data) if object.respond_to? :before_populate
+      rescue => e
+        puts e.message
+        raise e
       end
 
       object.update_from_hash(data)
