@@ -1,5 +1,6 @@
 class PoaLineItemPubRecord < ActiveRecord::Base
   include PoaRecord
+
   belongs_to :poa_order_header
   belongs_to :poa_line_item
   delegate :poa_file, :to => :poa_order_header
@@ -18,10 +19,9 @@ class PoaLineItemPubRecord < ActiveRecord::Base
   end
 
   def before_populate(data)
-    if !data[:publication_release_date].empty?
-      data[:publication_release_date] = Time.strptime(data[:publication_release_date], "%m%y")
-    end
-
+    import_date = data[:publication_release_date]
+    self.publication_release_date = Time.strptime(import_date, "%m%y") unless import_date.empty?
+    self.poa_line_item = nearest_poa_line_item
   end
 
 end
