@@ -3,8 +3,9 @@ module PoaRecord
   extend ActiveModel::Naming
 
   def find_self(poa_file, sequence_number)
+    sequence_number.strip! unless sequence_number.nil?
     joins(:poa_order_header => :poa_file).
-        where('poa_files.id' => poa_file.id, :sequence_number => sequence_number.strip).
+        where('poa_files.id' => poa_file.id, :sequence_number => sequence_number).
         readonly(false).
         first
   end

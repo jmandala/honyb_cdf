@@ -3,6 +3,7 @@ class PoaAdditionalDetail < ActiveRecord::Base
   extend PoaRecord
   
   belongs_to :poa_order_header
+  delegate :poa_file, :to => :poa_order_header
 
   def self.spec(d)
     d.poa_additional_detail do |l|
