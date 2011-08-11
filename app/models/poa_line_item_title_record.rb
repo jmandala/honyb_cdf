@@ -18,7 +18,8 @@ class PoaLineItemTitleRecord < ActiveRecord::Base
   end
 
   def before_populate(data)
-    cdf_binding_code = CdfBindingCode.find_by_code!(data[:binding_code])
-    data[:cdf_binding_code_id] = cdf_binding_code.id unless cdf_binding_code.nil?
+    self.cdf_binding_code = CdfBindingCode.find_by_code(data[:binding_code])
+    self.cdf_binding_code ||= CdfBindingCode.other
+    self.poa_line_item = nearest_poa_line_item
   end
 end
