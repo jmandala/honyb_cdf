@@ -1,3 +1,4 @@
+# Record Code 40
 class PoaLineItem < ActiveRecord::Base
   include Updateable
   extend PoaRecord
