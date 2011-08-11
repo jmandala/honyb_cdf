@@ -22,15 +22,5 @@ class PoaAdditionalDetail < ActiveRecord::Base
     self.class.as_cdf_date data, :availability_date
     self.poa_line_item = nearest_poa_line_item
   end
-
-  # Returns the [PoaLineItem] from the same [PoaOrderHeader] with the sequence that is
-  # closest to this record's sequence, without being great
-  def nearest_poa_line_item
-    PoaLineItem.
-        where(:poa_order_header_id => self.poa_order_header_id).
-        where("sequence_number < :sequence_number", {:sequence_number => self.sequence_number}).
-        order("sequence_number DESC").
-        limit(1).first
-  end
 end
 

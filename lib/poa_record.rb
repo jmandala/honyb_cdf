@@ -1,6 +1,17 @@
 module PoaRecord
   include Updateable
 
+  # Returns the [PoaLineItem] from the same [PoaOrderHeader] with the sequence that is
+  # closest to this record's sequence, without being great
+  def nearest_poa_line_item
+    PoaLineItem.
+        where(:poa_order_header_id => self.poa_order_header_id).
+        where("sequence_number < :sequence_number", {:sequence_number => self.sequence_number}).
+        order("sequence_number DESC").
+        limit(1).first
+  end
+
+
   def self.included(base)
     base.extend ClassMethods
     base.extend Records
