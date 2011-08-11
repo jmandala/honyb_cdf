@@ -8,6 +8,7 @@ class PoaLineItem < ActiveRecord::Base
   belongs_to :dc_code
   belongs_to :line_item
   delegate_belongs_to :poa_order_header, :order
+  delegate_belongs_to :poa_order_header, :poa_file
   delegate_belongs_to :line_item, :variant
 
   def self.spec(d)
