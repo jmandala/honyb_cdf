@@ -122,7 +122,7 @@ module Importable
 
     # Returns data with record terminators
     def add_delimiters(data)
-      return if data.length <= record_length
+      return data if data.split(/\n/)[0].length <= record_length
       data.scan(/.{#{record_length}}/).join("\r\n")
     end
 

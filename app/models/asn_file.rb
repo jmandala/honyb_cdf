@@ -8,7 +8,6 @@ class AsnFile < ActiveRecord::Base
   has_many :versions, :class_name => AsnFile.name, :foreign_key => 'parent_id', :autosave => true
   belongs_to :parent, :class_name => AsnFile.name
 
-
   collaborator AsnShipment
   collaborator AsnShipmentDetail
 
