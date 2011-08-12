@@ -20,6 +20,7 @@ class PoaAdditionalDetail < ActiveRecord::Base
 
   def before_populate(data)
     self.class.as_cdf_date data, :availability_date
+    data.delete :availability_date
     self.poa_line_item = nearest_poa_line_item
   end
 end

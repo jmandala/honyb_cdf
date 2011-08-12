@@ -20,7 +20,11 @@ class PoaLineItemPubRecord < ActiveRecord::Base
 
   def before_populate(data)
     import_date = data[:publication_release_date]
-    self.publication_release_date = Time.strptime(import_date, "%m%y") unless import_date.empty?
+    if !import_date.empty?
+      self.publication_release_date = Time.strptime(import_date, "%m%y")
+    end
+    data.delete :publication_release_date
+
     self.poa_line_item = nearest_poa_line_item
   end
 

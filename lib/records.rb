@@ -10,6 +10,7 @@ module Records
 
     def as_cdf_date(hash, key)
       value = hash[key]
+      return if value.empty?
       hash[key] = parse_cdf_date value if value.to_i > 0
     end
 
