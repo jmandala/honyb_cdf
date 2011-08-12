@@ -5,10 +5,14 @@ class AsnFile < ActiveRecord::Base
   has_many :asn_shipments, :dependent => :destroy
   has_many :asn_shipment_details, :dependent => :destroy
 
+  has_many :versions, :class_name => 'AsnFile', :foreign_key => 'parent_id', :autosave => true
+  belongs_to :parent, :class_name => 'AsnFile'
+
+
   collaborator AsnShipment
   collaborator AsnShipmentDetail
 
-  define_ext '.pbs'
+  define_ext '.PBS'
   define_length 200
 
   import_format do |d|

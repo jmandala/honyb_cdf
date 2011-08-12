@@ -73,8 +73,12 @@ module Importable
       files
     end
 
+    def remote_file_path
+      'outgoing'
+    end
+
     def remote_file_list(ftp)
-      ftp.chdir 'outgoing'
+      ftp.chdir remote_file_path
       files_from_dir_list(ftp.list(file_mask))
     end
 
