@@ -4,6 +4,10 @@ class CdfInvoiceFile < ActiveRecord::Base
   has_many :orders, :through => :cdf_invoice_detail_totals
   has_many :cdf_invoice_detail_totals
 
+
+  has_many :versions, :class_name => CdfInvoiceFile.name, :foreign_key => 'parent_id', :autosave => true
+  belongs_to :parent, :class_name => CdfInvoiceFile.name
+
   collaborator CdfInvoiceHeader
   collaborator CdfInvoiceDetailTotal
   collaborator CdfInvoiceIsbnDetail
