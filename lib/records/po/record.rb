@@ -11,13 +11,9 @@ module Records
       def append(clazz, args = {})
         args[:name] = clazz.name
         record = clazz.send(:new, @order, @count[:sequence], args)
-
         update_counters_for record
-
         data = record.cdf_record
-
         return '' if data.nil?
-
         data + LINE_TERMINATOR
       end
 

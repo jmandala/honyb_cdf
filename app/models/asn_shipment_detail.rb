@@ -1,6 +1,5 @@
 class AsnShipmentDetail < ActiveRecord::Base
-  include Updateable
-  extend AsnRecord
+  include AsnRecord
 
   belongs_to :line_item
   belongs_to :order

@@ -1,6 +1,5 @@
 class AsnShipment < ActiveRecord::Base
-  include Updateable
-  extend AsnRecord
+  include AsnRecord
 
   belongs_to :asn_file
   belongs_to :order
@@ -30,10 +29,12 @@ class AsnShipment < ActiveRecord::Base
   end
 
   def before_populate(data)
-    status = AsnOrderStatus.find_by_code(data[:order_status_code])
-    data[:asn_order_status_id] = status.id unless status.nil?
+    self.asn_order_status = AsnOrderStatus.find_by_code!(data[:order_status_code])
+    data.delete :asn_order_status_code
 
-    order = Order.find_by_number(data[:client_order_id])
-    data[:order_id] = order.id unless order.nil?
+    self.order = Order.find_by_number!(data[:client_order_id].strip!).first
+    puts "got #{self.order.id}"
+    self.po_number = data[:client_order_id]
+    data.delete :client_order_id
   end
 end
