@@ -10,7 +10,10 @@ module AsnRecord
   module ClassMethods
 
     def find_self(asn_file, client_order_id)
-      where(:asn_file_id => asn_file.id, :po_number => client_order_id.strip).first
+      joins(:order).
+          where(:asn_file_id => asn_file.id, 'orders.number' => client_order_id.strip).
+          readonly(false).
+          first
     end
 
     def find_or_create(data, asn_file)
@@ -19,7 +22,7 @@ module AsnRecord
         object = find_self(asn_file, order_number)
         return object unless object.nil?
 
-        order = Order.find_by_number!(order_number).first
+        order = Order.find_by_number!(order_number)
 
         create(:asn_file_id => asn_file.id, :order_id => order.id)
 
@@ -32,6 +35,7 @@ module AsnRecord
 
     def populate(p, asn_file, section = self.model_name.i18n_key)
       return if p.nil? || p[section].nil?
+      objects = []
       p[section].each do |data|
         object = find_or_create(data, asn_file)
         begin
@@ -43,9 +47,10 @@ module AsnRecord
         end
 
         object.update_from_hash(data)
-
-        object
+        objects << object
       end
+      objects
+      
     end
 
   end

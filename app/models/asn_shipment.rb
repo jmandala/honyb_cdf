@@ -32,9 +32,7 @@ class AsnShipment < ActiveRecord::Base
     self.asn_order_status = AsnOrderStatus.find_by_code!(data[:order_status_code])
     data.delete :asn_order_status_code
 
-    self.order = Order.find_by_number!(data[:client_order_id].strip!).first
-    puts "got #{self.order.id}"
-    self.po_number = data[:client_order_id]
+    self.order = Order.where(:number => data[:client_order_id]).limit(1).first
     data.delete :client_order_id
   end
 end
