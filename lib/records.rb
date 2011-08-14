@@ -8,14 +8,15 @@ module Records
 
   module ClassMethods
 
-    def as_cdf_money(hash, key)
+    def as_cdf_money(hash, key, units=100)
       value = hash[key]
-      return if value.empty?
-      hash[key] = parse_cdf_money value if value.to_f > 0
+      return 0 if value.nil? || value.to_f == 0
+      hash[key] = parse_cdf_money(value, units) if value.to_f > 0
     end
     
-    def parse_cdf_money(s)
-      s.to_f / 100
+    def parse_cdf_money(s, units)
+      money = s.to_f / units
+      BigDecimal.new(money.to_s)
     end
     
     def as_cdf_date(hash, key)

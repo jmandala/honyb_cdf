@@ -36,10 +36,21 @@ class AsnShipment < ActiveRecord::Base
     self.order = Order.where(:number => data[:client_order_id]).limit(1).first
     data.delete :client_order_id
     
-    [:order_subtotal].each do |key|
-      self.update_attribute key, self.class.as_cdf_money(data, key)
+    [:order_subtotal,
+    :order_discount_amount,
+    :order_total,
+    :freight_charge].each do |key|
+      self.send("#{key}=", self.class.as_cdf_money(data, key)) 
       data.delete key
     end
     
+    [:shipping_and_handling].each do |key|
+      self.send("#{key}=", self.class.as_cdf_money(data, key, 10000)) 
+      data.delete key
+    end
+    
+    self.shipment_date = Time.strptime(data[:shipment_date], "%Y%m%d")
+    data.delete :shipment_date
+
   end
 end
