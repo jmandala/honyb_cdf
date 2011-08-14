@@ -8,6 +8,16 @@ module Records
 
   module ClassMethods
 
+    def as_cdf_money(hash, key)
+      value = hash[key]
+      return if value.empty?
+      hash[key] = parse_cdf_money value if value.to_f > 0
+    end
+    
+    def parse_cdf_money(s)
+      s.to_f / 100
+    end
+    
     def as_cdf_date(hash, key)
       value = hash[key]
       return if value.empty?

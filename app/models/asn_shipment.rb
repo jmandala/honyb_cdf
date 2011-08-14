@@ -1,5 +1,6 @@
 class AsnShipment < ActiveRecord::Base
   include AsnRecord
+  include Records
 
   belongs_to :asn_file
   belongs_to :order
@@ -34,5 +35,9 @@ class AsnShipment < ActiveRecord::Base
 
     self.order = Order.where(:number => data[:client_order_id]).limit(1).first
     data.delete :client_order_id
+    
+    self.order_subtotal = self.class.as_cdf_money(data, :order_subtotal)
+    data.delete :order_subtotal
+    
   end
 end

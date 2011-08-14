@@ -14,7 +14,6 @@ module PoaRecord
 
   def self.included(base)
     base.extend ClassMethods
-    base.extend Records
     base.extend ActiveModel::Naming
   end
 

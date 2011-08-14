@@ -2,13 +2,11 @@ module AsnRecord
   include Updateable
 
   def self.included(base)
-    base.extend ClassMethods
-    base.extend Records
     base.extend ActiveModel::Naming
+    base.extend ClassMethods
   end
 
   module ClassMethods
-
     def find_self(asn_file, client_order_id)
       joins(:order).
           where(:asn_file_id => asn_file.id, 'orders.number' => client_order_id.strip).
