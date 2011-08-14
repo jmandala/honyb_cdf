@@ -36,8 +36,10 @@ class AsnShipment < ActiveRecord::Base
     self.order = Order.where(:number => data[:client_order_id]).limit(1).first
     data.delete :client_order_id
     
-    self.order_subtotal = self.class.as_cdf_money(data, :order_subtotal)
-    data.delete :order_subtotal
+    [:order_subtotal].each do |key|
+      self.update_attribute key, self.class.as_cdf_money(data, key)
+      data.delete key
+    end
     
   end
 end
