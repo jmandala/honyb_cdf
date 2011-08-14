@@ -1,5 +1,6 @@
 class AsnShipmentDetail < ActiveRecord::Base
   include AsnRecord
+  include Records
 
   belongs_to :line_item
   belongs_to :order
@@ -37,23 +38,32 @@ class AsnShipmentDetail < ActiveRecord::Base
   end
 
   def before_populate(data)
-    status = AsnOrderStatus.find_by_code(data[:item_detail_status_code])
-    data[:asn_order_status_id] = status.id unless status.nil?
+    [:ingram_item_list_price,
+    :net_discounted_price,
+    :weight].each do |key|
+      self.send("#{key}=", self.class.as_cdf_money(data, key)) 
+      data.delete key
+    end
+    
+    self.asn_order_status = AsnOrderStatus.find_by_code(data[:item_detail_status_code])
+    data.delete :status
 
-    slash_code = AsnSlashCode.find_by_code(data[:shipping_method_or_slash_reason_code])
-    data[:asn_slash_code_id] = slash_code.id unless slash_code.nil?
+    self.asn_slash_code = AsnSlashCode.find_by_code(data[:shipping_method_or_slash_reason_code])
+    data.delete :shipping_method_or_slash_reason_code
 
-    shipping_method_code = AsnSlashCode.find_by_code(data[:shipping_method_or_slash_reason_code])
-    data[:asn_shipping_code_id] = shipping_method_code.id unless slash_code.nil?
+    #shipping_method_code = AsnSlashCode.find_by_code(data[:shipping_method_or_slash_reason_code])
+    #data[:asn_shipping_code_id] = shipping_method_code.id unless slash_code.nil?
 
-    order = Order.find_by_number(data[:client_order_id])
-    data[:order_id] = order.id unless order.nil?
+    self.shipping_method_code = data[:shipping_method_or_slash_reason_code]
+    
+    self.order = Order.find_by_number!(data[:client_order_id])
+    data.delete :client_order_id
 
-    dc_code = DcCode.find_by_poa_dc_code(data[:shipping_warehouse_code])
-    data[:dc_code_id] = dc_code.id unless dc_code.nil?
+    self.dc_code = DcCode.find_by_poa_dc_code(data[:shipping_warehouse_code])
+    data.delete :shipping_warehouse_code
 
-    line_item = LineItem.find_by_id(data[:line_item_id_number])
-    data[:line_item_id] = line_item.id unless line_item.nil?
+    self.line_item = LineItem.find_by_id(data[:line_item_id_number])
+    data.delete :line_item_id_number
   end
 
 end
