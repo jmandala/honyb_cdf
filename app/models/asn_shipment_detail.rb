@@ -25,7 +25,7 @@ class AsnShipmentDetail < ActiveRecord::Base
       l.quantity_shipped 5
       l.item_detail_status_code 2
       l.tracking_number 25
-      l.scac 5
+      l.standard_carrier_address_code 5
       l.spacer 15
       l.ingram_item_list_price 7
       l.net_discounted_price 7
@@ -39,9 +39,7 @@ class AsnShipmentDetail < ActiveRecord::Base
   end
 
   def before_populate(data)
-    [:ingram_item_list_price,
-    :net_discounted_price,
-    :weight].each do |key|
+    [:ingram_item_list_price, :net_discounted_price, :weight].each do |key|
       self.send("#{key}=", self.class.as_cdf_money(data, key)) 
       data.delete key
     end
@@ -50,13 +48,11 @@ class AsnShipmentDetail < ActiveRecord::Base
     data.delete :status
 
     self.asn_slash_code = AsnSlashCode.find_by_code(data[:shipping_method_or_slash_reason_code])
+    if !self.asn_slash_code
+      self.asn_shipping_method_code = AsnShippingMethodCode.find_by_code(data[:shipping_method_or_slash_reason_code])
+    end
     data.delete :shipping_method_or_slash_reason_code
 
-    #shipping_method_code = AsnSlashCode.find_by_code(data[:shipping_method_or_slash_reason_code])
-    #data[:asn_shipping_code_id] = shipping_method_code.id unless slash_code.nil?
-
-    self.shipping_method_code = data[:shipping_method_or_slash_reason_code]
-    
     self.order = Order.find_by_number!(data[:client_order_id])
     data.delete :client_order_id
 

@@ -65,8 +65,8 @@ AsnOrderStatus.find_or_create_by_code('95', :description => 'Backorder canceled 
 AsnOrderStatus.find_or_create_by_code('96', :description => 'Backorder canceled by client')
 
 AsnSlashCode.find_or_create_by_code('Slash', :description => '(SLN 04 - price qualifier "SR"')
-AsnSlashCode.find_or_create_by_code('11', :description => 'Unable to commit')
-AsnSlashCode.find_or_create_by_code('12', :description => 'Slash/Cancel')
+AsnSlashCode.find_or_create_by_code('I1', :description => 'Unable to commit')
+AsnSlashCode.find_or_create_by_code('I2', :description => 'Slash/Cancel')
 AsnSlashCode.find_or_create_by_code('A1', :description => 'Auto-Slash')
 AsnSlashCode.find_or_create_by_code('S1', :description => 'DC Slash (warehouse)')
 
