@@ -6,7 +6,8 @@ class AsnShipmentDetail < ActiveRecord::Base
   belongs_to :order
   belongs_to :asn_file
   has_one :product, :through => :line_item
-  belongs_to :asn_order_status_code
+  belongs_to :asn_order_status
+  belongs_to :asn_slash_code
   belongs_to :asn_shipping_method_code
   belongs_to :dc_code
 
