@@ -6,7 +6,7 @@ class PoaCityStateZip < ActiveRecord::Base
 
   def self.spec(d)
     d.poa_city_state_zip do |l|
-      l.trap {|line| line[0,2] == '34'}
+      l.trap { |line| line[0, 2] == '34' }
       l.template :poa_defaults_plus
       l.recipient_city 25
       l.recipient_state_province 3

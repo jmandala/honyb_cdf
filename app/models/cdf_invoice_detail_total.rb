@@ -1,13 +1,14 @@
 class CdfInvoiceDetailTotal < ActiveRecord::Base
-  include Updateable
-  extend CdfInvoiceRecord
+  include CdfInvoiceRecord
+  include Records
+
 
   belongs_to :cdf_invioce_file
   belongs_to :order
 
   def self.spec(d)
     d.cdf_invoice_detail_total do |l|
-      l.trap {|line| line[0,2] == '48' }
+      l.trap { |line| line[0, 2] == '48' }
       l.template :cdf_invoice_defaults
       l.spacer 8
       l.title 16

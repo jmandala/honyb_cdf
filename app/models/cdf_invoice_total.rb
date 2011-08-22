@@ -1,6 +1,6 @@
 class CdfInvoiceTotal < ActiveRecord::Base
   include Updateable
-  extend CdfInvoiceRecord
+  include CdfInvoiceRecord
 
   belongs_to :cdf_invoice_file
 

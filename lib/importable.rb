@@ -194,7 +194,14 @@ module Importable
       populate_file_header p
       imported = []
       self.class.collaborators.each do |klass|
+        begin
         imported << klass.populate(p, self)
+        rescue => e
+          message = "Error importing #{klass}. #{e.message}"
+          CdfImportExceptionLog.create(:event => message, :file_name => self.file_name)          
+          raise StandardError, message
+        end
+        
       end
 
       self.imported_at = Time.now
@@ -204,7 +211,13 @@ module Importable
     rescue StandardError => e
       CdfImportExceptionLog.create(:event => e.message, :file_name => self.file_name)
     end
-
+  end
+  
+  def import!
+    result = import
+    if result.class == CdfImportExceptionLog
+      raise StandardError, result.event
+    end
   end
 
   def archive_with_new_file(file)

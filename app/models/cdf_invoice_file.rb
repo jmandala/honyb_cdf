@@ -1,5 +1,6 @@
 class CdfInvoiceFile < ActiveRecord::Base
   include Importable
+  include Records
 
   has_many :orders, :through => :cdf_invoice_detail_totals
   has_many :cdf_invoice_detail_totals
@@ -39,4 +40,13 @@ class CdfInvoiceFile < ActiveRecord::Base
     end
   end
 
+  def populate_file_header(p)
+    if !p.key?(:header)
+      raise ArgumentError, "Invalid file data. Expected ':header'. Got: #{self.data}"
+    end
+    header = p[:header].first
+
+    self.class.as_cdf_date header, :creation_date
+    update_from_hash header
+  end
 end

@@ -13,7 +13,7 @@ class PoaFile < ActiveRecord::Base
   belongs_to :poa_type
   belongs_to :po_file
 
-  has_many :versions, :class_name => 'PoaFile', :foreign_key =>  'parent_id', :autosave => true
+  has_many :versions, :class_name => 'PoaFile', :foreign_key => 'parent_id', :autosave => true
   belongs_to :parent, :class_name => 'PoaFile'
 
   collaborator PoaOrderHeader
@@ -63,7 +63,7 @@ class PoaFile < ActiveRecord::Base
   end
 
   def populate_file_header(p)
-    if ! p.key?(:header)
+    if !p.key?(:header)
       raise ArgumentError, "Invalid file data. Expected ':header'. Got: #{self.data}"
     end
     header = p[:header].first
