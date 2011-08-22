@@ -3,7 +3,7 @@ class CdfInvoiceDetailTotal < ActiveRecord::Base
   include Records
 
 
-  belongs_to :cdf_invioce_file
+  belongs_to :cdf_invoice_file
   belongs_to :order
 
   def self.spec(d)
