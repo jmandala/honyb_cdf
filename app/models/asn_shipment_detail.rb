@@ -56,7 +56,15 @@ class AsnShipmentDetail < ActiveRecord::Base
     self.order = Order.find_by_number!(data[:client_order_id])
     data.delete :client_order_id
 
-    self.dc_code = DcCode.find_by_poa_dc_code(data[:shipping_warehouse_code])
+    self.dc_code = DcCode.find_by_asn_dc_code(data[:shipping_warehouse_code])
+    if self.dc_code.nil?
+      # try with just the first digit due to spec inconsistency
+      first = data[:shipping_warehouse_code].match(/./).to_s
+      codes = DcCode.where("asn_dc_code LIKE ?", "#{first}%")
+      if codes.count
+        self.dc_code = codes.first
+      end
+    end
     data.delete :shipping_warehouse_code
 
     self.line_item = LineItem.find_by_id(data[:line_item_id_number])
