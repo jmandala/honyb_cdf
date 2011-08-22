@@ -67,7 +67,8 @@ class AsnShipmentDetail < ActiveRecord::Base
     end
     data.delete :shipping_warehouse_code
 
-    self.line_item = LineItem.find_by_id(data[:line_item_id_number])
+    line_items = LineItem.find_by_id(data[:line_item_id_number])
+    self.line_item = line_items
     data.delete :line_item_id_number
 
     [:quantity_canceled,
