@@ -13,7 +13,7 @@ class AsnShipmentDetail < ActiveRecord::Base
 
   def self.spec(d)
     d.asn_shipment_detail do |l|
-      l.trap {|line| line[0,2] == 'OD'}
+      l.trap { |line| line[0, 2] == 'OD' }
       l.template :asn_defaults
       l.shipping_warehouse_code 2
       l.ingram_order_entry_number 10
@@ -40,10 +40,10 @@ class AsnShipmentDetail < ActiveRecord::Base
 
   def before_populate(data)
     [:ingram_item_list_price, :net_discounted_price, :weight].each do |key|
-      self.send("#{key}=", self.class.as_cdf_money(data, key)) 
+      self.send("#{key}=", self.class.as_cdf_money(data, key))
       data.delete key
     end
-    
+
     self.asn_order_status = AsnOrderStatus.find_by_code(data[:item_detail_status_code])
     data.delete :status
 
@@ -62,10 +62,19 @@ class AsnShipmentDetail < ActiveRecord::Base
     self.line_item = LineItem.find_by_id(data[:line_item_id_number])
     data.delete :line_item_id_number
 
-    if data[:quantity_canceled].empty?
-      self.quantity_canceled = 0
+    [:quantity_canceled,
+     :quantity_predicted,
+     :quantity_slashed,
+     :quantity_shipped].each do |field|
+      value = data[field]
+      if value.empty?
+        self.send "#{field}=", 0
+      else
+        self.send "#{field}=", value.to_i
+      end
+      data.delete field
     end
-    data.delete :quantity_canceled
+
 
   end
 
