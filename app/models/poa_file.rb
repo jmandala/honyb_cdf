@@ -63,6 +63,9 @@ class PoaFile < ActiveRecord::Base
   end
 
   def populate_file_header(p)
+    if ! p.key?(:header)
+      raise ArgumentError, "Invalid file data. Expected ':header'. Got: #{self.data}"
+    end
     header = p[:header].first
     self.class.as_cdf_date header, :poa_creation_date
     self.poa_type = PoaType.find_by_code!(header[:poa_type])
