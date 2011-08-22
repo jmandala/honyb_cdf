@@ -18,4 +18,10 @@ class CdfInvoiceHeader < ActiveRecord::Base
     end
   end
 
+  def before_populate(data)
+    if data[:warehouse_san].empty?
+      self.warehouse_san = 0
+      data.delete :warehouse_san
+    end
+  end
 end
