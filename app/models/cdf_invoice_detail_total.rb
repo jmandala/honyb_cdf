@@ -6,6 +6,7 @@ class CdfInvoiceDetailTotal < ActiveRecord::Base
   belongs_to :cdf_invoice_isbn_details
   belongs_to :cdf_invoice_ean_details
   belongs_to :order
+  belongs_to :line_item
 
   def self.spec(d)
     d.cdf_invoice_detail_total do |l|
@@ -21,10 +22,11 @@ class CdfInvoiceDetailTotal < ActiveRecord::Base
   end
 
   def before_populate(data)
-    order = Order.find_by_number(data[:client_order_id])
-    data[:order_id] = order.id unless order.nil?
 
-    line_item = LineItem.find_by_id(data[:line_item_id_number])
-    data[:line_item_id] = line_item.id unless line_item.nil?
+    self.order = Order.find_by_number!(data[:client_order_id].strip)
+    data.delete :client_order_id
+
+    self.line_item = LineItem.find_by_id!(data[:line_item_id_number].strip)
+    data.delete :line_item_id_number
   end
 end
