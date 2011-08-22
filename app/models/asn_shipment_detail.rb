@@ -61,6 +61,12 @@ class AsnShipmentDetail < ActiveRecord::Base
 
     self.line_item = LineItem.find_by_id(data[:line_item_id_number])
     data.delete :line_item_id_number
+
+    if data[:quantity_canceled].empty?
+      self.quantity_canceled = 0
+    end
+    data.delete :quantity_canceled
+
   end
 
 end
