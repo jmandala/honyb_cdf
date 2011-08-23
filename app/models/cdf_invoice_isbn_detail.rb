@@ -32,5 +32,13 @@ class CdfInvoiceIsbnDetail < ActiveRecord::Base
     end
 
   end
+  
+  def self.find_nearest(cdf_invoice_file, sequence_number)
+        where(:cdf_invoice_file_id => cdf_invoice_file.id).
+        where("sequence_number < :sequence_number", {:sequence_number => sequence_number}).
+        order("sequence_number DESC").
+        limit(1).first
+  end
+  
 
 end
