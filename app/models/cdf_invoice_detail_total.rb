@@ -30,5 +30,6 @@ class CdfInvoiceDetailTotal < ActiveRecord::Base
     data.delete :line_item_id_number
     
     self.cdf_invoice_isbn_detail = CdfInvoiceIsbnDetail.find_nearest!(self.cdf_invoice_file, data[:sequence_number])
+    self.cdf_invoice_ean_detail = CdfInvoiceEanDetail.find_nearest!(self.cdf_invoice_file, data[:sequence_number])
   end
 end

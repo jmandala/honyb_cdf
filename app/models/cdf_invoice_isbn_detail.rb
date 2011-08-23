@@ -1,5 +1,6 @@
 class CdfInvoiceIsbnDetail < ActiveRecord::Base
   include CdfInvoiceRecord
+  include CdfInvoiceDetailRecord
   include Records
 
   belongs_to :cdf_invoice_file
@@ -30,22 +31,6 @@ class CdfInvoiceIsbnDetail < ActiveRecord::Base
       self.send("#{key}=", self.class.as_cdf_money(data, key))
       data.delete key
     end
-
   end
-
-  def self.find_nearest(cdf_invoice_file, sequence_number)
-    where(:cdf_invoice_file_id => cdf_invoice_file.id).
-        where("sequence_number < :sequence_number", {:sequence_number => sequence_number}).
-        order("sequence_number DESC").
-        limit(1).first
-  end
-
-  def self.find_nearest!(cdf_invoice_file, sequence_number)
-    nearest = find_nearest cdf_invoice_file, sequence_number
-    return nearest if !nearest.nil?
-
-    raise ActiveRecord::RecordNotFound, "Expected to find #{name} with cdf_invoice_file.id = #{cdf_invoice_file.id}, and sequence_number < #{sequence_number}"
-  end
-
 
 end
