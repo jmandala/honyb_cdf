@@ -9,10 +9,12 @@ class CdfInvoiceFile < ActiveRecord::Base
   has_many :versions, :class_name => CdfInvoiceFile.name, :foreign_key => 'parent_id', :autosave => true
   belongs_to :parent, :class_name => CdfInvoiceFile.name
 
+  # define classes that comprise the full CDF Invoice.
+  # order of definitions matter!
   collaborator CdfInvoiceHeader
-  collaborator CdfInvoiceDetailTotal
   collaborator CdfInvoiceIsbnDetail
   collaborator CdfInvoiceEanDetail
+  collaborator CdfInvoiceDetailTotal # Must be listed after CdfInvoiceIsbnDetail and CdfInvoiceEanDetail for referencing to work!   
   collaborator CdfInvoiceFreightAndFee
   collaborator CdfInvoiceTotal
   collaborator CdfInvoiceTrailer
