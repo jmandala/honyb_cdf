@@ -199,7 +199,7 @@ module Importable
         rescue => e
           message = "Error importing #{klass}. #{e.message}"
           CdfImportExceptionLog.create(:event => message, :file_name => self.file_name)          
-          raise StandardError, message
+          raise StandardError, message, e.backtrace
         end
         
       end
@@ -209,14 +209,14 @@ module Importable
 
       imported
     rescue StandardError => e
-      CdfImportExceptionLog.create(:event => e.message, :file_name => self.file_name)
+      CdfImportExceptionLog.create(:event => e.message, :file_name => self.file_name, :backtrace => e.backtrace)
     end
   end
   
   def import!
     result = import
     if result.class == CdfImportExceptionLog
-      raise StandardError, result.event
+      raise StandardError, result.event, result.backtrace
     end
   end
 

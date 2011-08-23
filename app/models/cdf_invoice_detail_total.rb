@@ -3,8 +3,8 @@ class CdfInvoiceDetailTotal < ActiveRecord::Base
   include Records
 
   belongs_to :cdf_invoice_file
-  belongs_to :cdf_invoice_isbn_details
-  belongs_to :cdf_invoice_ean_details
+  belongs_to :cdf_invoice_isbn_detail
+  belongs_to :cdf_invoice_ean_detail
   belongs_to :order
   belongs_to :line_item
 
@@ -28,5 +28,8 @@ class CdfInvoiceDetailTotal < ActiveRecord::Base
 
     self.line_item = LineItem.find_by_id!(data[:line_item_id_number].strip)
     data.delete :line_item_id_number
+    
+    self.cdf_invoice_isbn_detail = CdfInvoiceIsbnDetail.find_nearest(data)
+    
   end
 end
