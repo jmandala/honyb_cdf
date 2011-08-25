@@ -1,5 +1,7 @@
 class CdfInvoiceFreightAndFee < ActiveRecord::Base
   include CdfInvoiceRecord
+  include CdfInvoiceDetailRecord
+
   include Records
 
   belongs_to :cdf_invoice_file
@@ -19,6 +21,14 @@ class CdfInvoiceFreightAndFee < ActiveRecord::Base
   end
 
   def before_populate(data)
+    [:net_price,
+     :shipping,
+     :handling,
+     :gift_wrap,
+     :amount_due].each do |key|
+      self.send("#{key}=", self.class.as_cdf_money(data, key))
+      data.delete key
+    end
 
   end
 
