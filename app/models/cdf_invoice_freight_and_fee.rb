@@ -7,7 +7,7 @@ class CdfInvoiceFreightAndFee < ActiveRecord::Base
   belongs_to :cdf_invoice_file
 
   def self.spec(d)
-    d.cdf_invoice_freight_fee do |l|
+    d.cdf_invoice_freight_and_fee do |l|
       l.trap { |line| line[0, 2] == '49' }
       l.template :cdf_invoice_defaults
       l.tracking_number 25

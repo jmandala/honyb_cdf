@@ -33,6 +33,6 @@ class CdfInvoiceDetailTotal < ActiveRecord::Base
     
     self.cdf_invoice_isbn_detail = CdfInvoiceIsbnDetail.find_nearest_before!(self.cdf_invoice_file, data[:__LINE_NUMBER__])
     self.cdf_invoice_ean_detail = CdfInvoiceEanDetail.find_nearest_before!(self.cdf_invoice_file, data[:__LINE_NUMBER__])
-    #self.cdf_invoice_freight_and_fee = CdfInvoiceFreightAndFee.find_nearest_after!(self.cdf_invoice_file, data[:__LINE_NUMBER__])
+    self.cdf_invoice_freight_and_fee = CdfInvoiceFreightAndFee.find_nearest_after!(self.cdf_invoice_file, data[:__LINE_NUMBER__])
   end
 end
