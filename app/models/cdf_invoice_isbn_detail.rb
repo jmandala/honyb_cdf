@@ -1,9 +1,6 @@
 class CdfInvoiceIsbnDetail < ActiveRecord::Base
-  include CdfInvoiceRecord
   include CdfInvoiceDetailRecord
   include Records
-
-  belongs_to :cdf_invoice_file
 
   def self.spec(d)
     d.cdf_invoice_isbn_detail do |l|

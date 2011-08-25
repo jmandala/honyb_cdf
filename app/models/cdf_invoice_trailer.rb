@@ -1,9 +1,6 @@
 class CdfInvoiceTrailer < ActiveRecord::Base
-  include CdfInvoiceRecord
   include CdfInvoiceDetailRecord
   include Records
-
-  belongs_to :cdf_invoice_file
 
   def self.spec(d)
     d.cdf_invoice_trailer do |l|

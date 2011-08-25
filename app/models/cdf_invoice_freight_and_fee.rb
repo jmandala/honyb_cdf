@@ -1,10 +1,6 @@
 class CdfInvoiceFreightAndFee < ActiveRecord::Base
-  include CdfInvoiceRecord
   include CdfInvoiceDetailRecord
-
   include Records
-
-  belongs_to :cdf_invoice_file
 
   def self.spec(d)
     d.cdf_invoice_freight_and_fee do |l|

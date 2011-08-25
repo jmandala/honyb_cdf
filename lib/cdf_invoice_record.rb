@@ -2,7 +2,6 @@ module CdfInvoiceRecord
   include Updateable
 
   def self.included(base)
-    base.extend ActiveModel::Naming
     base.extend ClassMethods
   end
 

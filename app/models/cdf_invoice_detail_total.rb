@@ -1,9 +1,8 @@
 # Aggregates CdfInvoiceIsbnDetail and CdfInvoiceEanDetail records, and links to LineItems
 class CdfInvoiceDetailTotal < ActiveRecord::Base
-  include CdfInvoiceRecord
+  include CdfInvoiceDetailRecord
   include Records
 
-  belongs_to :cdf_invoice_file
   belongs_to :cdf_invoice_isbn_detail
   belongs_to :cdf_invoice_ean_detail
   belongs_to :cdf_invoice_freight_and_fee
@@ -12,7 +11,7 @@ class CdfInvoiceDetailTotal < ActiveRecord::Base
 
   delegate :quantity_shipped, :isbn_10_shipped, :ingram_list_price, :discount, :net_price, :metered_date, :to => :cdf_invoice_isbn_detail
   delegate :ean_shipped, :to => :cdf_invoice_ean_detail
-  
+
   def self.spec(d)
     d.cdf_invoice_detail_total do |l|
       l.trap { |line| line[0, 2] == '48' }
@@ -33,9 +32,9 @@ class CdfInvoiceDetailTotal < ActiveRecord::Base
 
     self.line_item = LineItem.find_by_id!(data[:line_item_id_number].strip)
     data.delete :line_item_id_number
-    
-    self.cdf_invoice_isbn_detail = CdfInvoiceIsbnDetail.find_nearest_before!(self.cdf_invoice_file, data[:__LINE_NUMBER__])
-    self.cdf_invoice_ean_detail = CdfInvoiceEanDetail.find_nearest_before!(self.cdf_invoice_file, data[:__LINE_NUMBER__])
-    self.cdf_invoice_freight_and_fee = CdfInvoiceFreightAndFee.find_nearest_after!(self.cdf_invoice_file, data[:__LINE_NUMBER__])
+
+    self.cdf_invoice_isbn_detail = CdfInvoiceIsbnDetail.find_nearest_before!(self.cdf_invoice_header, data[:__LINE_NUMBER__])
+    self.cdf_invoice_ean_detail = CdfInvoiceEanDetail.find_nearest_before!(self.cdf_invoice_header, data[:__LINE_NUMBER__])
+    self.cdf_invoice_freight_and_fee = CdfInvoiceFreightAndFee.find_nearest_after!(self.cdf_invoice_header, data[:__LINE_NUMBER__])
   end
 end
