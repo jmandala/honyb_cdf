@@ -2,14 +2,14 @@ class PoaAdditionalDetail < ActiveRecord::Base
   include Updateable
   include Records
   include PoaRecord
-  
+
   belongs_to :poa_order_header
   belongs_to :poa_line_item
   delegate :poa_file, :to => :poa_order_header
 
   def self.spec(d)
     d.poa_additional_detail do |l|
-      l.trap {|line| line[0,2] == '41'}
+      l.trap { |line| line[0, 2] == '41' }
       l.template :poa_defaults_plus
       l.spacer 4
       l.availability_date 6

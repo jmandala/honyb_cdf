@@ -53,7 +53,7 @@ class FixedWidth
       end.join
     end
 
-    def parse(line)
+    def parse(line, line_number)
       row       = group_names.inject({}) {|h,g| h[g] = {}; h }
 
       cursor = 0
@@ -65,6 +65,8 @@ class FixedWidth
         end
         cursor += c.length
       end
+      
+      row[:__LINE_NUMBER__] = line_number
 
       row
     end

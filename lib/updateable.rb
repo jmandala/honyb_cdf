@@ -9,7 +9,6 @@ module Updateable
 
     excludes = options[:excludes] || []
 
-
     new_attributes.each do |k, v|
       next if excludes.include? k
       v = v.strip if v.respond_to? :strip
@@ -21,6 +20,7 @@ module Updateable
         raise ActiveRecord::ReadOnlyRecord
       end
     end
+    
   end
 
 end

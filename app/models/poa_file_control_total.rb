@@ -5,7 +5,7 @@ class PoaFileControlTotal < ActiveRecord::Base
 
   def self.spec(d)
     d.poa_file_control_total do |l|
-      l.trap {|line| line[0,2] == '91'}
+      l.trap { |line| line[0, 2] == '91' }
       l.template :poa_defaults
       l.total_line_items_in_file 13
       l.total_pos_acknowledged 5

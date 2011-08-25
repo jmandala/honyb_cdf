@@ -1,5 +1,7 @@
 class AsnFile < ActiveRecord::Base
   include Importable
+  include Records
+
 
   has_many :orders, :through => :asn_shipments
   has_many :asn_shipments, :dependent => :destroy

@@ -2,6 +2,7 @@ module Records
 
   class Base
 
+    # The character sequence between records -- defined by Ingram
     LINE_TERMINATOR = "\r\n"
 
     def initialize(sequence, args = {})

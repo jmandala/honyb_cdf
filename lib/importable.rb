@@ -105,7 +105,7 @@ module Importable
             import_file = self.create(:file_name => file)
           end
 
-          
+
           files << import_file
           ftp.delete file
         end
@@ -188,25 +188,35 @@ module Importable
   end
 
   def import
-    p = parsed
+    begin
+      p = parsed
 
-    populate_file_header p
-    imported = []
-    self.class.collaborators.each do |klass|
-      imported << klass.populate(p, self)
+      populate_file_header p
+      imported = []
+      self.class.collaborators.each do |klass|
+        begin
+        imported << klass.populate(p, self)
+        rescue => e
+          message = "Error importing #{klass}. #{e.message}"
+          CdfImportExceptionLog.create(:event => message, :file_name => self.file_name)          
+          raise StandardError, message, e.backtrace
+        end
+        
+      end
+
+      self.imported_at = Time.now
+      save!
+
+      imported
+    rescue StandardError => e
+      CdfImportExceptionLog.create(:event => e.message, :file_name => self.file_name, :backtrace => e.backtrace)
     end
-
-    self.imported_at = Time.now
-    save!
-
-    imported
   end
-
+  
   def import!
-    errors = self.import
-
-    if errors
-      raise StandardError, 'failed to import'
+    result = import
+    if result.class == CdfImportExceptionLog
+      raise StandardError, result.event, result.backtrace
     end
   end
 

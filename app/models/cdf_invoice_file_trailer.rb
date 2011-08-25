@@ -1,6 +1,6 @@
 class CdfInvoiceFileTrailer < ActiveRecord::Base
-  include Updateable
-  extend CdfInvoiceRecord
+  include CdfInvoiceRecord
+  include Records
 
   belongs_to :cdf_invoice_file
 

@@ -11,7 +11,7 @@ class PoaLineItem < ActiveRecord::Base
 
   def self.spec(d)
     d.poa_line_item(:singular => false) do |l|
-      l.trap {|line| line[0,2] == '40'}
+      l.trap { |line| line[0, 2] == '40' }
       l.template :poa_defaults_plus
       l.line_item_po_number 10
       l.spacer 12

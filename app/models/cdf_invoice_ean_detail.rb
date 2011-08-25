@@ -1,6 +1,8 @@
 class CdfInvoiceEanDetail < ActiveRecord::Base
-  include Updateable
-  extend CdfInvoiceRecord
+  include CdfInvoiceRecord
+  include CdfInvoiceDetailRecord
+  
+  include Records
 
   belongs_to :cdf_invoice_file
 
@@ -11,14 +13,14 @@ class CdfInvoiceEanDetail < ActiveRecord::Base
       l.spacer 6
       l.spacer 20
       l.spacer 20
-      l.spacer 1
-      l.ean 14
+      l.ean_shipped 14
       l.spacer 5
     end
   end
 
   def before_populate(data)
-
+    self.ean_shipped = data[:ean_shipped].strip
+    data.delete :ean_shipped
   end
 
 end

@@ -1,6 +1,7 @@
 class CdfInvoiceIsbnDetail < ActiveRecord::Base
-  include Updateable
-  extend CdfInvoiceRecord
+  include CdfInvoiceRecord
+  include CdfInvoiceDetailRecord
+  include Records
 
   belongs_to :cdf_invoice_file
 
@@ -10,10 +11,10 @@ class CdfInvoiceIsbnDetail < ActiveRecord::Base
       l.template :cdf_invoice_defaults
       l.spacer 6
       l.spacer 13
-      l.isbn_10 10
+      l.isbn_10_shipped 10
       l.spacer 1
       l.quantity_shipped 5
-      l.ingram_item_list_price 7
+      l.ingram_list_price 7
       l.spacer 1
       l.discount 4
       l.spacer 1
@@ -24,7 +25,12 @@ class CdfInvoiceIsbnDetail < ActiveRecord::Base
   end
 
   def before_populate(data)
-
+    [:net_price,
+     :ingram_list_price,
+     :discount].each do |key|
+      self.send("#{key}=", self.class.as_cdf_money(data, key))
+      data.delete key
+    end
   end
 
 end

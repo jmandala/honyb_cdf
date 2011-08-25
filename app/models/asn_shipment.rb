@@ -8,7 +8,7 @@ class AsnShipment < ActiveRecord::Base
 
   def self.spec(d)
     d.asn_shipment do |l|
-      l.trap {|line| line[0,2] == 'OR' }
+      l.trap { |line| line[0, 2] == 'OR' }
       l.template :asn_defaults
       l.spacer 8
       l.order_status_code 2
@@ -35,20 +35,20 @@ class AsnShipment < ActiveRecord::Base
 
     self.order = Order.where(:number => data[:client_order_id]).limit(1).first
     data.delete :client_order_id
-    
+
     [:order_subtotal,
-    :order_discount_amount,
-    :order_total,
-    :freight_charge].each do |key|
-      self.send("#{key}=", self.class.as_cdf_money(data, key)) 
+     :order_discount_amount,
+     :order_total,
+     :freight_charge].each do |key|
+      self.send("#{key}=", self.class.as_cdf_money(data, key))
       data.delete key
     end
-    
+
     [:shipping_and_handling].each do |key|
-      self.send("#{key}=", self.class.as_cdf_money(data, key, 10000)) 
+      self.send("#{key}=", self.class.as_cdf_money(data, key, 10000))
       data.delete key
     end
-    
+
     self.shipment_date = Time.strptime(data[:shipment_date], "%Y%m%d")
     data.delete :shipment_date
 

@@ -1,6 +1,6 @@
 class CdfInvoiceHeader < ActiveRecord::Base
-  include Updateable
-  extend CdfInvoiceRecord
+  include CdfInvoiceRecord
+  include Records
 
   belongs_to :cdf_invoice_file
 
@@ -18,4 +18,10 @@ class CdfInvoiceHeader < ActiveRecord::Base
     end
   end
 
+  def before_populate(data)
+    if data[:warehouse_san].empty?
+      self.warehouse_san = 0
+      data.delete :warehouse_san
+    end
+  end
 end

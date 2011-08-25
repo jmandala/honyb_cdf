@@ -6,13 +6,14 @@ class AsnShipmentDetail < ActiveRecord::Base
   belongs_to :order
   belongs_to :asn_file
   has_one :product, :through => :line_item
-  belongs_to :asn_order_status_code
+  belongs_to :asn_order_status
+  belongs_to :asn_slash_code
   belongs_to :asn_shipping_method_code
   belongs_to :dc_code
 
   def self.spec(d)
     d.asn_shipment_detail do |l|
-      l.trap {|line| line[0,2] == 'OD'}
+      l.trap { |line| line[0, 2] == 'OD' }
       l.template :asn_defaults
       l.shipping_warehouse_code 2
       l.ingram_order_entry_number 10
@@ -24,7 +25,7 @@ class AsnShipmentDetail < ActiveRecord::Base
       l.quantity_shipped 5
       l.item_detail_status_code 2
       l.tracking_number 25
-      l.scac 5
+      l.standard_carrier_address_code 5
       l.spacer 15
       l.ingram_item_list_price 7
       l.net_discounted_price 7
@@ -38,32 +39,52 @@ class AsnShipmentDetail < ActiveRecord::Base
   end
 
   def before_populate(data)
-    [:ingram_item_list_price,
-    :net_discounted_price,
-    :weight].each do |key|
-      self.send("#{key}=", self.class.as_cdf_money(data, key)) 
+    [:ingram_item_list_price, :net_discounted_price, :weight].each do |key|
+      self.send("#{key}=", self.class.as_cdf_money(data, key))
       data.delete key
     end
-    
+
     self.asn_order_status = AsnOrderStatus.find_by_code(data[:item_detail_status_code])
     data.delete :status
 
     self.asn_slash_code = AsnSlashCode.find_by_code(data[:shipping_method_or_slash_reason_code])
+    if !self.asn_slash_code
+      self.asn_shipping_method_code = AsnShippingMethodCode.find_by_code(data[:shipping_method_or_slash_reason_code])
+    end
     data.delete :shipping_method_or_slash_reason_code
 
-    #shipping_method_code = AsnSlashCode.find_by_code(data[:shipping_method_or_slash_reason_code])
-    #data[:asn_shipping_code_id] = shipping_method_code.id unless slash_code.nil?
-
-    self.shipping_method_code = data[:shipping_method_or_slash_reason_code]
-    
     self.order = Order.find_by_number!(data[:client_order_id])
     data.delete :client_order_id
 
-    self.dc_code = DcCode.find_by_poa_dc_code(data[:shipping_warehouse_code])
+    self.dc_code = DcCode.find_by_asn_dc_code(data[:shipping_warehouse_code])
+    if self.dc_code.nil?
+      # try with just the first digit due to spec inconsistency
+      first = data[:shipping_warehouse_code].match(/./).to_s
+      codes = DcCode.where("asn_dc_code LIKE ?", "#{first}%")
+      if codes.count
+        self.dc_code = codes.first
+      end
+    end
     data.delete :shipping_warehouse_code
 
-    self.line_item = LineItem.find_by_id(data[:line_item_id_number])
+    line_items = LineItem.find_by_id(data[:line_item_id_number])
+    self.line_item = line_items
     data.delete :line_item_id_number
+
+    [:quantity_canceled,
+     :quantity_predicted,
+     :quantity_slashed,
+     :quantity_shipped].each do |field|
+      value = data[field]
+      if value.empty?
+        self.send "#{field}=", 0
+      else
+        self.send "#{field}=", value.to_i
+      end
+      data.delete field
+    end
+
+
   end
 
 end

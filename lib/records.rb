@@ -16,7 +16,7 @@ module Records
     
     def parse_cdf_money(s, units)
       money = s.to_f / units
-      BigDecimal.new(money.to_s)
+      BigDecimal.new(money.to_s, 0)
     end
     
     def as_cdf_date(hash, key)
