@@ -1,5 +1,6 @@
 class CdfInvoiceTrailer < ActiveRecord::Base
   include CdfInvoiceRecord
+  include CdfInvoiceDetailRecord
   include Records
 
   belongs_to :cdf_invoice_file
@@ -20,4 +21,16 @@ class CdfInvoiceTrailer < ActiveRecord::Base
     end
   end
 
+  def before_populate(data)
+    [:total_invoice,
+     :total_gift_wrap,
+     :total_handling,
+     :total_shipping,
+     :total_net_price
+    ].each do |key|
+      self.send("#{key}=", self.class.as_cdf_money(data, key))
+      data.delete key
+    end
+
+  end
 end
