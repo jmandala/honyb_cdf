@@ -1,7 +1,6 @@
 class CdfInvoiceEanDetail < ActiveRecord::Base
   include CdfInvoiceRecord
   include CdfInvoiceDetailRecord
-  
   include Records
 
   belongs_to :cdf_invoice_file
