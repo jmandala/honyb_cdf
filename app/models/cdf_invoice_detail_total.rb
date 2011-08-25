@@ -10,6 +10,9 @@ class CdfInvoiceDetailTotal < ActiveRecord::Base
   belongs_to :order
   belongs_to :line_item
 
+  delegate :quantity_shipped, :isbn_10_shipped, :ingram_list_price, :discount, :net_price, :metered_date, :to => :cdf_invoice_isbn_detail
+  delegate :ean_shipped, :to => :cdf_invoice_ean_detail
+  
   def self.spec(d)
     d.cdf_invoice_detail_total do |l|
       l.trap { |line| line[0, 2] == '48' }
