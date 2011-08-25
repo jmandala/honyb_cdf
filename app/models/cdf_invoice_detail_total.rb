@@ -1,3 +1,4 @@
+# Aggregates CdfInvoiceIsbnDetail and CdfInvoiceEanDetail records, and links to LineItems
 class CdfInvoiceDetailTotal < ActiveRecord::Base
   include CdfInvoiceRecord
   include Records
@@ -29,7 +30,7 @@ class CdfInvoiceDetailTotal < ActiveRecord::Base
     self.line_item = LineItem.find_by_id!(data[:line_item_id_number].strip)
     data.delete :line_item_id_number
     
-    self.cdf_invoice_isbn_detail = CdfInvoiceIsbnDetail.find_nearest!(self.cdf_invoice_file, data[:sequence_number])
-    self.cdf_invoice_ean_detail = CdfInvoiceEanDetail.find_nearest!(self.cdf_invoice_file, data[:sequence_number])
+    self.cdf_invoice_isbn_detail = CdfInvoiceIsbnDetail.find_nearest!(self.cdf_invoice_file, data[:__LINE_NUMBER__])
+    self.cdf_invoice_ean_detail = CdfInvoiceEanDetail.find_nearest!(self.cdf_invoice_file, data[:__LINE_NUMBER__])
   end
 end

@@ -13,7 +13,6 @@ class CdfInvoiceEanDetail < ActiveRecord::Base
       l.spacer 6
       l.spacer 20
       l.spacer 20
-      l.spacer 1
       l.ean_shipped 14
       l.spacer 5
     end

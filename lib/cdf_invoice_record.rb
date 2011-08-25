@@ -28,6 +28,7 @@ module CdfInvoiceRecord
         object = self.find_or_create(data, cdf_invoice_file)
         begin
           object.send(:before_populate, data) if object.respond_to? :before_populate          
+          object.send("line_number=", data[:__LINE_NUMBER__]) if object.respond_to? "line_number="          
         rescue => e
           puts e.message
           puts data.to_yaml
