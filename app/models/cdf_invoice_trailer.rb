@@ -2,6 +2,8 @@ class CdfInvoiceTrailer < ActiveRecord::Base
   include CdfInvoiceDetailRecord
   include Records
 
+  belongs_to :cdf_invoice_header
+  
   def self.spec(d)
     d.cdf_invoice_trailer do |l|
       l.trap { |line| line[0, 2] == '57' }
@@ -27,7 +29,9 @@ class CdfInvoiceTrailer < ActiveRecord::Base
     ].each do |key|
       self.send("#{key}=", self.class.as_cdf_money(data, key))
       data.delete key
+      
     end
+    self.cdf_invoice_header = CdfInvoiceHeader.find_by_invoice_number!(data[:invoice_number].strip)
 
   end
 end
