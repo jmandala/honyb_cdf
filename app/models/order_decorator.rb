@@ -3,9 +3,12 @@ Order.class_eval do
   belongs_to :po_file
   has_many :poa_order_headers, :dependent => :restrict
   has_many :poa_files, :through => :poa_order_headers
-  has_many :asn_shipments
-  has_many :asn_shipment_details
+  has_many :asn_shipments, :dependent => :restrict
+  has_many :asn_shipment_details, :dependent => :restrict
   has_many :asn_files, :through => :asn_shipments
+  has_many :cdf_invoice_detail_totals, :dependent => :restrict
+  has_many :cdf_invoice_freight_and_fees, :dependent => :restrict
+  
 
   register_update_hook :update_auth_before_ship
 

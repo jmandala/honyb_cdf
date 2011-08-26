@@ -1,8 +1,6 @@
 class CdfInvoiceTotal < ActiveRecord::Base
-  include Updateable
-  include CdfInvoiceRecord
-
-  belongs_to :cdf_invoice_file
+  include CdfInvoiceDetailRecord
+  include Records
 
   def self.spec(d)
     d.cdf_invoice_total do |l|

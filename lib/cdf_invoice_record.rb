@@ -2,24 +2,23 @@ module CdfInvoiceRecord
   include Updateable
 
   def self.included(base)
-    base.extend ActiveModel::Naming
     base.extend ClassMethods
   end
 
   module ClassMethods
-    def find_self(cdf_invoice_file, sequence)
-      self.where(:cdf_invoice_file_id => cdf_invoice_file.id, :sequence_number => sequence).first
+    def find_self(cdf_invoice_file, line_number)
+      self.where(:cdf_invoice_file_id => cdf_invoice_file.id, :line_number => line_number).first
     end
 
-    def find_self!(cdf_invoice_file, sequence)
-      object = self.find_self(cdf_invoice_file, sequence)
+    def find_self!(cdf_invoice_file, line_number)
+      object = self.find_self(cdf_invoice_file, line_number)
       return object unless object.nil?
 
-      self.create(:cdf_invoice_file_id => cdf_invoice_file.id, :sequence_number => sequence)
+      self.create(:cdf_invoice_file_id => cdf_invoice_file.id, :line_number => line_number)
     end
 
     def find_or_create(data, cdf_invoice_file)
-      self.find_self!(cdf_invoice_file, data[:sequence_number])
+      self.find_self!(cdf_invoice_file, data[:line_number])
     end
 
     def populate(p, cdf_invoice_file, section = self.model_name.i18n_key)

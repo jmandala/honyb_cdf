@@ -1,11 +1,12 @@
 class CdfInvoiceFreightAndFee < ActiveRecord::Base
-  include CdfInvoiceRecord
+  include CdfInvoiceDetailRecord
   include Records
 
-  belongs_to :cdf_invoice_file
-
+  belongs_to :cdf_invoice_detail_total
+  belongs_to :order
+  
   def self.spec(d)
-    d.cdf_invoice_freight_fee do |l|
+    d.cdf_invoice_freight_and_fee do |l|
       l.trap { |line| line[0, 2] == '49' }
       l.template :cdf_invoice_defaults
       l.tracking_number 25
@@ -19,7 +20,17 @@ class CdfInvoiceFreightAndFee < ActiveRecord::Base
   end
 
   def before_populate(data)
+    [:net_price,
+     :shipping,
+     :handling,
+     :gift_wrap,
+     :amount_due].each do |key|
+      self.send("#{key}=", self.class.as_cdf_money(data, key))
+      data.delete key
+    end
 
+    self.cdf_invoice_detail_total = CdfInvoiceDetailTotal.find_nearest_before!(self.cdf_invoice_header, data[:__LINE_NUMBER__])
+    self.order = self.cdf_invoice_detail_total.order
   end
 
 end
