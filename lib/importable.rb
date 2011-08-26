@@ -9,12 +9,12 @@ module Importable
 
   module ClassMethods
     def collaborator(*classes)
-      @@collaborators ||= []
-      @@collaborators << classes
+      @collaborators ||= []
+      @collaborators << classes
     end
 
     def collaborators
-      @@collaborators.flatten
+      @collaborators.flatten
     end
 
     def definition_name
@@ -23,33 +23,31 @@ module Importable
 
     # Returns a file mask that will match import files with the correct extension
     def file_mask
-      "*#{@@ext}"
+      "*#{@ext}"
     end
 
     def define_ext(extension)
-      @@ext = extension
+      @ext = extension
     end
 
     def ext
-      @@ext
+      @ext
     end
 
 
     def define_length(length)
-      @@record_length = length
+      @record_length = length
     end
 
     def record_length
-      @@record_length
+      @record_length
     end
 
     def import_format
       FixedWidth.define definition_name do |d|
         yield d
 
-        self.collaborators.each do |klass|
-          klass.spec d
-        end
+        self.collaborators.each { |klass| klass.spec d }
       end
     end
 
@@ -136,7 +134,7 @@ module Importable
       files = []
       list.each do |file|
         file_name = self.name_from_path(file)
-        if file_name =~ /#{@@ext}$/
+        if file_name =~ /#{@ext}$/
           files << file_name
         end
       end
