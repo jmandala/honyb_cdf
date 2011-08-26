@@ -2,6 +2,9 @@ class CdfInvoiceFreightAndFee < ActiveRecord::Base
   include CdfInvoiceDetailRecord
   include Records
 
+  belongs_to :cdf_invoice_detail_total
+  belongs_to :order
+  
   def self.spec(d)
     d.cdf_invoice_freight_and_fee do |l|
       l.trap { |line| line[0, 2] == '49' }
@@ -26,6 +29,8 @@ class CdfInvoiceFreightAndFee < ActiveRecord::Base
       data.delete key
     end
 
+    self.cdf_invoice_detail_total = CdfInvoiceDetailTotal.find_nearest_before!(self.cdf_invoice_header, data[:__LINE_NUMBER__])
+    self.order = self.cdf_invoice_detail_total.order
   end
 
 end

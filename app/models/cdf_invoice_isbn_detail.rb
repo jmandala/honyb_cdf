@@ -2,6 +2,8 @@ class CdfInvoiceIsbnDetail < ActiveRecord::Base
   include CdfInvoiceDetailRecord
   include Records
 
+  has_one :cdf_invoice_detail_total
+    
   def self.spec(d)
     d.cdf_invoice_isbn_detail do |l|
       l.trap { |line| line[0, 2] == '45' }

@@ -3,9 +3,8 @@ class CdfInvoiceDetailTotal < ActiveRecord::Base
   include CdfInvoiceDetailRecord
   include Records
 
-  belongs_to :cdf_invoice_isbn_detail
-  belongs_to :cdf_invoice_ean_detail
-  belongs_to :cdf_invoice_freight_and_fee
+  belongs_to :cdf_invoice_isbn_detail, :dependent => :destroy
+  belongs_to :cdf_invoice_ean_detail, :dependent => :destroy
   belongs_to :order
   belongs_to :line_item
 
@@ -35,6 +34,5 @@ class CdfInvoiceDetailTotal < ActiveRecord::Base
 
     self.cdf_invoice_isbn_detail = CdfInvoiceIsbnDetail.find_nearest_before!(self.cdf_invoice_header, data[:__LINE_NUMBER__])
     self.cdf_invoice_ean_detail = CdfInvoiceEanDetail.find_nearest_before!(self.cdf_invoice_header, data[:__LINE_NUMBER__])
-    self.cdf_invoice_freight_and_fee = CdfInvoiceFreightAndFee.find_nearest_after!(self.cdf_invoice_header, data[:__LINE_NUMBER__])
   end
 end

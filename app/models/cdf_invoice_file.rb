@@ -16,8 +16,8 @@ class CdfInvoiceFile < ActiveRecord::Base
   collaborator CdfInvoiceHeader
   collaborator CdfInvoiceIsbnDetail
   collaborator CdfInvoiceEanDetail
-  collaborator CdfInvoiceFreightAndFee
   collaborator CdfInvoiceDetailTotal # Must be listed after CdfInvoiceIsbnDetail and CdfInvoiceEanDetail for referencing to work!   
+  collaborator CdfInvoiceFreightAndFee
   collaborator CdfInvoiceTotal
   collaborator CdfInvoiceTrailer
   collaborator CdfInvoiceFileTrailer
