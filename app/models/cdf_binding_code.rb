@@ -1,5 +1,5 @@
 class CdfBindingCode < ActiveRecord::Base
-  def self.other
+  def self.other_code
     where(:code => '').first
   end
 
