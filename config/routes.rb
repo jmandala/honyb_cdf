@@ -45,11 +45,14 @@ Rails.application.routes.draw do
           post :import
         end
       end
-
-
     end
 
     resources :orders do
+      collection do
+        post :generate_test_orders
+        get :test_orders
+      end
+      
       member do
         get :fulfillment
       end

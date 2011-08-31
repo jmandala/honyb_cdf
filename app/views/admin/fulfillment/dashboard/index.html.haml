@@ -1,18 +1,3 @@
 = render :partial => 'admin/shared/fulfillment_sub_menu'
 
-
-%div
-  = "#{@needs_po_count} need Purchase Orders"
-
-%div
-  = "#{@po_files.size} Purchase Order files created"
-
-%div #{button_to 'Generate PO', admin_fulfillment_po_files_path}
-
-.details
-  %h1 Details
-  - @po_files.each do |po|
-    %div
-      = link_to po.file_name, admin_fulfillment_po_file_path(po)
-      \:
-      = po.orders.count
+%div #{button_to 'Generate Test Orders', generate_test_orders_admin_orders_path}
