@@ -1,3 +1,5 @@
 = render :partial => 'admin/shared/fulfillment_sub_menu'
 
-%div #{button_to 'Generate Test Orders', generate_test_orders_admin_orders_path}
+
+= form_tag generate_test_orders_admin_orders_path, :method => :post do
+  %div #{submit_tag 'Generate Test Orders'}
