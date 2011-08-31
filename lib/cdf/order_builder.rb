@@ -1,6 +1,6 @@
 require File.join File.dirname(__FILE__ ), '../../../spec/factories'
 
-class Cdf::OrderFactory
+class Cdf::OrderBuilder
   
   SCENARIOS = [
   {:id => 1, :name => 'single order/single line/single quantity'},
