@@ -1,5 +1,3 @@
-require File.join File.dirname(__FILE__ ), '../../../spec/factories'
-
 class Cdf::OrderBuilder
   
   SCENARIOS = [
@@ -9,7 +7,10 @@ class Cdf::OrderBuilder
   {:id => 4, :name => 'single order/multiple lines/multiple quantity'}
   ]
   
-  def self.new
+  def self.new_test
     order = Order.new_test
+    order.save!
+    order
   end
+  
 end
