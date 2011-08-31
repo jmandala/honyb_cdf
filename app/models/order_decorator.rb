@@ -54,6 +54,11 @@ Order.class_eval do
         where("orders.shipment_state = 'ready'").
         order('completed_at asc')
   end
+  
+  def self.test
+    where(:order_type => :test)
+  end
+  
 
   # Creates a new test order
   def self.new_test
