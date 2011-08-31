@@ -1,5 +1,9 @@
 Order.class_eval do
 
+  before_create :init_order_type
+  
+  TYPES = [:live, :test]
+  
   belongs_to :po_file
   has_many :poa_order_headers, :dependent => :restrict
   has_many :poa_files, :through => :poa_order_headers
@@ -11,11 +15,10 @@ Order.class_eval do
   
 
   register_update_hook :update_auth_before_ship
-
+  
   def update_auth_before_ship
     # todo: update authorized_total
   end
-
 
   def as_cdf(start_sequence = 2)
     Records::Po::Record.new(self, start_sequence)
@@ -52,4 +55,35 @@ Order.class_eval do
         order('completed_at asc')
   end
 
+  # Creates a new test order
+  def self.new_test
+    order = Order.new
+    order.order_type = :test
+    order
+  end
+  
+  # Returns true if this order is a test order
+  def test?
+    self.order_type == :test
+  end
+  
+  # Returns true if this order is a live order
+  def live?
+    !test?
+  end
+  
+  # Changes into a test order
+  # Throws exception if order is already complete
+  def to_test
+    raise Cdf::IllegalStateError, "Cannot convert Order [#{self.number}] to test because it has been completed." if self.completed?
+    self.order_type = :test
+    self
+  end
+  
+  private
+  # Sets the order type if not already set 
+  def init_order_type
+    self.order_type = :live if self.order_type.nil?
+  end
+  
 end
