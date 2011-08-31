@@ -10,7 +10,6 @@ class Cdf::OrderBuilder
   ]
   
   def self.new
-    order = FactoryGirl.create(:order)
-    order.to_test
+    order = Order.new_test
   end
 end
