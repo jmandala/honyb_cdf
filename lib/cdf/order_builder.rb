@@ -14,29 +14,20 @@ class Cdf::OrderBuilder
     order.shipping_method = shipping_method
 
     order.add_variant Cdf::ProductBuilder.next_in_stock!.master, 1
-    payment = order.payments.create(
+    order.payments.create(
         :amount => order.total,
         :source => credit_card,
         :payment_method => bogus_payment_method
     )
 
     complete! order
-
-    # simulate capture
-    #payment.complete
-
     order.update!
-
-    puts order.state
-
-
     order
   end
 
   # Transitions the order to the completed state or raise exception if error occurs while trying
   # @param order [Order]
   def self.complete!(order)
-    puts "START: #{order.state}"
     order.update!
     return order if order.complete?
     while !order.complete?
