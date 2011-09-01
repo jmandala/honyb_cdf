@@ -13,7 +13,7 @@ class Cdf::OrderBuilder
     order.ship_address = us_address
     order.shipping_method = shipping_method
 
-    order.add_variant Cdf::ProductBuilder.next_in_stock!.master, 1
+    order.add_variant Cdf::ProductBuilder.new.next_in_stock!.master, 1
     order.payments.create(
         :amount => order.total,
         :source => credit_card,
