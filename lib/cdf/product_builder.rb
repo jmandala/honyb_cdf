@@ -9,7 +9,10 @@ class Cdf::ProductBuilder
   end
 
   def next_in_stock!
-    self.class.create!(:name => 'In-stock Book', :sku => next_sku(:in_stock))
+    product = self.class.create!(:name => 'In-stock Book', :sku => next_sku(:in_stock))
+    product.on_hand = 1000
+    product.save!
+    product
   end
 
   def next_sku(sku_type)

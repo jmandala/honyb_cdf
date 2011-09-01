@@ -7,7 +7,7 @@ class Cdf::OrderBuilder
       {:id => 4, :name => 'single order/multiple lines/multiple quantity'}
   ]
 
-  def self.new_test
+  def self.completed_test_order
     order = Order.new_test
     order.bill_address = us_address
     order.ship_address = us_address

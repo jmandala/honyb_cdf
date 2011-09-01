@@ -7,7 +7,7 @@ Admin::OrdersController.class_eval do
   # POST /admin/orders
   # Creates a new set of orders for Fulfillment testing
   def generate_test_orders
-    order = Cdf::OrderBuilder.new_test
+    order = Cdf::OrderBuilder.completed_test_order
     
     flash[:notice] = "Created 1 test order"
     
