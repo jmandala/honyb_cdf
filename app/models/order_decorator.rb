@@ -40,7 +40,7 @@ Order.class_eval do
     false
   end
 
-  def gift_message
+  def gift_message  
     "Enjoy your gifts!"
   end
 
@@ -64,6 +64,8 @@ Order.class_eval do
   def self.new_test
     order = Order.new
     order.order_type = :test
+    order.user = User.compliance_tester!
+    order.save!
     order
   end
   
@@ -84,6 +86,14 @@ Order.class_eval do
     self.order_type = :test
     self
   end
+  
+  # Transitions order to the next state and throws exception if it fails
+  def next!
+    if !self.next
+      raise Cdf::IllegalStateError, "Cannot transition order because: #{self.errors.to_yaml}"
+    end
+  end
+  
   
   private
   # Sets the order type if not already set 
