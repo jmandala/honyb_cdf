@@ -4,9 +4,9 @@
 
   %div.scenarios
     %h2 Select a Scenario
-    - Cdf::OrderBuilder::SCENARIOS.each_with_index do |scenario, i|
-      - field = "scenario_#{i}"
+    - Cdf::OrderBuilder::SCENARIOS.each do |scenario|
+      - field = "scenarios[]"
       %div{:class => field}
-        = check_box_tag(field, i)
-        = label_tag(field, scenario[:name])
+        = check_box_tag(field, scenario[:id], false, {'id' => "scenario_#{scenario[:id]}"})
+        = label_tag(field, scenario[:name], :for => "scenario_#{scenario[:id]}")
   %div #{submit_tag 'Generate Test Orders'}

@@ -1,3 +1,4 @@
+#noinspection RubyResolve
 Admin::OrdersController.class_eval do
 
   def fulfillment
@@ -7,9 +8,10 @@ Admin::OrdersController.class_eval do
   # POST /admin/orders
   # Creates a new set of orders for Fulfillment testing
   def generate_test_orders
-    order = Cdf::OrderBuilder.completed_test_order
+    puts params[:scenario].to_yaml
+    orders = Cdf::OrderBuilder.create_for_scenarios params[:scenarios]
     
-    flash[:notice] = "Created 1 test order"
+    flash[:notice] = "Created #{orders.count} test orders"
     
     redirect_to :action => :index, :search =>  {:order_type_equals => :test} 
   end
