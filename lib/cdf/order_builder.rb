@@ -13,6 +13,10 @@ class Cdf::OrderBuilder
     order.ship_address = us_address
     order.shipping_method = shipping_method
 
+    add_line_items order
+    
+    
+    
     payment = order.payments.create(
         :amount => order.total,
         :source => credit_card,
@@ -46,6 +50,11 @@ class Cdf::OrderBuilder
 
   private
 
+  def self.add_line_items(order)
+    
+  end
+  
+  
   def self.bogus_payment_method
     Gateway::Bogus.create!(:name => 'Credit Card', :environment => 'compliance testing')
   end
