@@ -1,18 +1,12 @@
 = render :partial => 'admin/shared/fulfillment_sub_menu'
 
+= form_tag generate_test_orders_admin_orders_path, :method => :post do
 
-%div
-  = "#{@needs_po_count} need Purchase Orders"
-
-%div
-  = "#{@po_files.size} Purchase Order files created"
-
-%div #{button_to 'Generate PO', admin_fulfillment_po_files_path}
-
-.details
-  %h1 Details
-  - @po_files.each do |po|
-    %div
-      = link_to po.file_name, admin_fulfillment_po_file_path(po)
-      \:
-      = po.orders.count
+  %div.scenarios
+    %h2 Select a Scenario
+    - Cdf::OrderBuilder::SCENARIOS.each do |scenario|
+      - field = "scenarios[]"
+      %div{:class => field}
+        = check_box_tag(field, scenario[:id], false, {'id' => "scenario_#{scenario[:id]}"})
+        = label_tag(field, scenario[:name], :for => "scenario_#{scenario[:id]}")
+  %div #{submit_tag 'Generate Test Orders'}

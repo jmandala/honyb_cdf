@@ -62,3 +62,5 @@ en:
   fulfillment_cdf_invoice_files: "Invoice Files"
   import_cdf_invoice_files: "Import Invoice Files"
   destroy_cdf_invoice_poa_files: "Delete All Invoice"
+  show_only_test_orders: "Show Only Test Orders"
+  completed_or_created_at: "Created / Completed At"
