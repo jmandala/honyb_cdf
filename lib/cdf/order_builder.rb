@@ -13,17 +13,14 @@ class Cdf::OrderBuilder
     order.ship_address = us_address
     order.shipping_method = shipping_method
 
-    add_line_items order
-    
-    
-    
+    order.add_variant Cdf::ProductBuilder.next_in_stock!.master, 1
     payment = order.payments.create(
         :amount => order.total,
         :source => credit_card,
         :payment_method => bogus_payment_method
     )
 
-    #complete! order
+    complete! order
 
     # simulate capture
     #payment.complete
@@ -39,8 +36,8 @@ class Cdf::OrderBuilder
   # Transitions the order to the completed state or raise exception if error occurs while trying
   # @param order [Order]
   def self.complete!(order)
-    #puts "START: #{order.state}"
-    #order.save!
+    puts "START: #{order.state}"
+    order.update!
     return order if order.complete?
     while !order.complete?
       order.next!
@@ -50,13 +47,8 @@ class Cdf::OrderBuilder
 
   private
 
-  def self.add_line_items(order)
-    
-  end
-  
-  
   def self.bogus_payment_method
-    Gateway::Bogus.create!(:name => 'Credit Card', :environment => 'compliance testing')
+    Gateway::Bogus.create!(:name => 'Credit Card', :environment => ENV['RAILS_ENV'])
   end
 
   def self.credit_card
