@@ -51,15 +51,20 @@ class Cdf::OrderBuilder
       order.add_variant product_builder.next_in_stock!.master, opts[:line_item_qty]      
     end
     
-    order.payments.create(
+    payment = order.payments.create(
         :amount => order.total,
         :source => credit_card,
         :payment_method => bogus_payment_method
     )
 
-    complete! order
-    order.update!
-    order
+    # finalize the order
+    order.complete!
+    
+    # Authorizes all payments
+    order.process_payments!
+
+    # Capture payments
+    order.capture_payments!
   end
 
   # Transitions the order to the completed state or raise exception if error occurs while trying
@@ -70,6 +75,7 @@ class Cdf::OrderBuilder
     while !order.complete?
       order.next!
     end
+    order.update!    
     order
   end
 

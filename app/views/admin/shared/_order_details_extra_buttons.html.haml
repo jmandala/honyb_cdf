@@ -1,0 +1,9 @@
+- if !@order.has_po?
+  - if @order.ready_for_po?
+    = button_link_to t("create_po"), edit_admin_order_url(@order.number), :icon => 'edit'
+  -else
+    %div.po_requirements{:style => "clear: both"}
+      %div PO Requirements
+      %ul
+        - @order.po_requirements.each do |r| 
+          %li #{r}    

@@ -11,6 +11,9 @@ class CdfHooks < Spree::ThemeSupport::HookListener
     </li>
     )
   end
+  
+  replace :order_details_line_item_row, 'admin/shared/order_details_line_item_row'
+  insert_after :admin_order_show_buttons, 'admin/shared/order_details_extra_buttons'
 
   insert_after :admin_configurations_menu do
     %(
