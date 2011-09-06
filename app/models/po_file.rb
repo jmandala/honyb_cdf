@@ -125,11 +125,11 @@ class PoFile < ActiveRecord::Base
   def put
     raise ArgumentError, "File not found: #{path}" unless File.exists?(path)
 
-    logger.info "put file #{file_name} to #{Spree::Config.get(:cdf_ftp_server)}"
+    logger.info "put file #{file_name} to #{Cdf::Config.get(:cdf_ftp_server)}"
     begin
-      ftp = Net::FTP.open(Spree::Config.get(:cdf_ftp_server))
+      ftp = Net::FTP.open(Cdf::Config.get(:cdf_ftp_server))
       begin
-        ftp.login Spree::Config.get(:cdf_ftp_user), Spree::Config.get(:cdf_ftp_password)
+        ftp.login Cdf::Config.get(:cdf_ftp_user), Cdf::Config.get(:cdf_ftp_password)
       rescue => e
         logger.error "Failed to login to FTP!"
         raise e

@@ -44,7 +44,7 @@ class Admin::Fulfillment::PoFilesController < Admin::ResourceController
     end
 
     @po_files = PoFile.metasearch(params[:search]).group('po_files.file_name').paginate(
-        :per_page => Spree::Config[:po_files_per_page],
+        :per_page => Cdf::Config[:po_files_per_page],
         :page => params[:page])
 
     respond_with @po_files

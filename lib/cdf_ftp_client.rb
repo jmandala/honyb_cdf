@@ -5,9 +5,9 @@ class CdfFtpClient
   attr_reader :server, :user, :password
 
   def initialize
-    @server = Spree::Config.instance.preferences['cdf_ftp_server']
-    @user = Spree::Config.instance.preferences['cdf_ftp_user']
-    @password = Spree::Config.instance.preferences['cdf_ftp_password']
+    @server = Cdf::Config.instance.preferences['cdf_ftp_server']
+    @user = Cdf::Config.instance.preferences['cdf_ftp_user']
+    @password = Cdf::Config.instance.preferences['cdf_ftp_password']
   end
 
   def connect

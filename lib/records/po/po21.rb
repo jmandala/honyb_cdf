@@ -74,16 +74,16 @@ module Records
 
 
       def ingram_ship_to_account_number
-        Spree::Config.get(:cdf_ship_to_account).ljust_trim 7
+        Cdf::Config.get(:cdf_ship_to_account).ljust_trim 7
       end
 
       def po_type
-        if Spree::Config.get(:cdf_test_mode).nil?
-          Spree::Config.set({:cdf_test_mode => 'false'})
+        if Cdf::Config.get(:cdf_test_mode).nil?
+          Cdf::Config.set({:cdf_test_mode => 'false'})
         end
 
         # Never send test orders while in TEST_MODE
-        if Spree::Config.get(:cdf_test_mode) == 'true'
+        if Cdf::Config.get(:cdf_test_mode) == 'true'
           return PO_TYPE[:purchase_order].ljust_trim(1)
         end
 
@@ -111,7 +111,7 @@ module Records
       end
 
       def ship_to_password
-        Spree::Config.get(:cdf_ship_to_password).ljust_trim 8
+        Cdf::Config.get(:cdf_ship_to_password).ljust_trim 8
       end
 
       # Address   Shipping Method     Big BISAC Code Sent     ASN Allow PO Box

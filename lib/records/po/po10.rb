@@ -25,7 +25,7 @@ module Records
       end
 
       def ingram_bill_to_account_number
-        Spree::Config.get(:cdf_bill_to_account)
+        Cdf::Config.get(:cdf_bill_to_account)
       end
 
       def order_date

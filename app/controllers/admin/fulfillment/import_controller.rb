@@ -26,7 +26,7 @@ class Admin::Fulfillment::ImportController < Admin::ResourceController
     end
 
     @collection = model_class.metasearch(params[:search]).group("#{object_name}s.file_name").paginate(
-        :per_page => Spree::Config["#{object_name}s_per_page"],
+        :per_page => Cdf::Config["#{object_name}s_per_page"],
         :page => params[:page])
 
     respond_with @collection
