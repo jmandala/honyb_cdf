@@ -4,36 +4,47 @@ class PoFile < ActiveRecord::Base
 
   #noinspection RailsParamDefResolve
   has_many :orders, :autosave => true, :dependent => :nullify, :order => 'completed_at asc'
-
+  
   #noinspection RailsParamDefResolve
   has_many :poa_files, :dependent => :destroy, :order => 'created_at asc'
 
   after_create :init_file_name
+  
   before_destroy :delete_file
 
 
   def read
-    raise ArgumentError, "File not found: #{path}" unless File.exists?(path)
+    raise ArgumentError, "File not found: #{path}" unless has_file?
+
     File.read path
   end
 
+  def has_file?
+    self.persisted? ? File.exists?(path) : false
+  end
+
+  def initialize
+    @count = init_counters
+    super
+  end
+  
+  
   def load_data
     # initialize the file name
     save!
 
-    count = init_counters
-    @data = po00.cdf_record + Records::Base::LINE_TERMINATOR
+    data = po00.cdf_record + Records::Base::LINE_TERMINATOR
 
     Order.needs_po.limit(25).each do |order|
       self.orders << order
-      po = order.as_cdf(count[:total_records])
-      @data << po.to_s
-      update_counters(count, order, po)
+      po = order.as_cdf(@count[:total_records])
+      data << po.to_s
+      update_counters(order, po)
     end
-
-    @data << po90(count).cdf_record
-
     save!
+
+    data << po90.cdf_record
+    data
   end
 
 
@@ -45,51 +56,54 @@ class PoFile < ActiveRecord::Base
     po_file
   end
 
+  def self.prefix
+    ''
+  end
+
+  def self.ext
+    '.fbo'
+  end
+
+
   def save_data!
-    load_data
+    data = load_data
     FileUtils.mkdir_p(File.dirname(path))
-    File.open(path, 'w') { |f| f.write @data }
+    File.open(path, 'w') { |f| f.write data }
     save!
   end
 
   def delete_file
-    if File.exists? path
+    if self.persisted? && File.exists?(path)
       FileUtils.rm path
+      return true
     end
-
+    
+    false
   end
 
   def init_file_name
-    self.file_name = prefix + created_at.strftime("%y%m%d%H%M%S") + ext
+    self.file_name = self.class.prefix + self.created_at.strftime("%y%m%d%H%M%S") + self.class.ext
     save!
   end
 
-
-  def prefix
-    ''
-  end
-
-  def ext
-    '.fbo'
-  end
 
   def po00
     Records::Po::Po00.new(file_name)
   end
 
-  def po90(count)
-    Records::Po::Po90.new(count[:total_records], :name=>'Po90', :count => count)
+  def po90
+    Records::Po::Po90.new(@count[:total_records], :name=>'Po90', :count => @count)
   end
 
 
-  def update_counters(count, order, po)
-    count[:total_records] += po.count[:total]
-    count[:total_purchase_orders] += 1
-    count[:total_line_items] += order.line_items.count
-    count[:total_units] += order.total_quantity
+  def update_counters(order, po)
+    @count[:total_records] += po.count[:total]
+    @count[:total_purchase_orders] += 1
+    @count[:total_line_items] += order.line_items.count
+    @count[:total_units] += order.total_quantity
 
     for i in 0..8 do
-      count[i.to_s] = po.count[i.to_s]
+      @count[i.to_s] = po.count[i.to_s]
     end
   end
 
@@ -109,7 +123,9 @@ class PoFile < ActiveRecord::Base
   end
 
   def path
-    "#{CdfConfig::data_lib_out_root(created_at.strftime("%Y"))}/#{file_name}"
+    raise Cdf::IllegalStateError, "Can't get path until PoFile has been saved" unless persisted?
+
+    "#{CdfConfig::data_lib_out_root(self.created_at.strftime("%Y"))}/#{file_name}"
   end
 
   def put
