@@ -122,6 +122,7 @@ class PoFile < ActiveRecord::Base
 
     self.submitted_at = Time.now
     self.save!
+    self.submitted_at
   end
 
   private

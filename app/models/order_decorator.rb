@@ -52,7 +52,7 @@ Order.class_eval do
     where("orders.completed_at IS NOT NULL").
         where("orders.po_file_id IS NULL").
         where("orders.shipment_state = 'ready'").
-        order('completed_at asc')
+        order('orders.completed_at asc')
   end
 
   def needs_po?
