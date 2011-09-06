@@ -8,40 +8,40 @@
     %th{:scope => 'row'}
       = t "cdf_ship_to_password"
     %td
-      = Spree::Config[:cdf_ship_to_password]
+      = Cdf::Config[:cdf_ship_to_password]
   
   %tr
     %th{:scope => 'row'}
       = t "cdf_ship_to_account"
     %td
-      =  Spree::Config[:cdf_ship_to_account]
+      =  Cdf::Config[:cdf_ship_to_account]
 
   %tr
     %th{:scope => 'row'}
       = t "cdf_bill_to_account"
     %td
-      =  Spree::Config[:cdf_bill_to_account]
+      =  Cdf::Config[:cdf_bill_to_account]
 
 
   %tr
     %th{:scope => 'row'}
       = t "cdf_ftp_server"
     %td
-      =  Spree::Config[:cdf_ftp_server]
+      =  Cdf::Config[:cdf_ftp_server]
 
 
   %tr
     %th{:scope => 'row'}
       = t "cdf_ftp_user"
     %td
-      =  Spree::Config[:cdf_ftp_user]
+      = Cdf::Config[:cdf_ftp_user]
 
 
   %tr
     %th{:scope => 'row'}
       = t "cdf_ftp_password"
     %td
-      ********
+      = Cdf::Config[:cdf_ftp_password].empty? ? "[undefined]" : "******"
 
 
 

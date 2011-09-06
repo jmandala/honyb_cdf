@@ -11,6 +11,7 @@ en:
   po_file: "PO File"
   create_po_file: "Generate PO"
   destroy_all_po_files: "Delete All POs"
+  submit_po_file: "Submit PO"
   asn_file: "ASN File"
   asn_files: "ASN Files"
   asn_shipments: "ASN Shipments"

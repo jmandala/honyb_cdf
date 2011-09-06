@@ -127,15 +127,25 @@ class PoFile < ActiveRecord::Base
 
     logger.info "put file #{file_name} to #{Spree::Config.get(:cdf_ftp_server)}"
     begin
-      Net::FTP.open(Spree::Config.get(:cdf_ftp_server)) do |ftp|
+      ftp = Net::FTP.open(Spree::Config.get(:cdf_ftp_server))
+      begin
         ftp.login Spree::Config.get(:cdf_ftp_user), Spree::Config.get(:cdf_ftp_password)
-        ftp.chdir 'incoming'
-        ftp.put File.new(path)
+      rescue => e
+        logger.error "Failed to login to FTP!"
+        raise e
       end
-    rescue StandardError => e
+      ftp.chdir 'incoming'
+      ftp.put File.new(path)
+      ftp.close
+    rescue => e
       logger.error e
+      raise e
+    ensure
+      ftp.close if ftp
     end
 
+    self.submitted_at = Time.now
+    self.save!
   end
 
 end

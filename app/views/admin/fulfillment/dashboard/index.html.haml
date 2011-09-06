@@ -1,5 +1,16 @@
 = render :partial => 'admin/shared/fulfillment_sub_menu'
 
+%div.settings
+  %h2 Cdf Settings
+  %ul
+    %li ftp server: #{Cdf::Config[:cdf_ftp_server]}
+    %li ftp user: #{Cdf::Config[:cdf_ftp_user]}
+    %li ftp pwd: #{Cdf::Config[:cdf_ftp_password]}
+    %li ship to account: #{Cdf::Config[:cdf_ship_to_account]}
+    %li ship to pwd: #{Cdf::Config[:cdf_ship_to_password]}
+    %li bill to account: #{Cdf::Config[:cdf_bill_to_account]}
+
+
 = form_tag generate_test_orders_admin_orders_path, :method => :post do
 
   %div.scenarios

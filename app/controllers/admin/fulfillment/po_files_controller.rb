@@ -14,6 +14,13 @@ class Admin::Fulfillment::PoFilesController < Admin::ResourceController
       format.js { render :layout => false }
     end
   end
+  
+  def submit
+    @po_file = PoFile.find_by_id params[:id]
+    @po_file.put
+    flash[:notice] = "Submitted PO File #{@po_file.file_name}"
+    redirect_to :action => :show
+  end
 
   def show
     begin
