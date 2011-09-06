@@ -87,6 +87,14 @@ module Importable
       files_from_dir_list(ftp.list(file_mask))
     end
 
+    def outgoing_dir
+      '~/outgoing'
+    end
+    
+    def test_dir
+      '~/test'
+    end
+
     # Downloads all remote files in the 'outgoing' directory
     # matching the file_mask
     #
@@ -96,26 +104,31 @@ module Importable
 
       client = CdfFtpClient.new({:keep_alive => true})
 
-      remote_dir = '~/outgoing'
+      files = []
+      [outgoing_dir, test_dir].each do |remote_dir|
+        download_from_dir(client, remote_dir).each {|file| files << file}
+      end
+      files
+    end
+
+    def download_from_dir(client, remote_dir)
       remote_listing = client.dir remote_dir, ".*\\\#{@ext}"
 
       files = []
-      
       remote_listing.each do |listing|
         file = client.name_from_path listing
 
         import_file = self.new_or_archived(file)
-                
+
         local_path = create_path file
-        remote_path = File.join(remote_dir, file) 
+        remote_path = File.join(remote_dir, file)
         client.get remote_path, local_path
         write_data_with_delimiters local_path
 
         files << import_file
-        
+
         client.delete remote_path
       end
-
       files
     end
 
