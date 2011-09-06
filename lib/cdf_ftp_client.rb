@@ -1,8 +1,10 @@
 require 'net/ftp'
 
 module Cdf
-  class InvalidCredentials < StandardError; end
-  class InvalidServer < StandardError; end
+  class InvalidCredentials < StandardError
+  end
+  class InvalidServer < StandardError
+  end
 end
 
 class CdfFtpClient
@@ -25,10 +27,12 @@ class CdfFtpClient
     run_mode == :test
   end
 
-  def initialize
+  def initialize(opts={})
+    @keep_alive = opts[:keep_alive] || false
     @server = Cdf::Config.instance.preferences['cdf_ftp_server']
     @user = Cdf::Config.instance.preferences['cdf_ftp_user']
     @password = Cdf::Config.instance.preferences['cdf_ftp_password']
+    @ftp = nil
   end
 
   # Makes a connection and yields the block given, if there is one
@@ -37,15 +41,74 @@ class CdfFtpClient
   def connect
     return if mock?
 
-    ftp = login!
+    if !@ftp || !@keep_alive
+      @ftp = login!
+    end
+    
     begin
-      yield ftp if block_given?
+      yield @ftp if block_given?
     rescue => e
       raise ArgumentError, "Unable to perform FTP commands: #{e.class}: #{e.message}"
     ensure
-      ftp.close if ftp
+      @ftp.close if @ftp && !@keep_alive
     end
+  end
 
+  # Returns all files in the 'outgoing' folder
+  def outgoing_files
+    dir '~/outgoing'
+  end
+
+  # Returns all files in the 'test' folder
+  def test_files
+    dir '~/test'
+  end
+
+  # Returns all files in the 'archive' folder
+  def archive_files
+    dir '~/archive'
+  end
+
+  # Returns all files in the 'incoming' folder
+  def incoming_files
+    dir '~/incoming'
+  end
+
+  # @param list [Array]
+  # @param regexp [String]
+  def files_from_dir_list(list, regexp)
+    files = []
+    list.each do |file|
+      file_name = name_from_path(file)
+      files << file_name if !regexp || regexp && file =~ /#{regexp}$/
+    end
+    files
+  end
+
+
+  def dir(dir=nil, regexp=nil)
+    files = []
+    connect do |ftp|
+      ftp.chdir dir if dir
+      ftp.list.each do |file|
+        file_name = name_from_path(file)
+        files << file if !regexp || regexp && file_name =~ /#{regexp}$/
+      end
+    end
+    files
+  end
+
+  def name_from_path(file)
+    file.split[file.split.length-1]
+  end
+
+  def open?
+    !@ftp.nil?
+  end
+  
+  def close
+    @ftp.close if @ftp
+    @ftp = nil
   end
 
   def valid_server?

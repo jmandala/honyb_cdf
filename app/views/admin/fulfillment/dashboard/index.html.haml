@@ -21,3 +21,24 @@
         = check_box_tag(field, scenario[:id], false, {'id' => "scenario_#{scenario[:id]}"})
         = label_tag(field, scenario[:name], :for => "scenario_#{scenario[:id]}")
   %div #{submit_tag 'Generate Test Orders'}
+
+%div.remote_files
+  %h2 Outgoing Files
+  %ul
+    - @outgoing_files.each do |file|
+      %li #{file} 
+  
+  %h2 Test Files
+  %ul
+    - @test_files.each do |file|
+      %li #{file}
+      
+  %h2 Archive Files
+  %ul
+    - @archive_files.each do |file|
+      %li #{file}
+            
+  %h2 Incoming Files
+  %ul
+    - @incoming_files.each do |file|
+      %li #{file}

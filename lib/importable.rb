@@ -1,6 +1,7 @@
 require 'fileutils'
 
 module Importable
+  #noinspection RubyResolve
   include Updateable
 
   def self.included(base)
@@ -63,20 +64,31 @@ module Importable
 
     # Returns an array of remote file names including only files with an extension of @@ext
     def remote_files
-      client = CdfFtpClient.new
       files = []
-      client.connect do |ftp|
+      CdfFtpClient.new.connect do |ftp|
         files = remote_file_list ftp
       end
       files
     end
+    
+    
 
     def remote_file_path
-      'test'
+      'outgoing'
     end
 
     def remote_file_list(ftp)
       ftp.chdir remote_file_path
+      files_from_dir_list(ftp.list(file_mask))
+    end
+
+    def remote_test_file_list(ftp)
+      ftp.chdir '~/test'
+      files_from_dir_list(ftp.list(file_mask))
+    end
+    
+    def remote_outgoing_file_list(ftp)
+      ftp.chdir '~/outgoing'
       files_from_dir_list(ftp.list(file_mask))
     end
 
@@ -95,6 +107,7 @@ module Importable
 
           write_data_with_delimiters local_path
 
+          #noinspection RubyResolve
           import_file = self.find_by_file_name(file)
 
           if import_file
@@ -202,6 +215,7 @@ module Importable
 
       end
 
+      #noinspection RubyResolve
       self.imported_at = Time.now
       save!
 
