@@ -9,5 +9,6 @@ class CdfConfiguration < Configuration
   preference :cdf_ftp_server, :string, :default => "ftp1.ingrambook.com"
   preference :cdf_ftp_user, :string, :default => ""
   preference :cdf_ftp_password, :string, :default => ""
+  preference :cdf_test_mode, :integer, :default => 0
 
 end
