@@ -8,23 +8,13 @@ class PoFile < ActiveRecord::Base
   #noinspection RailsParamDefResolve
   has_many :poa_files, :dependent => :destroy, :order => 'created_at asc'
 
-  #noinspection RubyResolve
-  attr_reader :data
-
   after_create :init_file_name
   before_destroy :delete_file
 
 
-  def load_file
+  def read
     raise ArgumentError, "File not found: #{path}" unless File.exists?(path)
-
-    @data = ''
-    File.open(path, 'r') do |file|
-      while line = file.gets
-        @data << line
-      end
-    end
-    @data
+    File.read path
   end
 
   def load_data
