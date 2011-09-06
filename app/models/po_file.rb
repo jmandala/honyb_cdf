@@ -105,7 +105,7 @@ class PoFile < ActiveRecord::Base
   def put
     raise ArgumentError, "File not found: #{path}" unless File.exists?(path)
 
-    puts "put file #{file_name} to #{Cdf::Config.get(:cdf_ftp_server)}"
+    return self.submitted_at if self.submitted?
 
     client = CdfFtpClient.new
 
@@ -123,6 +123,11 @@ class PoFile < ActiveRecord::Base
     self.submitted_at = Time.now
     self.save!
     self.submitted_at
+  end
+  
+  # Returns true if already submitted
+  def submitted?
+    !self.submitted_at.nil?
   end
 
   private
