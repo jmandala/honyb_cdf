@@ -116,7 +116,6 @@ module Importable
             import_file = self.create(:file_name => file)
           end
 
-
           files << import_file
           ftp.delete file
         end
