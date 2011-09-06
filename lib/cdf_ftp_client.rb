@@ -5,6 +5,8 @@ module Cdf
   end
   class InvalidServer < StandardError
   end
+  class MissingFile < StandardError
+  end
 end
 
 class CdfFtpClient
@@ -44,7 +46,7 @@ class CdfFtpClient
     if !@ftp || !@keep_alive
       @ftp = login!
     end
-    
+
     begin
       yield @ftp if block_given?
     rescue => e
@@ -98,14 +100,57 @@ class CdfFtpClient
     files
   end
 
+  # Uploads the local file to the remote path
+  # @param local_file [String]
+  # @param remote_path [String]
+  # @return nil
+  def put(remote_path, local_file)
+    raise Cdf::MissingFile, "Can't locate local file #{local_file}." unless File.exists? local_file
+
+    connect do |ftp|
+      ftp.put File.new(local_file), File.join(remote_path, File.basename(local_file))
+    end
+  end
+
+  def delete(remote_path, file_name)
+    connect do |ftp|
+      ftp.delete(File.join(remote_path, file_name))
+    end
+  end
+
+  def get(remote_path, local_path)
+    @ftp ||= open!
+
+    @ftp.get remote_path, local_path
+    
+    local_path
+  end
+
+  # Downloads the file 
+  def get_all(remote_path, mask, local_dir='.')
+    FileUtils.mkdir_p local_dir
+
+    @ftp ||= open!
+
+    downloaded = []
+
+    dir(remote_path, mask).each do |path|
+      file_name = name_from_path(path)
+      @ftp.get File.join(remote_path, file_name), File.join(local_dir, file_name)
+      downloaded << file_name
+    end
+
+    downloaded
+  end
+
   def name_from_path(file)
     file.split[file.split.length-1]
   end
 
   def open?
-    !@ftp.nil?
+    !@ftp.nil? && !@ftp.closed?
   end
-  
+
   def close
     @ftp.close if @ftp
     @ftp = nil

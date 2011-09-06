@@ -63,15 +63,10 @@ module Importable
     end
 
     # Returns an array of remote file names including only files with an extension of @@ext
-    def remote_files
-      files = []
-      CdfFtpClient.new.connect do |ftp|
-        files = remote_file_list ftp
-      end
-      files
+    def remote_files(remote_dir='~/outgoing')
+      CdfFtpClient.new.dir remote_dir, ".*\\\#{@ext}"
     end
-    
-    
+
 
     def remote_file_path
       'outgoing'
@@ -86,7 +81,7 @@ module Importable
       ftp.chdir '~/test'
       files_from_dir_list(ftp.list(file_mask))
     end
-    
+
     def remote_outgoing_file_list(ftp)
       ftp.chdir '~/outgoing'
       files_from_dir_list(ftp.list(file_mask))
@@ -99,29 +94,41 @@ module Importable
     def download
       CdfConfig::ensure_path CdfConfig::current_data_lib_in
 
+      client = CdfFtpClient.new({:keep_alive => true})
+
+      remote_dir = '~/outgoing'
+      remote_listing = client.dir remote_dir, ".*\\\#{@ext}"
+
       files = []
-      CdfFtpClient.new.connect do |ftp|
-        remote_file_list(ftp).each do |file|
-          local_path = create_path file
-          ftp.gettextfile(file, local_path)
+      
+      remote_listing.each do |listing|
+        file = client.name_from_path listing
 
-          write_data_with_delimiters local_path
+        import_file = self.new_or_archived(file)
+                
+        local_path = create_path file
+        remote_path = File.join(remote_dir, file) 
+        client.get remote_path, local_path
+        write_data_with_delimiters local_path
 
-          #noinspection RubyResolve
-          import_file = self.find_by_file_name(file)
-
-          if import_file
-            import_file = import_file.archive_with_new_file file
-          else
-            import_file = self.create(:file_name => file)
-          end
-
-          files << import_file
-          ftp.delete file
-        end
+        files << import_file
+        
+        client.delete remote_path
       end
 
       files
+    end
+
+    def new_or_archived(file)
+      import_file = self.find_by_file_name(file)
+
+      if import_file
+        import_file = import_file.archive_with_new_file file
+      else
+        import_file = self.create(:file_name => file)
+      end
+
+      import_file
     end
 
     # Updates the contents of path to include record terminators
@@ -153,6 +160,7 @@ module Importable
       files
     end
 
+    # @return [String] the location to save this file
     def create_path(file_name)
       File.join CdfConfig::current_data_lib_in, file_name
     end
