@@ -6,6 +6,11 @@
 %table.index.settings
   %tr
     %th{:scope => 'row'}
+      = t "cdf_run_mode"
+    %td
+      = Cdf::Config[:cdf_run_mode]
+  %tr
+    %th{:scope => 'row'}
       = t "cdf_ship_to_password"
     %td
       = Cdf::Config[:cdf_ship_to_password]

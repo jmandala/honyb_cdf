@@ -8,6 +8,12 @@
     %tr
       %th{:scope => 'row'}
         %label
+          = label_tag 'preferences[cdf_run_mode]', t("cdf_run_mode")
+      %td
+        = select_tag('preferences[cdf_run_mode]', options_for_select(Cdf::Config::RUN_MODE, Cdf::Config[:cdf_run_mode]))    
+    %tr
+      %th{:scope => 'row'}
+        %label
           = label_tag 'preferences[cdf_ship_to_password]', t("cdf_ship_to_password")
       %td
         = text_field_tag('preferences[cdf_ship_to_password]', Cdf::Config[:cdf_ship_to_password])

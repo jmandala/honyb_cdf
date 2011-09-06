@@ -65,3 +65,4 @@ en:
   destroy_cdf_invoice_poa_files: "Delete All Invoice"
   show_only_test_orders: "Show Only Test Orders"
   completed_or_created_at: "Created / Completed At"
+  cdf_run_mode: "Cdf Run Mode"

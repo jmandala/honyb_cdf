@@ -78,12 +78,12 @@ module Records
       end
 
       def po_type
-        if Cdf::Config.get(:cdf_test_mode).nil?
-          Cdf::Config.set({:cdf_test_mode => 'false'})
+        if Cdf::Config.get(:cdf_run_mode).nil?
+          Cdf::Config.set({:cdf_run_mode => 'false'})
         end
 
         # Never send test orders while in TEST_MODE
-        if Cdf::Config.get(:cdf_test_mode) == 'true'
+        if Cdf::Config.get(:cdf_run_mode) == 'true'
           return PO_TYPE[:purchase_order].ljust_trim(1)
         end
 
