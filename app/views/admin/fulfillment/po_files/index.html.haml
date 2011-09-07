@@ -1,22 +1,17 @@
 = render :partial => 'admin/shared/fulfillment_sub_menu'
 
-
-- for order in Order.needs_po do
-  %div
-    = link_to order.number, admin_order_path(order)
-    = order.line_items.count
-    - for line_item in order.line_items do
-      %div
-        = line_item.variant.name
-    = order.completed_at
-
 %div.admin_buttons
-  = form_tag(admin_fulfillment_po_files_path) do |f|
-    %div
-      = button t('create_po_file'), 'add'
-    - if @po_files.length >0
+  - order_count = Order.needs_po.count
+  %p #{order_count} orders need PO
+  
+  - if Order.needs_po.count > 0
+    = form_tag(admin_fulfillment_po_files_path) do |f|
       %div
-        = link_to t('destroy_all_po_files'), purge_admin_fulfillment_po_files_path, :method => :delete
+        = button t('create_po_file'), 'add'
+      - if @po_files.length >0
+        %div
+          = link_to t('destroy_all_po_files'), purge_admin_fulfillment_po_files_path, :method => :delete
+
 
 %h1 #{t 'po_files'}
 %div

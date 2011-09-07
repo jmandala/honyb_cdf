@@ -22,7 +22,7 @@ module Records
       end
 
       def item_number
-        line_item.product.sku.ljust_trim 20
+        line_item.product.sku.gsub(/-/, '').ljust_trim 20
       end
 
       def item_number_type

@@ -8,41 +8,47 @@
     %tr
       %th{:scope => 'row'}
         %label
-          = t "cdf_ship_to_password"
+          = label_tag 'preferences[cdf_run_mode]', t("cdf_run_mode")
       %td
-        = text_field_tag('preferences[cdf_ship_to_password]', Spree::Config[:cdf_ship_to_password])
+        = select_tag('preferences[cdf_run_mode]', options_for_select(Cdf::Config::RUN_MODE, Cdf::Config[:cdf_run_mode]))    
     %tr
       %th{:scope => 'row'}
-        = t "cdf_ship_to_account"
+        %label
+          = label_tag 'preferences[cdf_ship_to_password]', t("cdf_ship_to_password")
       %td
-        = text_field_tag('preferences[cdf_ship_to_account]', Spree::Config[:cdf_ship_to_account])
-
+        = text_field_tag('preferences[cdf_ship_to_password]', Cdf::Config[:cdf_ship_to_password])
     %tr
       %th{:scope => 'row'}
-        = t "cdf_bill_to_account"
+        = label_tag 'preferences[cdf_ship_to_account]', t("cdf_ship_to_account")
       %td
-        = text_field_tag('preferences[cdf_bill_to_account]',  Spree::Config[:cdf_bill_to_account])
-
-
-    %tr
-      %th{:scope => 'row'}
-        = t "cdf_ftp_server"
-      %td
-        =  text_field_tag('preferences[cdf_ftp_server]', Spree::Config[:cdf_ftp_server])
-
+        = text_field_tag('preferences[cdf_ship_to_account]', Cdf::Config[:cdf_ship_to_account])
 
     %tr
       %th{:scope => 'row'}
-        = t "cdf_ftp_user"
+        = label_tag 'preferences[cdf_bill_to_account]', t("cdf_bill_to_account")
       %td
-        = text_field_tag('preferences[cdf_ftp_user]',  Spree::Config[:cdf_ftp_user])
+        = text_field_tag('preferences[cdf_bill_to_account]',  Cdf::Config[:cdf_bill_to_account])
 
 
     %tr
       %th{:scope => 'row'}
-        = t "cdf_ftp_password"
+        = label_tag 'preferences[cdf_ftp_server]', t("cdf_ftp_server")
       %td
-        = password_field_tag('', Spree::Config[:cdf_ftp_password])
+        =  text_field_tag('preferences[cdf_ftp_server]', Cdf::Config[:cdf_ftp_server])
+
+
+    %tr
+      %th{:scope => 'row'}
+        = label_tag 'preferences[cdf_ftp_user]', t("cdf_ftp_user")
+      %td
+        = text_field_tag('preferences[cdf_ftp_user]',  Cdf::Config[:cdf_ftp_user])
+
+
+    %tr
+      %th{:scope => 'row'}
+        = label_tag 'preferences[cdf_ftp_password]', t("cdf_ftp_password")
+      %td
+        = password_field_tag('preferences[cdf_ftp_password]', Cdf::Config[:cdf_ftp_password])
 
   %p{:class =>"form-buttons"}
     = button t('update') 

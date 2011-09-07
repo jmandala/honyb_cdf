@@ -11,6 +11,7 @@ en:
   po_file: "PO File"
   create_po_file: "Generate PO"
   destroy_all_po_files: "Delete All POs"
+  submit_po_file: "Submit PO"
   asn_file: "ASN File"
   asn_files: "ASN Files"
   asn_shipments: "ASN Shipments"
@@ -64,3 +65,4 @@ en:
   destroy_cdf_invoice_poa_files: "Delete All Invoice"
   show_only_test_orders: "Show Only Test Orders"
   completed_or_created_at: "Created / Completed At"
+  cdf_run_mode: "Cdf Run Mode"

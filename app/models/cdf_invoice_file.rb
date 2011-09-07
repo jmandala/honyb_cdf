@@ -3,8 +3,8 @@ class CdfInvoiceFile < ActiveRecord::Base
   include Records
 
   has_many :orders, :through => :cdf_invoice_detail_totals
-  has_many :cdf_invoice_detail_totals, :dependent => :destroy
   has_many :cdf_invoice_headers, :dependent => :destroy
+  has_many :cdf_invoice_detail_totals, :dependent => :destroy, :through => :cdf_invoice_headers
   has_many :cdf_invoice_file_trailers, :dependent => :destroy
 
 

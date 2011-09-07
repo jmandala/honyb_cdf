@@ -1,7 +1,6 @@
 = render :partial => 'admin/shared/fulfillment_sub_menu'
 
 
-
 %div.admin_buttons
   %div #{button_link_to t('back'), admin_fulfillment_po_files_path, :icon => '16x16/8'}
 
@@ -10,6 +9,12 @@
 %h2 #{@po_file.file_name}
 
 %p #{t 'created_at'} #{@po_file.created_at.strftime("%m-%d-%y %h:%M")}
+
+- if @po_file.submitted_at
+  %p #{t 'submitted_at'} #{@po_file.submitted_at.strftime("%m-%d-%y %h:%M")}
+- else
+  %div #{button_link_to t('submit_po_file'), submit_admin_fulfillment_po_file_path, :icon => 'send-email', :method => :post}   
+    
 %div.field_pair
   %legend
     = t('file_path')
@@ -18,8 +23,8 @@
 
 %h2 #{t 'contents'}
 %div.contents
-  - if @po_file.data
-    %pre #{@po_file.data}
+  - if @data
+    %pre #{@data}
   - else
     &mdash;
 

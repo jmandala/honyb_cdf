@@ -1,7 +1,12 @@
 class Admin::Fulfillment::SettingsController < Admin::BaseController
 
   def update
-    Spree::Config.set(params[:preferences])
+    begin
+      Cdf::Config.set(params[:preferences]) if Cdf::Config.instance
+    rescue => e
+      logger.error e.message
+      raise e
+    end
 
     respond_to do |format|
       format.html {

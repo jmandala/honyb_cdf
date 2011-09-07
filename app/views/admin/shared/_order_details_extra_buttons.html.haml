@@ -1,0 +1,9 @@
+- if !@order.has_po?
+  - if @order.ready_for_po?
+    = button_link_to t("create_po_file"), admin_fulfillment_po_files_path, :icon => 'send-email', :method => :post
+  -else
+    %div.po_requirements{:style => "clear: both"}
+      %div PO Requirements
+      %ul
+        - @order.po_requirements.each do |r| 
+          %li #{r}    
