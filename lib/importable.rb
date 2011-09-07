@@ -61,8 +61,15 @@ module Importable
     end
 
     # Returns an array of remote file names including only files with an extension of @@ext
-    def remote_files(remote_dir='~/outgoing')
-      CdfFtpClient.new.dir remote_dir, ".*\\\#{@ext}"
+    def remote_files
+      client = CdfFtpClient.new({:keep_alive => true})
+      files = []
+      ['test', 'outgoing'].each do |dir|
+        remote_dir = "~/#{dir}"
+        files +=  client.dir(remote_dir, ".*\\\#{@ext}")
+      end
+      client.close
+      files
     end
 
 
@@ -88,7 +95,7 @@ module Importable
     def outgoing_dir
       '~/outgoing'
     end
-    
+
     def test_dir
       '~/test'
     end
@@ -104,7 +111,7 @@ module Importable
 
       files = []
       [outgoing_dir, test_dir].each do |remote_dir|
-        download_from_dir(client, remote_dir).each {|file| files << file}
+        download_from_dir(client, remote_dir).each { |file| files << file }
       end
       files
     end
@@ -158,7 +165,7 @@ module Importable
     def write_data(path, data)
       FileUtils.mkdir_p(File.dirname(path))
       FileUtils.touch(path)
-      
+
       raise ArgumentError, "Invalid file path '#{path}'" unless File.exists?(path)
       data = add_delimiters data
       File.open(path, 'w') { |f| f.write(data) }
@@ -224,18 +231,18 @@ module Importable
   def import_error?
     data == 'NO MAINFRAME'
   end
-  
+
   def import_error_message
     if data == 'NO MAINFRAME'
       'NO MAINFRAME'
     end
   end
-  
+
   def import
     if import_error?
       return CdfImportExceptionLog.create(:event => "Error importing file: #{import_error_message}", :file_name => self.file_name)
     end
-    
+
     begin
       p = parsed
 
@@ -247,7 +254,7 @@ module Importable
         rescue => e
           message = "Error importing #{klass}. #{e.message}"
           CdfImportExceptionLog.create(:event => message, :file_name => self.file_name)
-          raise StandardError, message, e.backtrace
+          raise e, message, e.backtrace
         end
 
       end
@@ -257,8 +264,9 @@ module Importable
       save!
 
       imported
-    rescue StandardError => e
+    rescue => e
       CdfImportExceptionLog.create(:event => e.message, :file_name => self.file_name, :backtrace => e.backtrace)
+      raise e
     end
   end
 
