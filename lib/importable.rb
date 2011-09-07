@@ -35,7 +35,6 @@ module Importable
       @ext
     end
 
-
     def define_length(length)
       @record_length = length
     end
@@ -51,7 +50,6 @@ module Importable
         self.collaborators.each { |klass| klass.spec d }
       end
     end
-
 
     def files
       Rails.logger.debug "FileMask: #{file_mask}"
@@ -78,12 +76,12 @@ module Importable
     end
 
     def remote_test_file_list(ftp)
-      ftp.chdir '~/test'
+      ftp.chdir test_dir
       files_from_dir_list(ftp.list(file_mask))
     end
 
     def remote_outgoing_file_list(ftp)
-      ftp.chdir '~/outgoing'
+      ftp.chdir outgoing_dir
       files_from_dir_list(ftp.list(file_mask))
     end
 
@@ -158,6 +156,10 @@ module Importable
 
     # Writes data to path, adding record terminators
     def write_data(path, data)
+      FileUtils.mkdir_p(File.dirname(path))
+      FileUtils.touch(path)
+      
+      raise ArgumentError, "Invalid file path '#{path}'" unless File.exists?(path)
       data = add_delimiters data
       File.open(path, 'w') { |f| f.write(data) }
     end
@@ -218,7 +220,22 @@ module Importable
     FixedWidth.parse(File.new(path), self.class.definition_name)
   end
 
+  # @return true if import file contains error messages 
+  def import_error?
+    data == 'NO MAINFRAME'
+  end
+  
+  def import_error_message
+    if data == 'NO MAINFRAME'
+      'NO MAINFRAME'
+    end
+  end
+  
   def import
+    if import_error?
+      return CdfImportExceptionLog.create(:event => "Error importing file: #{import_error_message}", :file_name => self.file_name)
+    end
+    
     begin
       p = parsed
 

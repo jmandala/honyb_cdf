@@ -24,8 +24,7 @@ class Admin::Fulfillment::PoFilesController < Admin::ResourceController
 
   def show
     begin
-      @po_file.load_file
-      @data = @po_file.data
+      @data = @po_file.read
     rescue Exception => e
       flash[:error] = e.message
     end
