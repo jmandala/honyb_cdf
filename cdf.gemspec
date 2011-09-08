@@ -19,7 +19,6 @@ Gem::Specification.new do |s|
   s.add_dependency('haml')
   s.add_dependency('haml')
   
-  s.add_dependency('webrat')
   s.add_dependency('cucumber-rails')
   s.add_dependency('rspec-rails')
 end
