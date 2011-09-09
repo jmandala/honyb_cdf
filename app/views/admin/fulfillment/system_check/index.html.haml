@@ -1,0 +1,15 @@
+= render :partial => 'admin/shared/fulfillment_sub_menu'
+
+%h1 #{t 'system_check'}
+
+%table.index
+  %thead
+    %tr
+      %th #{t 'system'}
+      %th #{t 'description'}
+  %tbody
+    = hook :admin_system_check_menu do
+      - %w{order_check ftp_check}.each do |key|
+        %tr
+          %td #{link_to t(key), send("admin_fulfillment_system_check_#{key}_path")}
+          %td #{t "#{key}_description"}

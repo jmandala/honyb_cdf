@@ -4,6 +4,13 @@ Rails.application.routes.draw do
 
     namespace :fulfillment do
       match 'dashboard' => 'dashboard#index'
+      
+      namespace :system_check do
+        match 'index'
+        match 'order_check'
+        match 'ftp_check'
+      end
+      
       resource :settings
 
       resources :po_files do
