@@ -5,8 +5,23 @@ class Admin::Fulfillment::SystemCheckController < Admin::BaseController
   end
 
   def order_check
+    @scenarios = Cdf::OrderBuilder::SCENARIOS
   end
 
+  
+  # POST /admin/orders
+  # Creates a new set of orders for Fulfillment testing
+  def generate_test_orders
+    if params[:scenarios].empty?
+      flash[:error] = "No orders created"
+    else
+      @orders = Cdf::OrderBuilder.create_for_scenarios params[:scenarios]
+      flash[:notice] = "Created #{@orders.count} test orders"      
+    end
+    
+    redirect_to :action => :order_check
+  end
+  
   def ftp_check
     client = CdfFtpClient.new({:keep_alive => true})
     @valid_server = client.valid_server?

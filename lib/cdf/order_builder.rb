@@ -8,7 +8,7 @@ class Cdf::OrderBuilder
   ]
 
   def self.create_for_scenarios(scenarios=[])
-    raise ArgumentError, "No scenarios give" if scenarios.empty?
+    raise ArgumentError, "No scenarios given" if scenarios.empty?
 
     orders = []
     scenarios.each do |id|
