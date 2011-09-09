@@ -157,6 +157,8 @@ class CdfFtpClient
   end
 
   def valid_server?
+    return true if mock?
+    
     begin
       ftp = open!
       ftp.close
