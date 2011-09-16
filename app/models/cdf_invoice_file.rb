@@ -22,7 +22,7 @@ class CdfInvoiceFile < ActiveRecord::Base
   collaborator CdfInvoiceTrailer
   collaborator CdfInvoiceFileTrailer
 
-  define_ext '.BIN'
+  define_ext 'BIN'
   define_length 80
 
   import_format do |d|
