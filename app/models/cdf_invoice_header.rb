@@ -3,6 +3,7 @@ class CdfInvoiceHeader < ActiveRecord::Base
   include Records
 
   belongs_to :cdf_invoice_file
+  has_many :orders, :through => :cdf_invoice_detail_totals
   has_many :cdf_invoice_detail_totals, :dependent => :destroy
   has_many :cdf_invoice_freight_and_fees, :dependent => :destroy
   has_one :cdf_invoice_trailer, :dependent => :destroy

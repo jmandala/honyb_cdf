@@ -2,7 +2,6 @@ class CdfInvoiceFile < ActiveRecord::Base
   include Importable
   include Records
 
-  has_many :orders, :through => :cdf_invoice_detail_totals
   has_many :cdf_invoice_headers, :dependent => :destroy
   has_many :cdf_invoice_detail_totals, :dependent => :destroy, :through => :cdf_invoice_headers
   has_many :cdf_invoice_file_trailers, :dependent => :destroy
@@ -44,6 +43,17 @@ class CdfInvoiceFile < ActiveRecord::Base
     end
   end
 
+  def orders
+    result = []
+    self.cdf_invoice_headers.each do |h|
+      h.orders.each do |o|
+        result << o unless result.include? o
+      end
+    end
+    result
+  end
+  
+  
   def populate_file_header(p)
     if !p.key?(:header)
       raise ArgumentError, "Invalid file data. Expected ':header'. Got: #{self.data}"

@@ -12,4 +12,4 @@
       %td
         = link_to import_file.file_name, send("admin_fulfillment_#{type}_file_path".to_sym, import_file)
       %td
-        = time_ago_in_words(import_file.imported_at)
+        = import_file.created_at.strftime("%m/%d/%y %H:%M")
