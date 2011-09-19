@@ -1,0 +1,35 @@
+= render :partial => 'admin/shared/system_check_menu'
+
+%h1 #{t 'ftp_check'}
+
+%div.settings
+  %h2 Cdf Settings [#{link_to 'edit', admin_fulfillment_settings_path}]
+  %ul
+    %li 
+      ftp server: #{Cdf::Config[:cdf_ftp_server]}
+      - if @valid_server
+        %span.valid [VALID]
+      - else
+        %span.invalid [INVALID]      
+    %li ftp user: #{Cdf::Config[:cdf_ftp_user]}
+    %li ftp pwd: #{Cdf::Config[:cdf_ftp_password]}
+    %li 
+      ftp credentials:
+      - if @valid_credentials
+        %span.valid [VALID]
+      - else
+        %span.invalid [INVALID]      
+    %li ship to account: #{Cdf::Config[:cdf_ship_to_account]}
+    %li ship to pwd: #{Cdf::Config[:cdf_ship_to_password]}
+    %li bill to account: #{Cdf::Config[:cdf_bill_to_account]}
+
+%div.remote_files
+  %h2 Remote Files
+  - if @valid_credentials
+    - %w(incoming outgoing test archive).each do |dir|
+      %h3 #{dir}
+      %ul
+        - instance_variable_get("@#{dir}_files").each do |file|
+          %li #{file} 
+  - else
+    FTP credentials not valid

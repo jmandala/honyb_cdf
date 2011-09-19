@@ -29,7 +29,7 @@ class PoaFile < ActiveRecord::Base
   collaborator PoaOrderControlTotal
   collaborator PoaFileControlTotal
 
-  define_ext '.fbc'
+  define_ext 'fbc'
   define_length 80
 
   import_format do |d|

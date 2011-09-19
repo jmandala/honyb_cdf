@@ -1,0 +1,12 @@
+= render :partial => 'admin/shared/system_check_menu'
+
+= form_tag admin_fulfillment_system_check_generate_test_orders_path, :method => :post do
+
+  %div.scenarios
+    %h1 Select One or More Scenarios
+    - @scenarios.each do |scenario|
+      - field = "scenarios[]"
+      %div{:class => field}
+        = check_box_tag(field, scenario[:id], false, {'id' => "scenario_#{scenario[:id]}"})
+        = label_tag(field, scenario[:name], :for => "scenario_#{scenario[:id]}")
+  %div #{submit_tag 'Generate Test Orders'}

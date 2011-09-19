@@ -66,3 +66,11 @@ en:
   show_only_test_orders: "Show Only Test Orders"
   completed_or_created_at: "Created / Completed At"
   cdf_run_mode: "Cdf Run Mode"
+  system_check: "System Check"
+  system_checks: "System Checks"
+  ftp_check: "FTP Check"
+  ftp_check_description: "Confirm FTP credentials"
+  order_check: "Order Compliance Check"
+  order_check_description: "Perform Order compliance testing"
+  
+  

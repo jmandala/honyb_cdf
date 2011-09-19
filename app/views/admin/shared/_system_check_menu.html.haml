@@ -1,0 +1,11 @@
+= render :partial => 'admin/shared/fulfillment_sub_menu'
+
+- content_for :sidebar do
+  %h3 #{t 'system_checks'}
+  %br.clear
+
+  %ul.sidebar
+    = hook :admin_fulfillment_system_check_sidebar_menu do
+      - %w{index order_check ftp_check}.each do |key|
+        %li{:class => "#{'active' if controller.action_name == key}"} 
+          = link_to t(key), send("admin_fulfillment_system_check_#{key}_path")

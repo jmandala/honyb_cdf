@@ -12,10 +12,18 @@ Order.class_eval do
   has_many :asn_files, :through => :asn_shipments
   has_many :cdf_invoice_detail_totals, :dependent => :restrict
   has_many :cdf_invoice_freight_and_fees, :dependent => :restrict
-
+  has_many :cdf_invoice_headers, :through => :cdf_invoice_detail_totals
 
   register_update_hook :update_auth_before_ship
 
+  def cdf_invoice_files
+    result = []
+    self.cdf_invoice_headers.each do |h|
+      result << h.cdf_invoice_file unless result.include? h.cdf_invoice_file
+    end
+    result
+  end
+  
   def update_auth_before_ship
     # todo: update authorized_total
   end

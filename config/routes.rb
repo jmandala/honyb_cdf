@@ -4,6 +4,14 @@ Rails.application.routes.draw do
 
     namespace :fulfillment do
       match 'dashboard' => 'dashboard#index'
+      
+      namespace :system_check do
+        match 'index'
+        match 'order_check'
+        match 'ftp_check'
+        post :generate_test_orders        
+      end
+      
       resource :settings
 
       resources :po_files do
@@ -52,7 +60,6 @@ Rails.application.routes.draw do
 
     resources :orders do
       collection do
-        post :generate_test_orders
         get :test_orders
       end
       

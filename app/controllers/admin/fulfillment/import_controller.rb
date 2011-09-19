@@ -1,12 +1,12 @@
 class Admin::Fulfillment::ImportController < Admin::ResourceController
 
   def create
-    begin
+    #begin
       files = model_class.download
       flash[:notice] = "#{files.count} files downloaded."
-    rescue => e
-      flash[:error] = "Error downloading #{model_class}: #{e.message}"
-    end
+    #rescue => e
+    #  flash[:error] = "Error downloading #{model_class}: #{e.message}, #{e.backtrace}"
+    #end
     respond_with(@object) do |format|
       format.html { redirect_to polymorphic_url([:admin, :fulfillment, model_class]) }
       format.js { render :layout => false }
@@ -14,6 +14,8 @@ class Admin::Fulfillment::ImportController < Admin::ResourceController
   end
 
   def index
+    @downloadable = model_class.remote_files
+    
     params[:search] ||= {}
     @search = model_class.metasearch(params[:search], :distinct => true)
 

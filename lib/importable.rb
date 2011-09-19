@@ -52,7 +52,6 @@ module Importable
     end
 
     def files
-      Rails.logger.debug "FileMask: #{file_mask}"
       Dir.glob(CdfConfig::current_data_lib_in + "/**/" + file_mask)
     end
 
@@ -66,7 +65,7 @@ module Importable
       files = []
       ['test', 'outgoing'].each do |dir|
         remote_dir = "~/#{dir}"
-        files +=  client.dir(remote_dir, ".*\\\#{@ext}")
+        files +=  client.dir(remote_dir, ".*#{@ext}")
       end
       client.close
       files
@@ -117,8 +116,7 @@ module Importable
     end
 
     def download_from_dir(client, remote_dir)
-      remote_listing = client.dir remote_dir, ".*\\\#{@ext}"
-
+      remote_listing = client.dir remote_dir, ".*#{@ext}"
       files = []
       remote_listing.each do |listing|
         file = client.name_from_path listing
@@ -132,7 +130,7 @@ module Importable
 
         files << import_file
 
-        client.delete remote_path
+        client.delete remote_dir, file
       end
       files
     end

@@ -1,5 +1,8 @@
 = render 'admin/shared/fulfillment_sub_menu'
 
+- @downloadable.each do |line|
+  %p #{line}
+
 %div.admin_buttons
   = form_tag(send("admin_fulfillment_#{type}_files_path")) do |f|
     %div
