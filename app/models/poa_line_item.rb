@@ -6,6 +6,10 @@ class PoaLineItem < ActiveRecord::Base
   belongs_to :poa_status
   belongs_to :dc_code
   belongs_to :line_item
+  has_one :poa_line_item_title_record
+  has_one :poa_line_item_pub_record
+  has_one :poa_additional_detail
+  has_one :poa_item_number_price_record
   delegate_belongs_to :poa_order_header, :order
   delegate_belongs_to :poa_order_header, :poa_file
   delegate_belongs_to :line_item, :variant

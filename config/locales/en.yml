@@ -72,5 +72,8 @@ en:
   ftp_check_description: "Confirm FTP credentials"
   order_check: "Order Compliance Check"
   order_check_description: "Perform Order compliance testing"
-  
-  
+  submitted_at: "Submitted At"
+  address_verification: "Address Verification"
+  po_date: "PO Date"
+  po_status: "PO Status"
+  vendor_message: "Vendor Message"
