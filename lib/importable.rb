@@ -117,7 +117,6 @@ module Importable
 
     def download_from_dir(client, remote_dir)
       remote_listing = client.dir remote_dir, ".*#{@ext}"
-
       files = []
       remote_listing.each do |listing|
         file = client.name_from_path listing
@@ -131,7 +130,7 @@ module Importable
 
         files << import_file
 
-        client.delete remote_path
+        client.delete remote_dir, file
       end
       files
     end
