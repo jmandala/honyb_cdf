@@ -1,6 +1,8 @@
 class PoaItemNumberPriceRecord < ActiveRecord::Base
   include PoaRecord
+
   belongs_to :poa_order_header
+  belongs_to :poa_line_item
 
   def self.spec(d)
     d.poa_item_number_price_record do |l|
@@ -15,4 +17,8 @@ class PoaItemNumberPriceRecord < ActiveRecord::Base
     end
   end
 
+  def before_populate(data)
+    self.poa_line_item = nearest_poa_line_item
+  end
+  
 end

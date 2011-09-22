@@ -1,0 +1,67 @@
+#order_status
+  
+  #po_files
+    %h2 #{t("po_files")}
+    %div
+      - if @order.po_file
+        %div
+          %label #{t 'file_name'}:
+          = link_to @order.po_file.file_name, admin_fulfillment_po_file_path(@order.po_file)
+        %div
+          %label #{t 'created_at'}:
+          = @order.po_file.created_at.strftime("%m/%d/%y %H:%M")
+        %div
+          %label #{t 'submitted_at'}:
+          = @order.po_file.submitted_at.strftime("%m/%d/%y %H:%M")
+  #poa_files
+    %h2 #{t 'poa_files' }
+    - @order.poa_order_headers.each do |h|
+      - poa_file = h.poa_file
+      .poa_file
+        .dates
+          %div
+            %label #{t 'file_name'}
+            = link_to poa_file.file_name, admin_fulfillment_poa_file_path(poa_file)
+          %div
+            %label #{t 'created_at'}
+            = poa_file.created_at.strftime("%m/%d/%y %H:%M")
+          %div
+            %label #{t 'imported_at'}
+            = poa_file.imported_at.strftime("%m/%d/%y %H:%M")
+        .vendor_message
+          %div
+            %label #{t 'vendor_message' }
+          = h.vendor_message
+        .po_status
+          %label #{t 'po_status'}
+          #{h.po_status.name} (#{h.po_status.code})
+        .po_date
+          %label #{t 'po_date' }
+          = h.po_date.strftime("%m/%d/%y %H:%M")
+        .poa_order_control_totals
+          .total_line_items_in_file
+            %label #{t 'total_line_items_in_file' }
+            = h.poa_order_control_total.total_line_items_in_file
+          .total_units_acknowledged
+            %label #{t 'total_units_acknowledged' }
+            = h.poa_order_control_total.total_units_acknowledged
+        - if h.poa_ship_to_name || h.poa_city_state_zip
+          .address_verification
+            %h3 #{t 'address_verification' }
+            .poa_ship_to_name
+              - if h.poa_ship_to_name
+                = h.poa_ship_to_name.recipient_name
+              - else
+                no ship_to_name
+            .poa_city_state_zip
+              - if h.poa_city_state_zip
+                = h.poa_city_state_zip.state.name
+                = h.poa_city_state_zip.country.name
+                = h.poa_city_state_zip.zip_postal_code
+              - else
+                no city/state/zip
+          
+  -#= @order.asn_files
+  -#= @order.cdf_invoice_files
+
+%br{:clear => 'all' }
