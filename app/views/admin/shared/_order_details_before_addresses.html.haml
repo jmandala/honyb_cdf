@@ -61,7 +61,50 @@
               - else
                 no city/state/zip
           
-  -#= @order.asn_files
+  #asn_files
+    %h2 #{t("asn_files")}
+    %div
+      - @order.asn_shipments.each do |asn_shipment|
+        - asn_file = asn_shipment.asn_file
+        .file_name
+          %label #{t 'file_name'}
+          = link_to asn_file.file_name, admin_fulfillment_asn_file_path(asn_file)
+        .created_at
+          %label #{t 'created_at'}
+          = asn_file.created_at.strftime("%m/%d/%y %H:%M")
+        .imported_at
+          %label #{t 'imported_at'}
+          = asn_file.imported_at.strftime("%m/%d/%y %H:%M")
+        .asn_shipments
+          %h3 #{t 'asn_shipments'}
+          .asn_shipment
+            .asn_order_status
+              %label #{t 'shipment_status'}
+              #{asn_shipment.asn_order_status.description} (#{asn_shipment.asn_order_status.code})
+            .shipment_date
+              %label #{t 'shipment_date'}
+              = asn_shipment.shipment_date.strftime("%m/%d/%y %H:%M")
+            .freight_charge
+              %label #{t 'freight_charge'}
+              = number_to_currency asn_shipment.freight_charge
+            .shipping_and_handling
+              %label #{t 'shipping_and_handling'}
+              = number_to_currency asn_shipment.shipping_and_handling
+            .sales_tax
+              %label #{t 'sales_tax'}
+              = number_to_currency asn_shipment.sales_tax                            
+            .order_discount_amount
+              %label #{t 'order_discount_amount'}
+              = number_to_currency asn_shipment.order_discount_amount              
+            .order_subtotal
+              %label #{t 'order_subtotal'}
+              = number_to_currency asn_shipment.order_subtotal              
+            .order_total
+              %label #{t 'order_total'}
+              = number_to_currency asn_shipment.order_total
+              
+              
+                                          
   -#= @order.cdf_invoice_files
 
 %br{:clear => 'all' }

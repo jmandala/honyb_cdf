@@ -1,6 +1,17 @@
 module AsnRecord
   include Updateable
 
+  # Returns the [AsnShipment] from the same [AsnFile] with the sequence that is
+  # closest to this record's sequence, without being greater
+  def nearest_asn_shipment
+    AsnShipment.
+        where(:asn_file_id => self.asn_file_id).
+        where("sequence_number < :sequence_number", {:sequence_number => self.sequence_number}).
+        order("sequence_number DESC").
+        limit(1).first
+  end
+  
+  
   def self.included(base)
     base.extend ActiveModel::Naming
     base.extend ClassMethods
