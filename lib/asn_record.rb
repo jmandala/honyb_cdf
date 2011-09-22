@@ -6,8 +6,8 @@ module AsnRecord
   def nearest_asn_shipment
     AsnShipment.
         where(:asn_file_id => self.asn_file_id).
-        where("sequence_number < :sequence_number", {:sequence_number => self.sequence_number}).
-        order("sequence_number DESC").
+        where("line_number < :line_number", {:line_number => self.line_number}).
+        order("line_number DESC").
         limit(1).first
   end
   
