@@ -4,40 +4,21 @@
     %h2 #{t("po_files")}
     %div
       - if @order.po_file
-        %div
-          %label #{t 'file_name'}:
-          = link_to @order.po_file.file_name, admin_fulfillment_po_file_path(@order.po_file)
-        %div
-          %label #{t 'submitted_at'}:
-          = @order.po_file.submitted_at.strftime("%m/%d/%y %H:%M")
+        != data_pair(:file_name) {link_to @order.po_file.file_name, admin_fulfillment_po_file_path(@order.po_file)}
+        != data_pair(:submitted_at) {@order.po_file.submitted_at.strftime("%m/%d/%y %H:%M")}
   #poa_files
     %h2 #{t 'poa_files' }
     - @order.poa_order_headers.each do |h|
       - poa_file = h.poa_file
       .poa_file
-        .dates
-          .file_name
-            %label #{t 'file_name'}
-            = link_to poa_file.file_name, admin_fulfillment_poa_file_path(poa_file)
-          .imported_at
-            %label #{t 'imported_at'}
-            = poa_file.imported_at.strftime("%m/%d/%y %H:%M")
-        .vendor_message          
-          %label #{t 'vendor_message' }
-          = h.vendor_message
-        .po_status
-          %label #{t 'po_status'}
-          #{h.po_status.name} (#{h.po_status.code})
-        .po_date
-          %label #{t 'po_date' }
-          = h.po_date.strftime("%m/%d/%y %H:%M")
+        != data_pair(:file_name) {link_to poa_file.file_name, admin_fulfillment_poa_file_path(poa_file)}
+        != data_pair(:imported_at) {poa_file.imported_at.strftime("%m/%d/%y %H:%M")}
+        != data_pair(:vendor_message) {h.vendor_message}
+        != data_pair(:po_status) {"#{h.po_status.name} (#{h.po_status.code})"}
+        != data_pair(:po_date) {h.po_date.strftime("%m/%d/%y %H:%M")}
         .poa_order_control_totals
-          .total_line_items_in_file
-            %label #{t 'total_line_items_in_file' }
-            = h.poa_order_control_total.total_line_items_in_file
-          .total_units_acknowledged
-            %label #{t 'total_units_acknowledged' }
-            = h.poa_order_control_total.total_units_acknowledged
+          != data_pair(:total_line_items_in_file) {h.poa_order_control_total.total_line_items_in_file}
+          != data_pair(:total_units_acknowledged) {h.poa_order_control_total.total_units_acknowledged}
         - if h.poa_ship_to_name || h.poa_city_state_zip
           .address_verification
             %h3 #{t 'address_verification' }
@@ -59,48 +40,44 @@
     %div
       - @order.asn_shipments.each do |asn_shipment|
         - asn_file = asn_shipment.asn_file
-        .file_name
-          %label #{t 'file_name'}
-          = link_to asn_file.file_name, admin_fulfillment_asn_file_path(asn_file)
-        .created_at
-          %label #{t 'created_at'}
-          = asn_file.created_at.strftime("%m/%d/%y %H:%M")
-        .imported_at
-          %label #{t 'imported_at'}
-          = asn_file.imported_at.strftime("%m/%d/%y %H:%M")
+        != data_pair(:file_name) {link_to asn_file.file_name, admin_fulfillment_asn_file_path(asn_file)}
+        != data_pair(:imported_at) {asn_file.imported_at.strftime("%m/%d/%y %H:%M")}
         .asn_shipments
           %h3 #{t 'asn_shipments'}
           .asn_shipment
-            .asn_order_status
-              %label #{t 'shipment_status'}
-              #{asn_shipment.asn_order_status.description} (#{asn_shipment.asn_order_status.code}) [id: #{asn_shipment.id}]
-            .shipment_date
-              %label #{t 'shipment_date'}
-              = asn_shipment.shipment_date.strftime("%m/%d/%y %H:%M")
-            .freight_charge
-              %label #{t 'freight_charge'}
-              = number_to_currency asn_shipment.freight_charge
-            .shipping_and_handling
-              %label #{t 'shipping_and_handling'}
-              = number_to_currency asn_shipment.shipping_and_handling
-            .sales_tax
-              %label #{t 'sales_tax'}
-              = number_to_currency asn_shipment.sales_tax                            
-            .order_discount_amount
-              %label #{t 'order_discount_amount'}
-              = number_to_currency asn_shipment.order_discount_amount              
-            .order_subtotal
-              %label #{t 'order_subtotal'}
-              = number_to_currency asn_shipment.order_subtotal              
-            .order_total
-              %label #{t 'order_total'}
-              = number_to_currency asn_shipment.order_total
+            != data_pair(:asn_order_status, :label => t('shipment_status')) {"#{asn_shipment.asn_order_status.description} (#{asn_shipment.asn_order_status.code}) [id: #{asn_shipment.id}]"}
+            != data_pair(:shipment_date) {asn_shipment.shipment_date.strftime("%m/%d/%y %H:%M")}
+            != data_pair(:freight_charge) {number_to_currency asn_shipment.freight_charge}
+            != data_pair(:shipping_and_handling) {number_to_currency asn_shipment.shipping_and_handling}
+            != data_pair(:sales_tax) {number_to_currency asn_shipment.sales_tax}
+            != data_pair(:order_discount_amount) {number_to_currency asn_shipment.order_discount_amount}
+            != data_pair(:order_subtotal) {number_to_currency asn_shipment.order_subtotal}
+            != data_pair(:order_total) {number_to_currency asn_shipment.order_total}
             .asn_shipment_details
               %h3 #{t 'asn_shipment_details'}
               - asn_shipment.asn_shipment_details.each do |asn_shipment_detail|
                 .asn_shipment_detail
-                  = asn_shipment_detail
-              
+                  != data_pair(:asn_order_status) {asn_shipment_detail.asn_order_status.description}
+                  != data_pair(:asn_shipping_method_code) {asn_shipment_detail.asn_shipping_method_code}
+                  != data_pair(:asn_slash_code) {asn_shipment_detail.asn_slash_code}
+                  != data_pair(:dc_code) {asn_shipment_detail.dc_code.dc_name}
+                  != data_pair(:ingram_item_list_price) {number_to_currency asn_shipment_detail.ingram_item_list_price}
+                  != data_pair(:net_discounted_price) {number_to_currency asn_shipment_detail.net_discounted_price}
+                  != data_pair(:ingram_order_entry_number) {asn_shipment_detail.ingram_order_entry_number}
+                  != data_pair(:isbn_10_ordered) {asn_shipment_detail.isbn_10_ordered}
+                  != data_pair(:isbn_10_shipped) {asn_shipment_detail.isbn_10_shipped}
+                  != data_pair(:isbn_13) {asn_shipment_detail.isbn_13}
+                  != data_pair(:line_item) {asn_shipment_detail.line_item.variant.sku}
+                  != data_pair(:order) {asn_shipment_detail.order.number}
+                  != data_pair(:quantity_canceled) {asn_shipment_detail.quantity_canceled}
+                  != data_pair(:quantity_predicted) {asn_shipment_detail.quantity_predicted}
+                  != data_pair(:quantity_shipped) {asn_shipment_detail.quantity_shipped}
+                  != data_pair(:quantity_slashed) {asn_shipment_detail.quantity_slashed}
+                  != data_pair(:ssl) {asn_shipment_detail.ssl}
+                  != data_pair(:standard_carrier_address_code) {asn_shipment_detail.standard_carrier_address_code}
+                  != data_pair(:tracking_number) {asn_shipment_detail.tracking_number}
+                  != data_pair(:weight) {asn_shipment_detail.weight}
+                  
                                           
   -#= @order.cdf_invoice_files
 
