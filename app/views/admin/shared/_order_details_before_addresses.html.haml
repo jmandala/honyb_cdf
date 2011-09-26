@@ -102,7 +102,11 @@
             .order_total
               %label #{t 'order_total'}
               = number_to_currency asn_shipment.order_total
-              
+            .asn_shipment_details
+              %h3 #{t 'asn_shipment_details'}
+              - asn_shipment.asn_shipment_details.each do |asn_shipment_detail|
+                .asn_shipment_detail
+                  = asn_shipment_detail
               
                                           
   -#= @order.cdf_invoice_files
