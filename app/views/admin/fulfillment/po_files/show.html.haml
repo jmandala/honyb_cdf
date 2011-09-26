@@ -44,7 +44,7 @@
       - for order in @po_file.orders do
         %tr
           %td
-            = link_to order.number, fulfillment_admin_order_path(order)
+            = link_to order.number, admin_order_path(order)
           %td
             = order.completed_at.strftime("%m-%d-%y")
 
