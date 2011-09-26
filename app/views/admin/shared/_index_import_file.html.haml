@@ -1,44 +1,35 @@
 = render 'admin/shared/fulfillment_sub_menu'
 
-- @downloadable.each do |line|
-  %p #{line}
-
-%div.admin_buttons
-  = form_tag(send("admin_fulfillment_#{type}_files_path")) do |f|
-    %div
-      = button t("download_#{type}_files"), 'add'
-
-  = form_tag(send("load_files_admin_fulfillment_#{type}_files_path")) do |f|
-    %div
-      = button t("load_#{type}_files"), 'add'
-
+- if @downloadable.size > 0
+  %div.admin_buttons
+    = form_tag(send("admin_fulfillment_#{type}_files_path")) do |f|
+      .download
+        .remote_files
+          - @downloadable.each do |line|
+            %p #{line}
+        = button t("download_#{type}_files"), 'add'
+  
 
 %h1 #{t "#{type}_files"}
 
-= form_tag(send("admin_fulfillment_#{type}_files_path")) do |f|
+%div
+  %table.index
+    %thead
+      %tr
+        %th
+          = sort_link @search, :file_name, t('file_name')
+        %th
+          = t('imported_at')
+        %th
+          = sort_link @search, :created_at, t('created_at')
+    %tbody
+      - for import_file in @collection do
+        = render 'admin/shared/import_file', :import_file => import_file, :type => type
 
-  %div
-    = button t('import_all_files'), 'add'
+  - if @collection.size == 0
+    = t('no_files')
 
-  %div
-    %table.index
-      %thead
-        %tr
-          %th
-            = sort_link @search, :file_name, t('file_name')
-          %th
-            = t('imported_at')
-          %th
-            = sort_link @search, :created_at, t('created_at')
-      %tbody
-        - for import_file in @collection do
-          = render 'admin/shared/import_file', :import_file => import_file, :type => type
-
-    - if @collection.size == 0
-      = t('no_files')
-
-    = will_paginate(@collection, :previous_label => "&#171; #{t('previous')}", :next_label => "#{t('next')} &#187;")
-
+  = will_paginate(@collection, :previous_label => "&#171; #{t('previous')}", :next_label => "#{t('next')} &#187;")
 
 - content_for :sidebar do
   .box
