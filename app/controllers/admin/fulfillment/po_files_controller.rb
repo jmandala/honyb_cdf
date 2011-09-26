@@ -42,7 +42,7 @@ class Admin::Fulfillment::PoFilesController < Admin::ResourceController
       params[:search][:created_at_less_than] = Time.zone.parse(params[:search][:created_at_less_than]).end_of_day rescue ""
     end
 
-    @po_files = PoFile.metasearch(params[:search]).group('po_files.file_name').paginate(
+    @po_files = PoFile.metasearch(params[:search]).order('created_at desc').group('po_files.file_name').paginate(
         :per_page => Cdf::Config[:po_files_per_page],
         :page => params[:page])
 

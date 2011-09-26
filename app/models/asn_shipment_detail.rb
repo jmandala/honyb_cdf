@@ -40,7 +40,7 @@ class AsnShipmentDetail < ActiveRecord::Base
   end
 
   def before_populate(data)
-    self.asn_shipment = nearest_asn_shipment
+    self.asn_shipment = nearest_asn_shipment(data[:__LINE_NUMBER__])
     
     [:ingram_item_list_price, :net_discounted_price, :weight].each do |key|
       self.send("#{key}=", self.class.as_cdf_money(data, key))

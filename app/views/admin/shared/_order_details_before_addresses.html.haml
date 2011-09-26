@@ -8,9 +8,6 @@
           %label #{t 'file_name'}:
           = link_to @order.po_file.file_name, admin_fulfillment_po_file_path(@order.po_file)
         %div
-          %label #{t 'created_at'}:
-          = @order.po_file.created_at.strftime("%m/%d/%y %H:%M")
-        %div
           %label #{t 'submitted_at'}:
           = @order.po_file.submitted_at.strftime("%m/%d/%y %H:%M")
   #poa_files
@@ -19,18 +16,14 @@
       - poa_file = h.poa_file
       .poa_file
         .dates
-          %div
+          .file_name
             %label #{t 'file_name'}
             = link_to poa_file.file_name, admin_fulfillment_poa_file_path(poa_file)
-          %div
-            %label #{t 'created_at'}
-            = poa_file.created_at.strftime("%m/%d/%y %H:%M")
-          %div
+          .imported_at
             %label #{t 'imported_at'}
             = poa_file.imported_at.strftime("%m/%d/%y %H:%M")
-        .vendor_message
-          %div
-            %label #{t 'vendor_message' }
+        .vendor_message          
+          %label #{t 'vendor_message' }
           = h.vendor_message
         .po_status
           %label #{t 'po_status'}

@@ -19,9 +19,9 @@
     %thead
       %tr
         %th
-          = sort_link @search, :file_name, t('file_name')
+          = sort_link @search, :file_name, t('file_name')        
         %th
-          = t('record_count')
+          = sort_link @search, :submitted_at, t('submitted_at')
         %th
           = sort_link @search, :created_at, t('created_at')
     %tbody

@@ -1,8 +1,12 @@
 %tr
   %td
-    = link_to po_file.file_name, admin_fulfillment_po_file_path(po_file)
+    #{link_to po_file.file_name, admin_fulfillment_po_file_path(po_file)} (#{pluralize(po_file.orders.count, 'order')})
   %td
-    = po_file.orders.count
+    - if po_file.submitted?
+      = time_ago_in_words po_file.submitted_at
+    - else
+      = link_to_with_icon 'add', t('submit_now'), submit_admin_fulfillment_po_file_path(po_file), method: :post
+      
   %td
     = time_ago_in_words po_file.created_at
     #{t 'ago'}
