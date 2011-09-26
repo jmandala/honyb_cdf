@@ -91,3 +91,4 @@ en:
   total_line_order_qty: "Total Line Order Qty"
   total_line_items_in_file: "Total Line Items In File"
   total_units_acknowledged: "Total Units Acknowledged"
+  generate_test_orders: "Generate Test Orders"
