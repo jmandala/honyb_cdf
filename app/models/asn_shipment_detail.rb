@@ -5,6 +5,7 @@ class AsnShipmentDetail < ActiveRecord::Base
   belongs_to :line_item
   belongs_to :order
   belongs_to :asn_file
+  belongs_to :asn_shipment
   has_one :product, :through => :line_item
   belongs_to :asn_order_status
   belongs_to :asn_slash_code
@@ -39,6 +40,8 @@ class AsnShipmentDetail < ActiveRecord::Base
   end
 
   def before_populate(data)
+    self.asn_shipment = nearest_asn_shipment
+    
     [:ingram_item_list_price, :net_discounted_price, :weight].each do |key|
       self.send("#{key}=", self.class.as_cdf_money(data, key))
       data.delete key

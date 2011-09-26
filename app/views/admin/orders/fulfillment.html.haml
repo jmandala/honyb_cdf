@@ -21,4 +21,7 @@
 %h3 #{t 'asn_shipments'}
 = render 'asn_shipment', :asn_shipments => @order.asn_shipments
 
+- @order.asn_shipment_details.each do |asn_shipment_detail|
+  = asn_shipment_detail.to_yaml
+
 = render 'import_file', :type => 'cdf_invoice'
