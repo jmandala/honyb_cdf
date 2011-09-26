@@ -10,17 +10,16 @@ module AsnRecord
         order("line_number DESC").
         limit(1).first
   end
-  
-  
+
+
   def self.included(base)
     base.extend ActiveModel::Naming
     base.extend ClassMethods
   end
 
   module ClassMethods
-    def find_self(asn_file, client_order_id)
-      joins(:order).
-          where(:asn_file_id => asn_file.id, 'orders.number' => client_order_id.strip).
+    def find_self(asn_file, line_number)
+      where(:asn_file_id => asn_file.id, :line_number => line_number).
           readonly(false).
           first
     end
@@ -28,7 +27,7 @@ module AsnRecord
     def find_or_create(data, asn_file)
       order_number = data[:client_order_id].strip!
       begin
-        object = find_self(asn_file, order_number)
+        object = find_self(asn_file, data[:__LINE_NUMBER__])
         return object unless object.nil?
 
         order = Order.find_by_number!(order_number)
@@ -49,7 +48,7 @@ module AsnRecord
         object = find_or_create(data, asn_file)
         begin
           object.send(:before_populate, data) if object.respond_to? :before_populate
-          object.send("line_number=", data[:__LINE_NUMBER__]) if object.respond_to? "line_number="                    
+          object.send("line_number=", data[:__LINE_NUMBER__]) if object.respond_to? "line_number="
         rescue => e
           puts e.message
           puts data.to_yaml
@@ -60,7 +59,7 @@ module AsnRecord
         objects << object
       end
       objects
-      
+
     end
 
   end
