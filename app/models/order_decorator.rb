@@ -24,6 +24,10 @@ Order.class_eval do
     result
   end
   
+  def cdf_invoice_total
+    self.cdf_invoice_freight_and_fees.sum(:amount_due)
+  end
+  
   def update_auth_before_ship
     # todo: update authorized_total
   end

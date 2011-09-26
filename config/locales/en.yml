@@ -92,3 +92,5 @@ en:
   total_line_items_in_file: "Total Line Items In File"
   total_units_acknowledged: "Total Units Acknowledged"
   generate_test_orders: "Generate Test Orders"
+  invoice_details: "Item Details"
+  freight_and_fees: "Sub Total"

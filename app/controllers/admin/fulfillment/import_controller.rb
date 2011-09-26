@@ -1,4 +1,6 @@
 class Admin::Fulfillment::ImportController < Admin::ResourceController
+  
+  helper :data_view
 
   def create
     #begin

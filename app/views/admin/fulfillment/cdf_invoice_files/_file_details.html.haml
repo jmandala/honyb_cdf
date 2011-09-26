@@ -1,0 +1,74 @@
+.file_details
+  - import_file.cdf_invoice_headers.each do |h|
+    %h2 #{t 'invoice_number'} #{h.invoice_number}
+    %table{:class => 'index'}
+      %thead
+        %tr
+          %th #{t 'account'}
+          %th #{t 'invoice_number'}
+          %th #{t 'invoice_date'}
+          %th #{t 'total_gift_wrap'}
+          %th #{t 'total_handling'}
+          %th #{t 'total_net_price'}
+          %th #{t 'total_shipping'}
+          %th #{t 'total_invoice'}
+      %tbody  
+        - trailer = h.cdf_invoice_trailer
+        %tr
+          %td #{h.company_account_id_number}
+          %td #{h.invoice_number}
+          %td #{h.invoice_date.strftime("%D")}
+          %td #{ number_to_currency trailer.total_gift_wrap }
+          %td #{ number_to_currency trailer.total_handling }
+          %td #{ number_to_currency trailer.total_net_price }
+          %td #{ number_to_currency trailer.total_shipping }
+          %td{:class => 'active'} #{ number_to_currency trailer.total_invoice }
+        %tr
+          %td{:colspan => 8, :class => 'invoice_group'}
+            %h4 #{t 'invoice_details'}
+            %table.cdf_invoice_details
+              %thead
+                %tr
+                  %th #{t 'order'}
+                  %th #{t 'title'}
+                  %th #{t 'product_shipped'}
+                  %th #{t 'metered_date'}
+                  %th #{t 'quantity_shipped'}
+                  %th #{t 'ingram_list_price'}
+                  %th #{t 'discount'}
+                  %th #{t 'net_price'}                  
+              %tbody
+                - h.cdf_invoice_detail_totals.each do |t|
+                  - isbn = t.cdf_invoice_isbn_detail
+                  %tr
+                    %td #{link_to t.order.number, admin_order_path(t.order)}
+                    %td #{t.title}
+                    %td #{t.cdf_invoice_ean_detail.ean_shipped} / #{isbn.isbn_10_shipped}
+                    %td #{ isbn.metered_date.strftime("%D") }
+                    %td #{ isbn.quantity_shipped }
+                    %td #{ number_to_currency isbn.ingram_list_price }
+                    %td #{ number_to_currency isbn.discount }
+                    %td{:class => 'active'} #{ number_to_currency isbn.net_price }
+        %tr
+          %td{:colspan => 8, :class => 'invoice_group'}
+            %h4 #{t 'freight_and_fees'}
+            %table.cdf_invoice_freight_and_fees.invoice_group
+              %thead
+                %tr
+                  %th #{t 'order'}
+                  %th #{t 'tracking_nubmer'}
+                  %th #{t 'gift_wrap'}
+                  %th #{t 'handling'}
+                  %th #{t 'net_price'}
+                  %th #{t 'shipping'}
+                  %th #{t 'amount_due'}
+              %tbody
+                - h.cdf_invoice_freight_and_fees.each do |f|            
+                  %tr
+                    %td #{link_to f.order.number, admin_order_path(f.order)}                    
+                    %td{:class => 'inactive'} #{ f.tracking_number }
+                    %td{:class => 'inactive'} #{ number_to_currency f.gift_wrap }
+                    %td{:class => 'inactive'} #{ number_to_currency f.handling }
+                    %td{:class => 'inactive'} #{ number_to_currency f.net_price }
+                    %td{:class => 'inactive'} #{ number_to_currency f.shipping }
+                    %td{:class => 'active'} #{ number_to_currency f.amount_due }
