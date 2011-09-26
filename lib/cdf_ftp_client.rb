@@ -31,9 +31,9 @@ class CdfFtpClient
 
   def initialize(opts={})
     @keep_alive = opts[:keep_alive] || false
-    @server = Cdf::Config.instance.preferences['cdf_ftp_server']
-    @user = Cdf::Config.instance.preferences['cdf_ftp_user']
-    @password = Cdf::Config.instance.preferences['cdf_ftp_password']
+    @server = Cdf::Config[:cdf_ftp_server]
+    @user = Cdf::Config[:cdf_ftp_user]
+    @password = Cdf::Config[:cdf_ftp_password]
     @ftp = nil
   end
 
