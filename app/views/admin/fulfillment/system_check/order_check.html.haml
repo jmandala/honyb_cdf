@@ -8,6 +8,7 @@
     - @scenarios.each do |scenario|
       - field = "scenarios[]"
       %div{:class => field}
+      
         = check_box_tag(field, scenario[:id], false, {'id' => "scenario_#{scenario[:id]}"})
         = label_tag(field, scenario[:name], :for => "scenario_#{scenario[:id]}")
   %div #{button t('generate_test_orders')}
