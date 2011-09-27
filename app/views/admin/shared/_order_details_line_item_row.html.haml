@@ -3,8 +3,8 @@
     = item.variant.product.name
     = "(#{variant_options(item.variant)})" unless item.variant.option_values.empty?
   != data_pair(:sku) {item.variant.sku}
-  .poa_line_items
-    %h3 #{t 'poa_details'}    
+  .poa_line_items.data_group
+    %h2 #{t 'poa_details'}    
     .collapseable
       - item.poa_line_items.each do |i|
         .poa_file
@@ -26,8 +26,8 @@
             != data_pair(:discounted_list_price) { number_to_currency i.poa_item_number_price_record.discounted_list_price }
             != data_pair(:total_line_order_qty) { i.poa_item_number_price_record.total_line_order_qty }
         != data_pair(:poa_file) { link_to i.poa_file.file_name, admin_fulfillment_poa_file_path(i.poa_file) }
-  .asn_shipment_details
-    %h3 #{t 'asn_shipment_details'}
+  .asn_shipment_details.data_group
+    %h2 #{t 'asn_shipment_details'}
     .collapseable
       - item.asn_shipment_details.each do |asn_shipment_detail|
         = render 'admin/fulfillment/asn_files/asn_shipment_detail', :asn_shipment_detail => asn_shipment_detail  

@@ -1,0 +1,123 @@
+#order_status
+  
+  #po_files{:class => 'data_group'}
+    %h2 #{t("po_files")}
+    .collapseable
+      - if @order.po_file
+        .col.1
+          != data_pair(:file_name) {link_to @order.po_file.file_name, admin_fulfillment_po_file_path(@order.po_file)}
+        .col.2
+          != data_pair(:submitted_at) {@order.po_file.submitted_at.strftime("%m/%d/%y %H:%M")}
+    
+  #poa_files{:class => 'data_group'}
+    %h2 #{t 'poa_files' }
+    .collapseable
+      - @order.poa_order_headers.each do |h|
+        - poa_file = h.poa_file
+        .col.1
+          .poa_file
+            != data_pair(:file_name) {link_to poa_file.file_name, admin_fulfillment_poa_file_path(poa_file)}
+            != data_pair(:vendor_message) {h.vendor_message}
+          
+        .col.2
+          .poa_file
+            != data_pair(:imported_at) {poa_file.imported_at.strftime("%m/%d/%y %H:%M")}
+            != data_pair(:po_status) {"#{h.po_status.name} (#{h.po_status.code})"}
+            != data_pair(:po_date) {h.po_date.strftime("%m/%d/%y %H:%M")}
+            .poa_order_control_totals
+              != data_pair(:total_line_items_in_file) {h.poa_order_control_total.total_line_items_in_file}
+              != data_pair(:total_units_acknowledged) {h.poa_order_control_total.total_units_acknowledged}
+            - if h.poa_ship_to_name || h.poa_city_state_zip
+              .address_verification
+                %h3 #{t 'address_verification' }
+                .poa_ship_to_name
+                  - if h.poa_ship_to_name
+                    = h.poa_ship_to_name.recipient_name
+                  - else
+                    no ship_to_name
+                .poa_city_state_zip
+                  - if h.poa_city_state_zip
+                    = h.poa_city_state_zip.state.name
+                    = h.poa_city_state_zip.country.name
+                    = h.poa_city_state_zip.zip_postal_code
+                  - else
+                    no city/state/zip
+              
+  #asn_files{:class => 'data_group'}
+    %h2 #{t("asn_files")}
+    .collapseable
+      - @order.asn_shipments.each do |asn_shipment|
+        - asn_file = asn_shipment.asn_file
+        .col.1
+          != data_pair(:file_name) {link_to asn_file.file_name, admin_fulfillment_asn_file_path(asn_file)}
+        .col.2
+          != data_pair(:imported_at) {asn_file.imported_at.strftime("%m/%d/%y %H:%M")}
+        .asn_shipments.data_group
+          %h3 #{t 'asn_shipment'}
+          .asn_shipment
+            .col.1
+              != data_pair(:asn_order_status, :label => t('shipment_status')) {"#{asn_shipment.asn_order_status.description} (#{asn_shipment.asn_order_status.code}) [id: #{asn_shipment.id}]"}
+              != data_pair(:shipment_date) {asn_shipment.shipment_date.strftime("%m/%d/%y %H:%M")}
+              != data_pair(:freight_charge) {number_to_currency asn_shipment.freight_charge}
+              != data_pair(:shipping_and_handling) {number_to_currency asn_shipment.shipping_and_handling}
+            .col.2
+              != data_pair(:sales_tax) {number_to_currency asn_shipment.sales_tax}
+              != data_pair(:order_discount_amount) {number_to_currency asn_shipment.order_discount_amount}
+              != data_pair(:order_subtotal) {number_to_currency asn_shipment.order_subtotal}
+              != data_pair(:order_total) {number_to_currency asn_shipment.order_total}
+      
+  #cdf_invoice_files{:class => 'data_group'}
+    %h2 #{t 'cdf_invoice_total'} #{number_to_currency @order.cdf_invoice_total}
+    .collapseable
+      %h4 #{t 'invoice_details'}
+      %table.index.cdf_invoice_details
+        %thead
+          %tr
+            %th #{t 'title'}
+            %th #{t 'product_shipped'}
+            %th #{t 'metered_date'}
+            %th #{t 'quantity_shipped'}
+            %th #{t 'ingram_list_price'}
+            %th #{t 'discount'}
+            %th #{t 'net_price'}                  
+        %tbody
+          - @order.cdf_invoice_detail_totals.each do |t|
+            - isbn = t.cdf_invoice_isbn_detail
+            %tr
+              %td #{t.title}
+              %td #{t.cdf_invoice_ean_detail.ean_shipped} / #{isbn.isbn_10_shipped}
+              %td #{ isbn.metered_date.strftime("%D") }
+              %td #{ isbn.quantity_shipped }
+              %td #{ number_to_currency isbn.ingram_list_price }
+              %td #{ number_to_currency isbn.discount }
+              %td{:class => 'active'} #{ number_to_currency isbn.net_price }
+  
+      %h4 #{t 'freight_and_fees'}    
+      %table.index.cdf_invoice_freight_and_fees.invoice_group
+        %thead
+          %tr
+            %th #{t 'tracking_nubmer'}
+            %th #{t 'gift_wrap'}
+            %th #{t 'handling'}
+            %th #{t 'net_price'}
+            %th #{t 'shipping'}
+            %th #{t 'amount_due'}
+        %tbody
+          - @order.cdf_invoice_freight_and_fees.each do |f|            
+            %tr
+              %td{:class => 'inactive'} #{ f.tracking_number }
+              %td{:class => 'inactive'} #{ number_to_currency f.gift_wrap }
+              %td{:class => 'inactive'} #{ number_to_currency f.handling }
+              %td{:class => 'inactive'} #{ number_to_currency f.net_price }
+              %td{:class => 'inactive'} #{ number_to_currency f.shipping }
+              %td{:class => 'active'} #{ number_to_currency f.amount_due }
+      
+          
+      - @order.cdf_invoice_files.each do |cdf_invoice_file| 
+        .col.1
+          != data_pair(:file_name) {link_to cdf_invoice_file.file_name, admin_fulfillment_cdf_invoice_file_path(cdf_invoice_file)}
+          != data_pair(:ingram_file_name) {cdf_invoice_file.ingram_file_name}
+          != data_pair(:ingram_san) {cdf_invoice_file.ingram_san}
+        .col.2
+          != data_pair(:imported_at) {cdf_invoice_file.imported_at.strftime("%m/%d/%y %H:%M")}  
+          != data_pair(:file_source) {cdf_invoice_file.file_source}
