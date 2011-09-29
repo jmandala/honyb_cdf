@@ -1,2 +1,5 @@
 = render :partial => 'admin/shared/fulfillment_sub_menu'
 
+%ol
+  - Country.find_by_iso('US').states.order('abbr asc').each do |state|
+    %li #{state.id} #{state.abbr} #{state.name} #{state.country.iso}

@@ -1,6 +1,9 @@
 require 'csv'
 
+puts "SEEDING CDF DATA"
+
 ### Create PO Types ###
+puts "PoType..."
 PoType.find_or_create_by_code(0,
                               :name => 'Purchase Order',
                               :description => "Process all PO's for fulfillment"
@@ -28,6 +31,7 @@ PoType.find_or_create_by_code(8,
                               :description => "Should a client need to do some testing with our systems after they begin sending live orders, a PO Type 8 will allow them to receive test POA's, ASN's, and INV's without fulfillment of the order. POType 8 orders will be canceled. No inventory will be allocated and nothing will be shipped."
 )
 
+puts "PoaType..."
 PoaType.find_or_create_by_code(1, :description => 'Full Acknowledgement - all records')
 PoaType.find_or_create_by_code(2, :description => 'no 42 and 43 records')
 PoaType.find_or_create_by_code(3, :description => 'no 44 records')
@@ -35,14 +39,17 @@ PoaType.find_or_create_by_code(4, :description => 'no 42, 43 or 44 records')
 PoaType.find_or_create_by_code(5, :description => 'Exception Acknowledgement - report only the lines where an exception has occurred')
 
 
+puts "PoStatus..."
 CSV.foreach(CdfConfig::po_status_file) do |row|
   PoStatus.find_or_create_by_code(row[0], :name => row[1])
 end
 
+puts "PoaStatus..."
 CSV.foreach(CdfConfig::poa_status_file) do |row|
   PoaStatus.find_or_create_by_code(row[0], :name => row[1])
 end
 
+puts "DcCode..."
 CSV.foreach(CdfConfig::dc_codes_file, :headers => true) do |row|
   DcCode.find_or_create_by_po_dc_code(row[0],
                                       :poa_dc_code => row[1],
@@ -52,32 +59,36 @@ CSV.foreach(CdfConfig::dc_codes_file, :headers => true) do |row|
   )
 end
 
+puts "CdfBindingCode..."
 CdfBindingCode.find_or_create_by_code('M', :name => 'Mass Market')
 CdfBindingCode.find_or_create_by_code('A', :name => 'Audio Products')
 CdfBindingCode.find_or_create_by_code('T', :name => 'Trade Paper')
 CdfBindingCode.find_or_create_by_code('H', :name => 'Hard Cover')
 CdfBindingCode.find_or_create_by_code('', :name => 'Other')
 
+puts "AsnOrderStatus..."
 AsnOrderStatus.find_or_create_by_code('00', :description => 'Shipped')
 AsnOrderStatus.find_or_create_by_code('26', :description => 'Canceled')
 AsnOrderStatus.find_or_create_by_code('28', :description => 'Partial Shipment')
 AsnOrderStatus.find_or_create_by_code('95', :description => 'Backorder canceled by date')
 AsnOrderStatus.find_or_create_by_code('96', :description => 'Backorder canceled by client')
 
+puts "AsnSlashCode..."
 AsnSlashCode.find_or_create_by_code('Slash', :description => '(SLN 04 - price qualifier "SR"')
 AsnSlashCode.find_or_create_by_code('I1', :description => 'Unable to commit')
 AsnSlashCode.find_or_create_by_code('I2', :description => 'Slash/Cancel')
 AsnSlashCode.find_or_create_by_code('A1', :description => 'Auto-Slash')
 AsnSlashCode.find_or_create_by_code('S1', :description => 'DC Slash (warehouse)')
 
-# Load States
+puts "State..."
 CSV.foreach(CdfConfig::states_file) do |row|
   country = Country.find_by_numcode(row[2])
   if country.nil?
+    puts "Failed to find country with numcode #{row[2]}"
     next
   end
 
-  state = State.find_by_name(row[0])
+  state = State.find_by_name(row[1])
   if state.nil?
     state = State.create({abbr: row[0], name: row[1], country: country})
   end
@@ -85,74 +96,7 @@ CSV.foreach(CdfConfig::states_file) do |row|
   state.save
 end
 
-po_box_yes = PoBoxOption.find_or_create_by_name('Yes')
-po_box_no = PoBoxOption.find_or_create_by_name('No')
-po_box_depends = PoBoxOption.find_or_create_by_name('Dependant on ship-to country')
 
-intl = AddressType.find_or_create_by_code('intl', :name => 'International')
-domestic = AddressType.find_or_create_by_code('us', :name => 'Domestic')
-
-
-AsnShippingMethodCode.find_or_create_by_code('12',
-                                             :address_type => 'Domestic',
-                                             :shipping_method => '2nd Day Air',
-                                             :big_bisac_code_sent_in => '### 2ND DAY AIR',
-                                             :po_box_option_id => po_box_no.id)
-
-AsnShippingMethodCode.find_or_create_by_code('17',
-                                             :address_type => 'Domestic',
-                                             :shipping_method => '3 Day Select',
-                                             :big_bisac_code_sent_in => '### 3 DAY SELECT',
-                                             :po_box_option_id => po_box_no.id)
-
-AsnShippingMethodCode.find_or_create_by_code('10',
-                                             :address_type => 'Domestic',
-                                             :shipping_method => 'Ground',
-                                             :big_bisac_code_sent_in => '### UPS',
-                                             :po_box_option_id => po_box_no.id)
-
-AsnShippingMethodCode.find_or_create_by_code('11',
-                                             :address_type => 'Domestic',
-                                             :shipping_method => 'Next Day Air',
-                                             :big_bisac_code_sent_in => '### NEXT DAY AIR',
-                                             :po_box_option_id => po_box_no.id)
-
-AsnShippingMethodCode.find_or_create_by_code('1A',
-                                             :address_type => 'Domestic',
-                                             :shipping_method => 'Next Day Air Saver',
-                                             :big_bisac_code_sent_in => '### NEXT DAY AIR SAVER',
-                                             :po_box_option_id => po_box_no.id)
-
-AsnShippingMethodCode.find_or_create_by_code('21',
-                                             :address_type => 'Domestic',
-                                             :shipping_method => 'Economy Mail',
-                                             :big_bisac_code_sent_in => '### USA ECONOMY',
-                                             :po_box_option_id => po_box_yes.id)
-
-AsnShippingMethodCode.find_or_create_by_code('24',
-                                             :address_type => 'Domestic',
-                                             :shipping_method => 'Expedited Mail',
-                                             :big_bisac_code_sent_in => '### USA EXPEDITED',
-                                             :po_box_option_id => po_box_yes.id)
-
-AsnShippingMethodCode.find_or_create_by_big_bisac_code_sent_in('### INTL COURIER',
-                                                               :code => '50',
-                                                               :address_type => 'International',
-                                                               :shipping_method => 'INTL Courier (trackable) **',
-                                                               :po_box_option_id => po_box_depends.id,
-                                                               :notes => 'not available in Puerto Rico')
-
-AsnShippingMethodCode.find_or_create_by_big_bisac_code_sent_in('### INTL PRIORITY',
-                                                               :code => '50',
-                                                               :address_type => 'International',
-                                                               :shipping_method => 'INTL Priority (non-trackable)',
-                                                               :big_bisac_code_sent_in => '',
-                                                               :po_box_option_id => po_box_yes.id)
-
-AsnShippingMethodCode.find_or_create_by_big_bisac_code_sent_in('### INTL W/DEL CONFIRMATION',
-                                                               :code => '50',
-                                                               :address_type => 'International',
-                                                               :shipping_method => 'INTL with Delivery Confirmation ** *',
-                                                               :big_bisac_code_sent_in => '',
-                                                               :po_box_option_id => po_box_depends.id,
-                                                               :notes => 'only available for Canada, Great Britain, and Japan')
+require_relative 'default/zone_members'
+require_relative 'default/tax_zones'
+require_relative 'default/shipping_methods'
