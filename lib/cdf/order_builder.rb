@@ -45,7 +45,7 @@ class Cdf::OrderBuilder
     order.bill_address = address
     order.ship_address = address
 
-    order.shipping_method = shipping_method
+    order.shipping_method = select_shipping_method order
 
     product_builder = Cdf::ProductBuilder.new
 
@@ -79,23 +79,10 @@ class Cdf::OrderBuilder
     TestCard.create!(:verification_value => 123, :month => 12, :year => 2013, :number => "4111111111111111")
   end
 
-
-  def self.create_zone
-    zone = Zone.new(:name => 'GlobalZone')
-    Country.all.map { |c| ZoneMember.create!(:zoneable => c, :zone => zone) }
-    zone.save!
-    zone
-  end
-
-  def self.shipping_method
-    zone = Zone.find_by_name('GlobalZone') || create_zone
-
-    sm = ShippingMethod.new(:name => 'UPS Ground', :zone => zone)
-    calculator = Calculator::FlatRate.new(:calculable => sm, :calculable_type => 'ShippingMethod')
-    calculator.set_preference(:amount, 10.0)
-    sm.calculator = calculator
-    sm.save!
-    sm
+  def self.select_shipping_method(order)
+    all_methods = ShippingMethod.all_available order
+    raise Cdf::IllegalStateError, "No valid shipping methods for order: #{order.ship_address.state.abbr}, #{order.ship_address.country.iso3}" if all_methods.empty?
+    all_methods.first
   end
 
   def self.create_address(state_abbr)    
