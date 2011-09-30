@@ -8,13 +8,9 @@
   %h1 #{t "#{type}_files"}
   
   #header{:class => 'data_group'}
-    %h2 #{t 'header'}
-    .col.1
-      != data_pair(:file_name) { import_file.file_name}
-    .col.2
-      != data_pair(:created_at) { import_file.created_at.strftime("%m-%d-%y %H:%M")}
-    != data_pair(:file_path) { import_file.path}
-  
+    %h2 #{import_file.file_name}
+    != data_pair(:file_path) { import_file.path}    
+    != data_pair(:created_at) { import_file.created_at.strftime("%m-%d-%y %H:%M")}
     - if import_file.imported_at
       != data_pair(:imported_at) { import_file.imported_at.strftime("%m-%d-%y %H:%M")}
     - else
@@ -26,18 +22,20 @@
     #file_details{:class => 'data_group'}
       = render file_details, :import_file => import_file
 
-  #parsed{:class => 'data_group'}    
+  #parsed{:class => 'data_group'}
     %h2 #{t 'parsed'}
-    %pre #{import_file.parsed.to_yaml}
+    .collapseable    
+      %pre #{import_file.parsed.to_yaml}
 
   #contents{:class => 'data_group'}    
     %h2 #{t 'contents'}
-    %div.contents
-    - if import_file.data
-      %pre #{import_file.data}
-    - else
-      &mdash;
-    
+    .collapseable
+      %div.contents
+      - if import_file.data
+        %pre #{import_file.data}
+      - else
+        &mdash;
+      
 - content_for :sidebar do
   .box
     %h3
