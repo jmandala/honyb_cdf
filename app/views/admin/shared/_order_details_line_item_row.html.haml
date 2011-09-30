@@ -3,35 +3,37 @@
     = item.variant.product.name
     = "(#{variant_options(item.variant)})" unless item.variant.option_values.empty?
   != data_pair(:sku) {item.variant.sku}
-  .poa_line_items.data_group
-    %h2 #{t 'poa_details'}    
-    .collapseable
-      - item.poa_line_items.each do |i|
-        .poa_file
-          != data_pair(:title) {i.poa_line_item_title_record.title}
-          != data_pair(:binding) {"#{i.poa_line_item_title_record.cdf_binding_code.name} (#{i.poa_line_item_title_record.cdf_binding_code.code})"}
-          != data_pair(:author) {i.poa_line_item_title_record.author}
-          != data_pair(:publisher) { i.poa_line_item_pub_record.publisher_name}
-          != data_pair(:release_date) { i.poa_line_item_pub_record.publication_release_date.strftime("%D")}
-          != data_pair(:dc_code) { "#{i.dc_code.dc_name} (#{i.dc_code.poa_dc_code})"}
-          - if i.poa_additional_detail
-            != data_pair(:dc_inventory_information) { i.poa_additional_detail.dc_inventory_information }
-          != data_pair(:poa_status) { "#{i.poa_status.name} (#{i.poa_status.code})" }
-          != data_pair(:total_qty_predicted_to_ship_primary) { i.poa_line_item_pub_record.total_qty_predicted_to_ship_primary.to_i }
-          - if i.poa_additional_detail && i.poa_additional_detail.availability_date 
-            != data_pair(:availability_date) { i.poa_additional_detail.availability_date.strftime("%m/%d/%y %H:%M") }
-          - if i.poa_item_number_price_record
-            != data_pair(:item_number_type) { i.poa_item_number_price_record.item_number_type }
-            != data_pair(:net_price) { number_to_currency i.poa_item_number_price_record.net_price }
-            != data_pair(:discounted_list_price) { number_to_currency i.poa_item_number_price_record.discounted_list_price }
-            != data_pair(:total_line_order_qty) { i.poa_item_number_price_record.total_line_order_qty }
-        != data_pair(:poa_file) { link_to i.poa_file.file_name, admin_fulfillment_poa_file_path(i.poa_file) }
-  .asn_shipment_details.data_group
-    %h2 #{t 'asn_shipment_details'}
-    .collapseable
-      - item.asn_shipment_details.each do |asn_shipment_detail|
-        = render 'admin/fulfillment/asn_files/asn_shipment_detail', :asn_shipment_detail => asn_shipment_detail  
-      
+  - if !item.poa_line_items.empty?
+    .poa_line_items.data_group
+      %h2 #{t 'poa_details'}    
+      .collapseable
+        - item.poa_line_items.each do |i|
+          .poa_file
+            != data_pair(:title) {i.poa_line_item_title_record.title}
+            != data_pair(:binding) {"#{i.poa_line_item_title_record.cdf_binding_code.name} (#{i.poa_line_item_title_record.cdf_binding_code.code})"}
+            != data_pair(:author) {i.poa_line_item_title_record.author}
+            != data_pair(:publisher) { i.poa_line_item_pub_record.publisher_name}
+            != data_pair(:release_date) { i.poa_line_item_pub_record.publication_release_date.strftime("%D")}
+            != data_pair(:dc_code) { "#{i.dc_code.dc_name} (#{i.dc_code.poa_dc_code})"}
+            - if i.poa_additional_detail
+              != data_pair(:dc_inventory_information) { i.poa_additional_detail.dc_inventory_information }
+            != data_pair(:poa_status) { "#{i.poa_status.name} (#{i.poa_status.code})" }
+            != data_pair(:total_qty_predicted_to_ship_primary) { i.poa_line_item_pub_record.total_qty_predicted_to_ship_primary.to_i }
+            - if i.poa_additional_detail && i.poa_additional_detail.availability_date 
+              != data_pair(:availability_date) { i.poa_additional_detail.availability_date.strftime("%m/%d/%y %H:%M") }
+            - if i.poa_item_number_price_record
+              != data_pair(:item_number_type) { i.poa_item_number_price_record.item_number_type }
+              != data_pair(:net_price) { number_to_currency i.poa_item_number_price_record.net_price }
+              != data_pair(:discounted_list_price) { number_to_currency i.poa_item_number_price_record.discounted_list_price }
+              != data_pair(:total_line_order_qty) { i.poa_item_number_price_record.total_line_order_qty }
+          != data_pair(:poa_file) { link_to i.poa_file.file_name, admin_fulfillment_poa_file_path(i.poa_file) }
+  - if !item.asn_shipment_details.empty?
+    .asn_shipment_details.data_group
+      %h2 #{t 'asn_shipment_details'}
+      .collapseable
+        - item.asn_shipment_details.each do |asn_shipment_detail|
+          = render 'admin/fulfillment/asn_files/asn_shipment_detail', :asn_shipment_detail => asn_shipment_detail  
+        
                         
 %td{:class => 'price'}
   = number_to_currency item.price
