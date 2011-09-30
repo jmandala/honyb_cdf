@@ -14,6 +14,7 @@ class Cdf::OrderBuilder
       {:id => 11, :name => 'single order/multiple lines/multiple quantity: AA', :line_item_count => 2, :line_item_qty => 2, :state_abbr => :AA},
       {:id => 12, :name => 'single order/multiple lines/multiple quantity: AP', :line_item_count => 2, :line_item_qty => 2, :state_abbr => :AP},
       {:id => 13, :name => 'single order/single lines/single quantity: P.O. Box', :address1 => 'P.O. Box 123'},
+      {:id => 14, :name => 'Invalid Shipping Method: INTL Priority for Domestic', :state_abbr => :ME, :shipping_method => 'INTL Priority'},
   ]
 
   def self.create_for_scenarios(scenarios=[])
@@ -49,7 +50,7 @@ class Cdf::OrderBuilder
     order.bill_address = address
     order.ship_address = address
 
-    order.shipping_method = select_shipping_method order
+    order.shipping_method = select_shipping_method order, opts
 
     product_builder = Cdf::ProductBuilder.new
 
@@ -83,10 +84,9 @@ class Cdf::OrderBuilder
     TestCard.create!(:verification_value => 123, :month => 12, :year => 2013, :number => "4111111111111111")
   end
 
-  def self.select_shipping_method(order)
-    all_methods = ShippingMethod.all_available order
-    raise Cdf::IllegalStateError, "No valid shipping methods for order: #{order.ship_address.state.abbr}, #{order.ship_address.country.iso3}" if all_methods.empty?
-    all_methods.first
+  def self.select_shipping_method(order, opts={})
+    opts[:shipping_method] ||= 'Economy Mail'
+    ShippingMethod.find_by_name!(opts[:shipping_method])
   end
 
   def self.create_address(opts)    

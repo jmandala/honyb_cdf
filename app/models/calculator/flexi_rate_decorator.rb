@@ -11,9 +11,8 @@ Calculator::FlexiRate.class_eval do
         sum += self.preferred_additional_item
       end
     end
-    return(sum)
+    
+    sum
   end
-  
-  
   
 end

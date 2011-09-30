@@ -3,7 +3,7 @@ taxable_goods = TaxCategory.find_or_create_by_name('Taxable Goods', :is_default 
 
 puts "TaxRate..."
 
-rates = {:MA => 6.25, :ME => 5.0}
+rates = {:MA => 0.0625, :ME => 0.05}
 
 rates.keys.each do |key|
   abbr = key.to_s

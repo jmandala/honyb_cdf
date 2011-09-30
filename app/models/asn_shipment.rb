@@ -40,12 +40,12 @@ class AsnShipment < ActiveRecord::Base
     [:order_subtotal,
      :order_discount_amount,
      :order_total,
-     :freight_charge].each do |key|
+     :freight_charge,].each do |key|
       self.send("#{key}=", self.class.as_cdf_money(data, key))
       data.delete key
     end
 
-    [:shipping_and_handling].each do |key|
+    [:shipping_and_handling, :sales_tax].each do |key|
       self.send("#{key}=", self.class.as_cdf_money(data, key, 10000))
       data.delete key
     end
