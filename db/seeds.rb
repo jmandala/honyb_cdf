@@ -82,11 +82,7 @@ AsnSlashCode.find_or_create_by_code('S1', :description => 'DC Slash (warehouse)'
 
 puts "State..."
 CSV.foreach(CdfConfig::states_file) do |row|
-  country = Country.find_by_numcode(row[2])
-  if country.nil?
-    puts "Failed to find country with numcode #{row[2]}"
-    next
-  end
+  country = Country.find_by_numcode!(row[2])
 
   state = State.find_by_name(row[1])
   if state.nil?

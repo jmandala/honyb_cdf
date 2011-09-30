@@ -7,7 +7,7 @@ all_usa_zone = Zone.find_or_create_by_name('ALL US', :description => 'All US Sat
 
 non_continental_states = %w(HI AK)
 armed_forces_states = %w(AP AA AE)
-territories = %w(VI PW PR MP MH GU FM AS)
+territories = %w(MH PW FM AS GU MP PR VI UM)
 
 # add states to correct zone
 puts "\tAdd states to correct zone"
@@ -29,7 +29,7 @@ end
 
 puts "\tAdd territories to territory_zone"
 territories.each do |t|
-  state = State.find_by_abbr(t)  
+  state = State.find_by_abbr!(t)  
   next if territories_zone.includes_zoneable? state
   puts "\t\t#{state.abbr} -> #{territories_zone.name}"
   member = ZoneMember.create(:zone => territories_zone, :zoneable => state, :zoneable_type => 'State')

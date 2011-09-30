@@ -10,6 +10,9 @@ class Cdf::OrderBuilder
       {:id => 7, :name => 'single order/multiple lines/multiple quantity: Puerto Rico', :line_item_count => 2, :line_item_qty => 2, :ship_location => :PR},
       {:id => 8, :name => 'single order/multiple lines/multiple quantity: USVI', :line_item_count => 2, :line_item_qty => 2, :ship_location => :VI},
       {:id => 9, :name => 'single order/multiple lines/multiple quantity: UM', :line_item_count => 2, :line_item_qty => 2, :ship_location => :UM},
+      {:id => 10, :name => 'single order/multiple lines/multiple quantity: AE', :line_item_count => 2, :line_item_qty => 2, :ship_location => :AE},
+      {:id => 11, :name => 'single order/multiple lines/multiple quantity: AA', :line_item_count => 2, :line_item_qty => 2, :ship_location => :AA},
+      {:id => 12, :name => 'single order/multiple lines/multiple quantity: AP', :line_item_count => 2, :line_item_qty => 2, :ship_location => :AP},
   ]
 
   def self.create_for_scenarios(scenarios=[])
