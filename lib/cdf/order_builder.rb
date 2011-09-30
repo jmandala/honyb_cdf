@@ -4,7 +4,12 @@ class Cdf::OrderBuilder
       {:id => 1, :name => 'single order/single line/single quantity'},
       {:id => 2, :name => 'single order/single line/multiple quantity', :line_item_qty => 2},
       {:id => 3, :name => 'single order/multiple lines/single quantity', :line_item_count => 2},
-      {:id => 4, :name => 'single order/multiple lines/multiple quantity', :line_item_count => 2, :line_item_qty => 2}
+      {:id => 4, :name => 'single order/multiple lines/multiple quantity', :line_item_count => 2, :line_item_qty => 2},
+      {:id => 5, :name => 'single order/multiple lines/multiple quantity: Hawaii', :line_item_count => 2, :line_item_qty => 2, :ship_location => :HI},
+      {:id => 6, :name => 'single order/multiple lines/multiple quantity: Alaska', :line_item_count => 2, :line_item_qty => 2, :ship_location => :AK},
+      {:id => 7, :name => 'single order/multiple lines/multiple quantity: Puerto Rico', :line_item_count => 2, :line_item_qty => 2, :ship_location => :PR},
+      {:id => 8, :name => 'single order/multiple lines/multiple quantity: USVI', :line_item_count => 2, :line_item_qty => 2, :ship_location => :VI},
+      {:id => 9, :name => 'single order/multiple lines/multiple quantity: UM', :line_item_count => 2, :line_item_qty => 2, :ship_location => :UM},
   ]
 
   def self.create_for_scenarios(scenarios=[])
@@ -27,7 +32,7 @@ class Cdf::OrderBuilder
   end
 
   def self.completed_test_order(opts={})
-    opts[:ship_location] ||= :domestic
+    opts[:ship_location] ||= :ME
     opts[:line_item_count] ||= 1
     opts[:line_item_qty] ||= 1
     opts[:backordered_line_item_count] ||= 0
@@ -35,14 +40,11 @@ class Cdf::OrderBuilder
 
     order = Order.new_test
 
-    if opts[:ship_location] == :domestic
-      address = us_address
-    else
-      address = foreign_address
-    end
+    address = create_address opts[:ship_location]
 
     order.bill_address = address
     order.ship_address = address
+
     order.shipping_method = shipping_method
 
     product_builder = Cdf::ProductBuilder.new
@@ -96,16 +98,12 @@ class Cdf::OrderBuilder
     sm
   end
 
-  def self.us_address
+  def self.create_address(state_abbr)    
     my_addr = address
-    my_addr.state = maine
-    my_addr.country = usa
+    my_addr.state = State.find_by_abbr!(state_abbr)
+    my_addr.country = my_addr.state.country
     my_addr.save!
     my_addr
-  end
-
-  def self.foreign_address
-    raise Cdf::IllegalStateError, "Foreign address not supported!"
   end
 
   def self.address
@@ -120,13 +118,4 @@ class Cdf::OrderBuilder
         :alternative_phone => '123-333-9999'
     )
   end
-
-  def self.maine
-    State.find_by_abbr('ME') || State.create!(:name => 'MAINE', :abbr => 'ME', :country => usa)
-  end
-
-  def self.usa
-    Country.find_by_iso3('USA') || Country.create!(:iso_name => 'UNITED STATES', :name => 'UNITED STATES', :iso => 'US', :iso3 => 'USA', :numcode => 840)
-  end
-
 end
