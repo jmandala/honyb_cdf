@@ -127,7 +127,7 @@ module Records
       #           INTL Priority (non-trackable)       	### INTL PRIORITY            	50 	Yes
       #           INTL with Delivery Confirmation ***  	### INTL W/DEL CONFIRMATION 	50 	Dependant on ship-to country
       def shipping_method
-        "### 2ND DAY AIR".ljust_trim(25)
+        @order.shipping_method.asn_shipping_method_code.big_bisac_code_sent_in.ljust_trim(25)
       end
 
       # Y = Yes
