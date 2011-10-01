@@ -8,4 +8,8 @@ class String
     self[0, length-1]
 
   end
+  
+  def no_dashes
+    self.gsub(/\-/, '')
+  end
 end
