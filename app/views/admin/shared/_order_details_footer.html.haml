@@ -5,8 +5,8 @@
       .collapseable
         .col.1
           != data_pair(:file_name) {link_to @order.po_file.file_name, admin_fulfillment_po_file_path(@order.po_file)}
-        .col.2
-          != data_pair(:submitted_at) {@order.po_file.submitted_at.strftime("%m/%d/%y %H:%M")}
+        .col.2          
+          != data_pair(:submitted_at) {@order.po_file.submitted_at.strftime("%m/%d/%y %H:%M")} if @order.po_file.submitted_at
 
   - if !@order.poa_order_headers.empty?    
     #poa_files{:class => 'data_group'}

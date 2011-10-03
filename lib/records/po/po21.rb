@@ -77,7 +77,7 @@ module Records
 
       # Distribution Center code. Blank to use default
       def dc_code
-        @order.dc_code.po_dc_code
+        @order.dc_code.po_dc_code || ' '
       end
 
       # "Y" or "N". Greenlight titles are usually low demand titles with a short-discount (less than 35%)
