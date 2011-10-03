@@ -1,7 +1,7 @@
 .asn_shipment_detail
   != data_pair(:asn_order_status) {asn_shipment_detail.asn_order_status.description}
-  != data_pair(:asn_shipping_method_code) { "ASN: #{asn_shipment_detail.asn_shipping_method_code.big_bisac_code_sent_in} /  #{asn_shipment_detail.asn_shipping_method_code.shipping_method.name}"}
-  != data_pair(:asn_slash_code) {asn_shipment_detail.asn_slash_code}
+  != data_pair(:asn_shipping_method_code) { "ASN: #{asn_shipment_detail.asn_shipping_method_code.big_bisac_code_sent_in} /  #{asn_shipment_detail.asn_shipping_method_code.shipping_method.name}" if asn_shipment_detail.asn_shipping_method_code}
+  != data_pair(:asn_slash_code) { "#{asn_shipment_detail.asn_slash_code.description} (#{asn_shipment_detail.asn_slash_code.code})" if asn_shipment_detail.asn_slash_code}  
   != data_pair(:dc_code) {asn_shipment_detail.dc_code.dc_name}
   != data_pair(:ingram_item_list_price) {number_to_currency asn_shipment_detail.ingram_item_list_price}
   != data_pair(:net_discounted_price) {number_to_currency asn_shipment_detail.net_discounted_price}

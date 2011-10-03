@@ -4,10 +4,12 @@
   %div.admin_buttons
     = form_tag(send("admin_fulfillment_#{type}_files_path")) do |f|
       .download
-        .remote_files
-          - @downloadable.each do |line|
-            %p #{line}
-        = button t("download_#{type}_files"), 'add'
+        -#.remote_files
+        -#  - @downloadable.each do |line|
+        -#    %p #{line}
+        - count = @downloadable.size
+        - human_type = count > 1 ? t(type).pluralize : t(type)
+        = button t("download_files", :count => count, :file_type => human_type), 'add'
   
 
 %h1 #{t "#{type}_files"}

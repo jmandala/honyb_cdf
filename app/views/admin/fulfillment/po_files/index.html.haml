@@ -2,16 +2,12 @@
 
 %div.admin_buttons
   - order_count = Order.needs_po.count
-  %p #{order_count} orders need PO
   
-  - if Order.needs_po.count > 0
+  - if order_count > 0
     = form_tag(admin_fulfillment_po_files_path) do |f|
       %div
-        = button t('create_po_file'), 'add'
-      - if @po_files.length >0
-        %div
-          = link_to t('destroy_all_po_files'), purge_admin_fulfillment_po_files_path, :method => :delete
-
+        - order_title = order_count > 1 ? t('order').pluralize : t('order')
+        = button t('create_po_file', :count => order_count, :order => order_title), 'add'
 
 %h1 #{t 'po_files'}
 %div
