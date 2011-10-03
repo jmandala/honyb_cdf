@@ -31,33 +31,12 @@ module Records
           :exception_acknowledgement => '5'
       }
 
-      # EL = Multi-shipment: Allow immediate shipment of all in-stockt itles
-      # for every warehouse shopped. Backorders will allocate AND SHIP as stock
-      # becomes available. On the cancel date unallocated lines will be cancelled.
-      # This order type can create many shipments from any Ingram facility. This
-      # order type provides fastest deliverly of the product to the consumer.
-      #
-      # RF = Release when full: This order type will allow allocation of stock to take place
-      # when the original PO was entered. When all lines on the PO have allocated the PO will ship.
-      # On the cancel date any unallocated lines will be cancelled, all allocated product will ship.
-      # This order will result in one shipment per warehouse. This order type provides lowest freight
-      # charges to the consumer.
-      #
-      # LS = Dual Shipment:This order type will allow immediate shipment of all in-stock titles for
-      # every warehouse shopped. Backorders will allocate as stock becomes available. When there are no
-      # more backorders the order will ship. On the cancel date the unallocated lines will be cancelled, all
-      # allocated product will ship. This order type will result in up to two shipments per warehouse
-      ORDER_TYPE = {
-          :multi_shipment => 'EL',
-          :release_when_full => 'RF',
-          :dual_shipment => 'LS'
-      }
-
+      
       def cdf_record
         cdf = super
         cdf << ingram_ship_to_account_number
         cdf << po_type
-        cdf << order_type
+        cdf << split_shipment_type
         cdf << dc_code
         cdf << reserved(1)
         cdf << green_light
@@ -92,13 +71,13 @@ module Records
 
       end
 
-      def order_type
-        ORDER_TYPE[:release_when_full].ljust_trim 2
+      def split_shipment_type
+        @order.split_shipment_type.ljust_trim 2
       end
 
       # Distribution Center code. Blank to use default
       def dc_code
-        ' '
+        @order.dc_code.po_dc_code
       end
 
       # "Y" or "N". Greenlight titles are usually low demand titles with a short-discount (less than 35%)

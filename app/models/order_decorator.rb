@@ -1,10 +1,34 @@
 Order.class_eval do
 
-  before_create :init_order_type
+  before_create :init_order
 
   TYPES = [:live, :test]
+  
+  # EL = Multi-shipment: Allow immediate shipment of all in-stockt itles
+  # for every warehouse shopped. Backorders will allocate AND SHIP as stock
+  # becomes available. On the cancel date unallocated lines will be cancelled.
+  # This order type can create many shipments from any Ingram facility. This
+  # order type provides fastest deliverly of the product to the consumer.
+  #
+  # RF = Release when full: This order type will allow allocation of stock to take place
+  # when the original PO was entered. When all lines on the PO have allocated the PO will ship.
+  # On the cancel date any unallocated lines will be cancelled, all allocated product will ship.
+  # This order will result in one shipment per warehouse. This order type provides lowest freight
+  # charges to the consumer.
+  #
+  # LS = Dual Shipment:This order type will allow immediate shipment of all in-stock titles for
+  # every warehouse shopped. Backorders will allocate as stock becomes available. When there are no
+  # more backorders the order will ship. On the cancel date the unallocated lines will be cancelled, all
+  # allocated product will ship. This order type will result in up to two shipments per warehouse
+  SPLIT_SHIPMENT_TYPE = {
+      :multi_shipment => 'EL',
+      :release_when_full => 'RF',
+      :dual_shipment => 'LS'
+  }
+
 
   belongs_to :po_file
+  belongs_to :dc_code
   has_many :poa_order_headers, :dependent => :restrict
   has_many :poa_files, :through => :poa_order_headers
   has_many :asn_shipments, :dependent => :restrict
@@ -23,11 +47,11 @@ Order.class_eval do
     end
     result
   end
-  
+
   def cdf_invoice_total
     self.cdf_invoice_freight_and_fees.sum(:amount_due)
   end
-  
+
   def update_auth_before_ship
     # todo: update authorized_total
   end
@@ -150,8 +174,10 @@ Order.class_eval do
 
   private
   # Sets the order type if not already set 
-  def init_order_type
+  def init_order
     self.order_type = :live if self.order_type.nil?
+    self.dc_code = DcCode.default if self.dc_code.nil?
+    self.split_shipment_type = SPLIT_SHIPMENT_TYPE[:release_when_full] if self.split_shipment_type.nil?
   end
 
 end
