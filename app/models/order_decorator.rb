@@ -1,6 +1,8 @@
 Order.class_eval do
 
   before_create :init_order
+  
+  ORDER_NAME = 'Order Name'
 
   TYPES = [:live, :test]
   
@@ -25,7 +27,6 @@ Order.class_eval do
       :release_when_full => 'RF',
       :dual_shipment => 'LS'
   }
-
 
   belongs_to :po_file
   belongs_to :dc_code
@@ -172,6 +173,24 @@ Order.class_eval do
     self
   end
 
+  # Creates a new comment with type 'Order Name'
+  def order_name=(name)
+    order_name_type = CommentType.find_by_name!(ORDER_NAME)
+    self.comments.create(:comment => name, :comment_type => order_name_type, :commentable => self, :commentable_type => self.class.name, :user => User.current)
+  end
+  
+  def order_name
+    if self.comments.count == 0
+      return ''
+    end
+    comment = self.comments.find_by_comment_type_id(CommentType.find_by_name(ORDER_NAME))
+    if comment.nil?
+      return ''
+    end
+    
+    comment.comment
+  end
+  
   private
   # Sets the order type if not already set 
   def init_order

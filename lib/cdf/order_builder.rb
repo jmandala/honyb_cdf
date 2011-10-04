@@ -64,6 +64,7 @@ class Cdf::OrderBuilder
     opts[:split_shipment_type] ||= :default
 
     order = Order.new_test
+    order.order_name = opts[:name]
 
     init_dc_code order, opts[:dc_code]
     init_split_shipment_type order, opts[:split_shipment_type]
