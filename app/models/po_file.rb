@@ -129,6 +129,11 @@ class PoFile < ActiveRecord::Base
   def submitted?
     !self.submitted_at.nil?
   end
+  
+  # Returns PoFiles that have not been submitted
+  def self.not_submitted
+    where(:submitted_at => nil)
+  end
 
   private
   def init_counters

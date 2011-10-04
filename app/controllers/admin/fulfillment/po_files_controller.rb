@@ -22,6 +22,15 @@ class Admin::Fulfillment::PoFilesController < Admin::ResourceController
     redirect_to :action => :show
   end
 
+  def submit_all
+    @count = PoFile.not_submitted.count
+    PoFile.not_submitted.each {|po_file| po_file.put}
+    title = @count == 1 ? t('po_file') : t('po_file').pluralize
+    flash[:notice] = "Submitted #{@count} #{t('po_file')}"
+    redirect_to :action => :index    
+  end
+  
+  
   def show
     begin
       @data = @po_file.read
@@ -63,6 +72,5 @@ class Admin::Fulfillment::PoFilesController < Admin::ResourceController
   def location_after_save
     admin_fulfillment_po_files_path
   end
-
 
 end

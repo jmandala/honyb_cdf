@@ -1,5 +1,28 @@
 = render :partial => 'admin/shared/fulfillment_sub_menu'
 
-%ol
-  - Country.find_by_iso('US').states.order('abbr asc').each do |state|
-    %li #{state.id} #{state.abbr} #{state.name} #{state.country.iso}
+#po_files
+  %h1 #{t 'po_files'}
+  .generate_count
+    #{@needs_po_count} orders need po files
+    - if @needs_po_count > 0
+      = form_tag(admin_fulfillment_po_files_path) do |f|
+        %div
+          - order_title = @needs_po_count > 1 ? t('order').pluralize : t('order')
+          = button t('create_po_file', :count => @needs_po_count, :order => order_title), 'add'
+  .submit_count
+    #{@submit_po_count} po files need to be submitted
+    - if @submit_po_count > 0
+      = form_tag(submit_all_admin_fulfillment_po_files_path) do |f|
+        %div
+          - title = @submit_po_count > 1 ? t('po_file').pluralize : t('po_file')
+          = button t('submit_all_po_files', :count => @submit_po_count, :file => title), 'add'
+
+
+#poa_files
+  %h1 #{t 'poa_files'}
+  .download_count
+    {COUNT} poa files to download
+    [DOWNLOAD PO FILES]
+  .import_count
+    {COUNT} poa files to import
+    [IMPORT POA FILES]

@@ -31,7 +31,8 @@ class Cdf::OrderBuilder
       {:id => 28, :name => 'short ship/slash a qty from a multiple line order', :line_item_qty => 4, :ean_type => [:slash_by_1, :in_stock]},
       {:id => 29, :name => 'backorder cancel reported in asn', :ean_type => :out_of_stock_backorder_cancel},
       {:id => 30, :name => 'backorder shipped on product receipt', :ean_type => :out_of_stock_backorder_ship},
-      {:id => 31, :name => 'shipping 1 item in multiple boxes from the same DC', :line_item_qty => 30, :ean_type => :multiple_boxes},
+      {:id => 31, :name => 'shipping 1 item in multiple boxes from the same DC: in stock', :line_item_qty => 30, :ean_type => :in_stock},
+      {:id => 32, :name => 'shipping 1 item in multiple boxes from the same DC', :line_item_qty => 30, :ean_type => :multiple_boxes},
 
   ]
 

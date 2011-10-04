@@ -28,12 +28,28 @@
               != data_pair(:total_line_order_qty) { i.poa_item_number_price_record.total_line_order_qty }
           != data_pair(:poa_file) { link_to i.poa_file.file_name, admin_fulfillment_poa_file_path(i.poa_file) }
   - if !item.asn_shipment_details.empty?
-    .asn_shipment_details.data_group
-      %h2 #{t 'asn_shipment_details'}
-      .collapseable
-        - item.asn_shipment_details.each do |asn_shipment_detail|
+    - item.asn_shipment_details.each do |asn_shipment_detail|
+      .asn_shipment_details.data_group
+        %h2 #{t 'asn_shipment_detail'}        
+        .asn_shipment_detail.main
+          %table
+            %thead
+              %tr
+                %th #{t 'asn_order_status'}
+                %th #{t 'shipping'}
+                %th #{t 'tracking_number'}
+                %th #{t 'dc_code'}
+            %tbody
+              %tr
+                %td #{asn_shipment_detail.asn_order_status.description}
+                %td 
+                  = "#{asn_shipment_detail.asn_shipping_method_code.big_bisac_code_sent_in} /  #{asn_shipment_detail.asn_shipping_method_code.shipping_method.name}" if asn_shipment_detail.asn_shipping_method_code
+                  = "#{asn_shipment_detail.asn_slash_code.description} (#{asn_shipment_detail.asn_slash_code.code})"  if asn_shipment_detail.asn_slash_code  
+                %td #{asn_shipment_detail.tracking_number}
+                %td #{asn_shipment_detail.dc_code.dc_name}
+        .collapseable          
           = render 'admin/fulfillment/asn_files/asn_shipment_detail', :asn_shipment_detail => asn_shipment_detail  
-        
+        .clear
                         
 %td{:class => 'price'}
   = number_to_currency item.price

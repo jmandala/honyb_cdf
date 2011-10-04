@@ -1,21 +1,43 @@
 .asn_shipment_detail
-  != data_pair(:asn_order_status) {asn_shipment_detail.asn_order_status.description}
-  != data_pair(:asn_shipping_method_code) { "ASN: #{asn_shipment_detail.asn_shipping_method_code.big_bisac_code_sent_in} /  #{asn_shipment_detail.asn_shipping_method_code.shipping_method.name}" if asn_shipment_detail.asn_shipping_method_code}
-  != data_pair(:asn_slash_code) { "#{asn_shipment_detail.asn_slash_code.description} (#{asn_shipment_detail.asn_slash_code.code})" if asn_shipment_detail.asn_slash_code}  
-  != data_pair(:dc_code) {asn_shipment_detail.dc_code.dc_name}
-  != data_pair(:ingram_item_list_price) {number_to_currency asn_shipment_detail.ingram_item_list_price}
-  != data_pair(:net_discounted_price) {number_to_currency asn_shipment_detail.net_discounted_price}
-  != data_pair(:ingram_order_entry_number) {asn_shipment_detail.ingram_order_entry_number}
-  != data_pair(:isbn_10_ordered) {asn_shipment_detail.isbn_10_ordered}
-  != data_pair(:isbn_10_shipped) {asn_shipment_detail.isbn_10_shipped}
-  != data_pair(:isbn_13) {asn_shipment_detail.isbn_13}
-  != data_pair(:line_item) {asn_shipment_detail.line_item.variant.sku}
-  != data_pair(:order) {asn_shipment_detail.order.number}
-  != data_pair(:quantity_canceled) {asn_shipment_detail.quantity_canceled}
-  != data_pair(:quantity_predicted) {asn_shipment_detail.quantity_predicted}
-  != data_pair(:quantity_shipped) {asn_shipment_detail.quantity_shipped}
-  != data_pair(:quantity_slashed) {asn_shipment_detail.quantity_slashed}
-  != data_pair(:ssl) {asn_shipment_detail.ssl}
-  != data_pair(:standard_carrier_address_code) {asn_shipment_detail.standard_carrier_address_code}
-  != data_pair(:tracking_number) {asn_shipment_detail.tracking_number}
-  != data_pair(:weight) {asn_shipment_detail.weight}
+  %table
+    %thead
+      %tr
+        %th #{t 'ingram_item_list_price'}
+        %th #{t 'net_discounted_price'}
+        %th #{t 'ingram_order_entry_number'}
+        %th #{t 'isbn_ordered'}
+        %th #{t 'isbn_shipped'}
+    %tbody
+      %tr
+        %td #{number_to_currency asn_shipment_detail.ingram_item_list_price}
+        %td #{number_to_currency asn_shipment_detail.net_discounted_price}
+        %td #{asn_shipment_detail.ingram_order_entry_number}
+        %td #{asn_shipment_detail.isbn_10_ordered}
+        %td #{asn_shipment_detail.isbn_10_shipped} / #{asn_shipment_detail.isbn_13}
+  -#!= data_pair(:line_item) {asn_shipment_detail.line_item.variant.sku}
+  -#!= data_pair(:order) {asn_shipment_detail.order.number}
+  %table
+    %thead
+      %tr
+        %th #{t 'quantity_canceled'}
+        %th #{t 'quantity_predicted'}
+        %th #{t 'quantity_shipped'}
+        %th #{t 'quantity_slashed'}
+    %tbody
+      %tr
+        %td #{asn_shipment_detail.quantity_canceled}
+        %td #{asn_shipment_detail.quantity_predicted}
+        %td #{asn_shipment_detail.quantity_shipped}
+        %td #{asn_shipment_detail.quantity_slashed}
+  
+  %table 
+    %thead
+      %tr
+        %th #{t 'ssl'}
+        %th #{t 'scac'}
+        %th #{t 'weight'}
+    %tbody
+      %tr
+        %td #{asn_shipment_detail.ssl}
+        %td #{asn_shipment_detail.standard_carrier_address_code}
+        %td #{asn_shipment_detail.weight}
