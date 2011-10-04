@@ -92,6 +92,16 @@ CSV.foreach(CdfConfig::states_file) do |row|
   state.save
 end
 
+puts "CommentTypes..."
+comment_types = [
+    {:applies_to => 'Order', :name => 'Customer Communication'},
+    {:applies_to => 'Order', :name => 'Internal Note'},
+    {:applies_to => 'Order', :name => 'Miscellaneous'},
+    {:applies_to => 'Order', :name => 'Order Name'},
+]
+comment_types.each do |options|
+  CommentType.find_or_create_by_name(options[:name], :applies_to => options[:applies_to])
+end
 
 require_relative 'default/zone_members'
 require_relative 'default/tax_zones'
