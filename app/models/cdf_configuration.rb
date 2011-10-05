@@ -11,4 +11,5 @@ class CdfConfiguration < Configuration
   preference :cdf_ftp_password, :string, :default => ""
   preference :cdf_run_mode, :string, :default => :test
 
+  preference :days_to_hold_backorder, :integer, :default => 1
 end
