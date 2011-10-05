@@ -12,4 +12,5 @@ class CdfConfiguration < Configuration
   preference :cdf_run_mode, :string, :default => :test
 
   preference :days_to_hold_backorder, :integer, :default => 1
+  preference :split_shipment_type, :string, :default => :release_when_full
 end

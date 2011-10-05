@@ -25,7 +25,7 @@ module Records
       end
 
       def line_level_backorder_cancel_date
-        cdf_date(line_item.created_at + 3.months)
+        cdf_date(line_item.created_at + Cdf::Config[:days_to_hold_backorder])
       end
 
       def line_level_gift_wrap_code

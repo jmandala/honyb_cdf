@@ -14,6 +14,19 @@
     %tr
       %th{:scope => 'row'}
         %label
+          = label_tag 'preferences[days_to_hold_backorder]', t("days_to_hold_backorder")
+      %td
+        = text_field_tag('preferences[days_to_hold_backorder]', Cdf::Config[:days_to_hold_backorder])
+    %tr
+      %th{:scope => 'row'}
+        %label
+          = label_tag 'preferences[split_shipment_type]', t("split_shipment_type")
+      %td
+        = select_tag('preferences[split_shipment_type]', options_for_select( Order::SPLIT_SHIPMENT_TYPE.keys.collect {|t| [t.to_s.humanize, t] } , Cdf::Config[:split_shipment_type]))
+    
+    %tr
+      %th{:scope => 'row'}
+        %label
           = label_tag 'preferences[cdf_ship_to_password]', t("cdf_ship_to_password")
       %td
         = text_field_tag('preferences[cdf_ship_to_password]', Cdf::Config[:cdf_ship_to_password])

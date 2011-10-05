@@ -9,6 +9,19 @@
       = t "cdf_run_mode"
     %td
       = Cdf::Config[:cdf_run_mode]
+      
+  %tr
+    %th{:scope => 'row'}
+      = t 'days_to_hold_backorder'
+    %td
+      = Cdf::Config[:days_to_hold_backorder]
+      
+  %tr
+    %th{:scope => 'row'}
+      = t 'split_shipment_type'
+    %td
+      #{Cdf::Config[:split_shipment_type].humanize} (#{Order::SPLIT_SHIPMENT_TYPE[Cdf::Config[:split_shipment_type].to_sym]})
+      
   %tr
     %th{:scope => 'row'}
       = t "cdf_ship_to_password"

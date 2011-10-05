@@ -196,7 +196,7 @@ Order.class_eval do
   def init_order
     self.order_type = :live if self.order_type.nil?
     self.dc_code = DcCode.default if self.dc_code.nil?
-    self.split_shipment_type = SPLIT_SHIPMENT_TYPE[:release_when_full] if self.split_shipment_type.nil?
+    self.split_shipment_type = SPLIT_SHIPMENT_TYPE[Cdf::Config[:split_shipment_type].to_sym] if self.split_shipment_type.nil?
   end
 
 end
