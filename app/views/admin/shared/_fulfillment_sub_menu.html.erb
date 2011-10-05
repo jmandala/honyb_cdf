@@ -1,12 +1,29 @@
 <% content_for :sub_menu do %>
-  <ul id="sub_nav">
-    <%= hook :admin_fulfillment_sub_tabs do %>
-      <%= tab :fulfillment_dashboard, :label =>'dashboard', :match_path => '/fulfillment/dashboard' %>
-      <%= tab :fulfillment_po_files,  :match_path => '/fulfillment/po_file' %>
-      <%= tab :fulfillment_poa_files, :match_path => '/fulfillment/poa_files' %>
-      <%= tab :fulfillment_asn_files, :match_path => '/fulfillment/asn_files' %>
-      <%= tab :fulfillment_cdf_invoice_files, :match_path => '/fulfillment/cdf_invoice_files' %>
-      <%= tab :fulfillment_system_check_index, :label => 'system_check', :match_path => '/fulfillment/system_check' %>
-    <% end %>
-  </ul>
+    <% 
+       needs_po_count = Order.needs_po.count 
+       po_file_not_submitted = PoFile.not_submitted.count 
+    %>
+    
+    <ul id="sub_nav">
+      <%= hook :admin_fulfillment_sub_tabs do %>
+          <%= tab :fulfillment_dashboard, :label =>'dashboard', :match_path => '/fulfillment/dashboard' %>
+          <%= tab :fulfillment_po_files, :match_path => '/fulfillment/po_file' %>
+          <% if needs_po_count > 0 %>
+              <li>
+                  <div class="status create"><%= needs_po_count %></div>
+              </li>
+          <% end %>
+          <% if po_file_not_submitted > 0 %>
+              <li>
+                <div class="status submit">
+                  <%= po_file_not_submitted %>
+                </div>
+              </li>
+          <% end %>
+          <%= tab :fulfillment_poa_files, :match_path => '/fulfillment/poa_files' %>
+          <%= tab :fulfillment_asn_files, :match_path => '/fulfillment/asn_files' %>
+          <%= tab :fulfillment_cdf_invoice_files, :match_path => '/fulfillment/cdf_invoice_files' %>
+          <%= tab :fulfillment_system_check_index, :label => 'system_check', :match_path => '/fulfillment/system_check' %>
+      <% end %>
+    </ul>
 <% end %>
