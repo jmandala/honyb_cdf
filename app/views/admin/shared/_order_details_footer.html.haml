@@ -52,7 +52,7 @@
           .col.1
             != data_pair(:file_name) {link_to asn_file.file_name, admin_fulfillment_asn_file_path(asn_file)}
           .col.2
-            != data_pair(:imported_at) {asn_file.imported_at.strftime("%m/%d/%y %H:%M")}
+            != data_pair(:imported_at) {asn_file.imported_at.strftime("%m/%d/%y %H:%M")} if asn_file.imported_at
           .asn_shipments.data_group
             %h3 #{t 'asn_shipment'}
             .asn_shipment
