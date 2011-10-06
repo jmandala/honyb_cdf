@@ -4,9 +4,10 @@ class AsnShipmentDetail < ActiveRecord::Base
 
   belongs_to :line_item
   belongs_to :order
+  has_many :inventory_units
   belongs_to :asn_file
   belongs_to :asn_shipment
-  has_one :product, :through => :line_item
+  belongs_to :shipment
   belongs_to :asn_order_status
   belongs_to :asn_slash_code
   belongs_to :asn_shipping_method_code
@@ -41,7 +42,7 @@ class AsnShipmentDetail < ActiveRecord::Base
 
   def before_populate(data)
     self.asn_shipment = nearest_asn_shipment(data[:__LINE_NUMBER__])
-    
+
     [:ingram_item_list_price, :net_discounted_price, :weight].each do |key|
       self.send("#{key}=", self.class.as_cdf_money(data, key))
       data.delete key
@@ -87,7 +88,91 @@ class AsnShipmentDetail < ActiveRecord::Base
       data.delete field
     end
 
+    init_shipment(data[:tracking_number])
+  end
 
+  # returns any unassigned shipments in the same order, with the same shipping method, and the same tracking number
+  def available_shipments
+    if shipping_method.nil?
+      return []
+    end
+
+    # the first shipment related to the AsnShipmentDetail will have no tracking number and will not be shipped
+    # subsequent shipments will be identified by having the same tracking number
+    Shipment.where("order_id = #{self.order.id}
+      AND shipping_method_id = #{self.shipping_method.id}
+      AND (shipped_at IS NULL OR tracking = '#{self.tracking_number}')")
+  end
+
+  def shipping_method
+    asn_shipping_method_code.shipping_method unless asn_shipping_method_code.nil?
+  end
+
+  # All [AsnShipmentDetail]s that don't yet have []Shipment]s
+  def self.missing_shipment
+    where(:shipment_id => nil)
+  end
+
+  # helper method to retrieve the product assigned to the line_item
+  def product
+    line_item.product unless line_item.nil?
+  end
+
+  # helper method to retrieve the variant assigned to the line_item
+  def variant
+    line_item.variant unless line_item.nil?
+  end
+
+  # assigns the correct shipment to this object
+  def init_shipment(tracking)
+    if shipped?
+      if self.available_shipments.empty?
+        raise Cdf::IllegalStateError, "failed to create shipments because none found! #{self.tracking_number}"
+        
+        # todo: Create a new shipment to assign these products to
+        # Shipment must use a shipping method that is a copy of the original method
+        # but which only bills for multiple-packages
+        
+      end
+      self.available_shipments.each do |shipment|
+        assign_shipment shipment, tracking
+      end
+    else
+      raise Cdf::IllegalStateError, "Cannot init_shipment for status: #{self.asn_order_status.to_yaml}"
+      
+      # todo: Cancel items that did not ship and which were truly canceled
+    end
+
+    self.save!
+
+    self.shipment
+  end
+
+  def shipped?
+    if self.asn_order_status
+      return self.asn_order_status.shipped?
+    end
+
+    false
+  end
+
+  # assigns [Shipment] to this AsnShipmentDetail
+  # * as a result the shipment will be marked as shipped
+  # * the tracking number will be set
+  # * the inventory will be allocated
+  def assign_shipment(shipment, tracking)
+    self.shipment = shipment
+    
+    # todo: assign inventory units to this shipment corresponding to the number of items actually shipped
+    shipment.tracking = tracking
+    shipment.shipped_at = Time.now
+    begin
+      shipment.ship! unless shipment.state?('shipped')
+    rescue => e
+      raise Cdf::IllegalStateError, "Error attempting to import #{self.asn_file.file_name}::#{self.isbn_13}: #{tracking}, #{e.message}"
+    end
+
+    shipment.save!
   end
 
 end

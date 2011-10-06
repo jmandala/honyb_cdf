@@ -240,7 +240,7 @@ module Importable
     if import_error?
       return CdfImportExceptionLog.create(:event => "Error importing file: #{import_error_message}", :file_name => self.file_name)
     end
-
+    
     begin
       p = parsed
 
