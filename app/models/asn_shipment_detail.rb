@@ -162,6 +162,9 @@ class AsnShipmentDetail < ActiveRecord::Base
     false
   end
 
+  def shipment_date
+    self.asn_shipment.shipment_date if self.asn_shipment
+  end
 # assigns [Shipment] to this []AsnShipmentDetail]
 # * as a result the shipment will be marked as shipped
 # * the tracking number will be set
@@ -169,12 +172,12 @@ class AsnShipmentDetail < ActiveRecord::Base
   def assign_shipment(shipment)
     self.shipment = shipment
 
-    shipment.tracking = self.tracking
-    #shipment.shipped_at = self.asn_shipment.shipment_date
+    shipment.tracking = self.tracking if self.tracking
+    shipment.shipped_at = self.shipment_date
 
     begin
       #raise StandardError, shipment.to_yaml
-      #shipment.ship! unless shipment.state?('shipped')
+      shipment.ship! unless shipment.state?('shipped')
     rescue => e
       raise Cdf::IllegalStateError, "Error attempting to import #{self.asn_file.file_name}::#{self.isbn_13}: #{self.tracking}, (#{shipment.state}) - #{e.message}"
     end
