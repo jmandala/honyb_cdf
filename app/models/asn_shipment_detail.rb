@@ -26,7 +26,7 @@ class AsnShipmentDetail < ActiveRecord::Base
       l.quantity_slashed 5
       l.quantity_shipped 5
       l.item_detail_status_code 2
-      l.tracking_number 25
+      l.tracking 25
       l.standard_carrier_address_code 5
       l.spacer 15
       l.ingram_item_list_price 7
@@ -88,7 +88,11 @@ class AsnShipmentDetail < ActiveRecord::Base
       data.delete field
     end
 
-    init_shipment(data[:tracking_number])
+    # make sure tracking code is set
+    self.tracking = data[:tracking]
+    data.delete :tracking
+    
+    init_shipment
   end
 
   # Returns shipments that are available for assignment to this object.
@@ -96,7 +100,7 @@ class AsnShipmentDetail < ActiveRecord::Base
   # * the shipping method matches
   # * AND the order matches
   # * AND there is NO tracking number on the shipment and no tracking number on this object
-  def available_shipments(tracking=nil)
+  def available_shipments
     if shipping_method.nil?
       return []
     end
@@ -106,7 +110,7 @@ class AsnShipmentDetail < ActiveRecord::Base
     sql = "order_id = #{self.order.id} AND shipping_method_id = #{self.shipping_method.id}"
 
     # match tracking number if there is one    
-    sql += " AND tracking = '#{tracking}'" unless tracking.nil?
+    sql += " AND tracking = '#{self.tracking}'" unless self.tracking.nil?
     
     Shipment.where(sql)
   end
@@ -132,9 +136,9 @@ class AsnShipmentDetail < ActiveRecord::Base
 
   # assigns the correct shipment to this object
   # matches the first available shipment
-  def init_shipment(tracking)
+  def init_shipment
     if shipped?
-      assignable_shipments = self.available_shipments(tracking)
+      assignable_shipments = self.available_shipments
       if assignable_shipments.empty?
         # Shipment must use a shipping method that is a copy of the original method
         # but which only bills for multiple-packages
@@ -145,7 +149,7 @@ class AsnShipmentDetail < ActiveRecord::Base
 
       shipments.each do |shipment|
         assign_inventory shipment
-        assign_shipment shipment, tracking
+        assign_shipment shipment
       end
 
     else
@@ -171,17 +175,17 @@ class AsnShipmentDetail < ActiveRecord::Base
 # * as a result the shipment will be marked as shipped
 # * the tracking number will be set
 # * the inventory will be allocated
-  def assign_shipment(shipment, tracking)
+  def assign_shipment(shipment)
     self.shipment = shipment
 
-    shipment.tracking = tracking
+    shipment.tracking = self.tracking
     #shipment.shipped_at = self.asn_shipment.shipment_date
 
     begin
       #raise StandardError, shipment.to_yaml
       #shipment.ship! unless shipment.state?('shipped')
     rescue => e
-      raise Cdf::IllegalStateError, "Error attempting to import #{self.asn_file.file_name}::#{self.isbn_13}: #{tracking}, (#{shipment.state}) - #{e.message}"
+      raise Cdf::IllegalStateError, "Error attempting to import #{self.asn_file.file_name}::#{self.isbn_13}: #{self.tracking}, (#{shipment.state}) - #{e.message}"
     end
 
     shipment.save!
