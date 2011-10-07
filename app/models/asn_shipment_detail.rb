@@ -91,17 +91,24 @@ class AsnShipmentDetail < ActiveRecord::Base
     init_shipment(data[:tracking_number])
   end
 
-  # returns any unassigned shipments in the same order, with the same shipping method, and the same tracking number
-  def available_shipments
+  # Returns shipments that are available for assignment to this object.
+  # The constraints are:
+  # * the shipping method matches
+  # * AND the order matches
+  # * AND there is NO tracking number on the shipment and no tracking number on this object
+  def available_shipments(tracking=nil)
     if shipping_method.nil?
       return []
     end
 
     # the first shipment related to the AsnShipmentDetail will have no tracking number and will not be shipped
     # subsequent shipments will be identified by having the same tracking number
-    Shipment.where("order_id = #{self.order.id}
-      AND shipping_method_id = #{self.shipping_method.id}
-      AND (shipped_at IS NULL OR tracking = '#{self.tracking_number}')")
+    sql = "order_id = #{self.order.id} AND shipping_method_id = #{self.shipping_method.id}"
+
+    # match tracking number if there is one    
+    sql += " AND tracking = '#{tracking}'" unless tracking.nil?
+    
+    Shipment.where(sql)
   end
 
   def shipping_method
@@ -124,22 +131,26 @@ class AsnShipmentDetail < ActiveRecord::Base
   end
 
   # assigns the correct shipment to this object
+  # matches the first available shipment
   def init_shipment(tracking)
     if shipped?
-      if self.available_shipments.empty?
-        raise Cdf::IllegalStateError, "failed to create shipments because none found! #{self.tracking_number}"
-        
-        # todo: Create a new shipment to assign these products to
+      assignable_shipments = self.available_shipments(tracking)
+      if assignable_shipments.empty?
         # Shipment must use a shipping method that is a copy of the original method
         # but which only bills for multiple-packages
-        
+        shipments = [Shipment.create(:address_id => self.order.ship_address_id, :order_id => self.order_id, :shipping_method_id => self.shipping_method.id)]
+      else
+        shipments = assignable_shipments
       end
-      self.available_shipments.each do |shipment|
+
+      shipments.each do |shipment|
+        assign_inventory shipment
         assign_shipment shipment, tracking
       end
+
     else
       raise Cdf::IllegalStateError, "Cannot init_shipment for status: #{self.asn_order_status.to_yaml}"
-      
+
       # todo: Cancel items that did not ship and which were truly canceled
     end
 
@@ -156,23 +167,45 @@ class AsnShipmentDetail < ActiveRecord::Base
     false
   end
 
-  # assigns [Shipment] to this AsnShipmentDetail
-  # * as a result the shipment will be marked as shipped
-  # * the tracking number will be set
-  # * the inventory will be allocated
+# assigns [Shipment] to this []AsnShipmentDetail]
+# * as a result the shipment will be marked as shipped
+# * the tracking number will be set
+# * the inventory will be allocated
   def assign_shipment(shipment, tracking)
     self.shipment = shipment
-    
-    # todo: assign inventory units to this shipment corresponding to the number of items actually shipped
+
     shipment.tracking = tracking
-    shipment.shipped_at = Time.now
+    #shipment.shipped_at = self.asn_shipment.shipment_date
+
     begin
-      shipment.ship! unless shipment.state?('shipped')
+      #raise StandardError, shipment.to_yaml
+      #shipment.ship! unless shipment.state?('shipped')
     rescue => e
-      raise Cdf::IllegalStateError, "Error attempting to import #{self.asn_file.file_name}::#{self.isbn_13}: #{tracking}, #{e.message}"
+      raise Cdf::IllegalStateError, "Error attempting to import #{self.asn_file.file_name}::#{self.isbn_13}: #{tracking}, (#{shipment.state}) - #{e.message}"
     end
 
     shipment.save!
+  end
+
+# assigns inventory from [Shipment] to this [AsnShipmentDetail]]
+# * consider inventory only if the state is 'sold'
+# * assign enough inventory to satisfy #quantity_shipped, or raise exception
+  def assign_inventory(shipment)
+
+    shipment.unassign_sold_inventory
+
+    # assign one inventory unit from the [Order] ]for each quantity shipped of the given product    
+    self.quantity_shipped.times do
+      
+      self.order.inventory_units.sold(self.variant).each do |inventory_unit|
+        self.inventory_units << inventory_unit
+        shipment.inventory_units << inventory_unit
+      end
+    end
+    
+    self.save!
+    shipment.save!
+
   end
 
 end
