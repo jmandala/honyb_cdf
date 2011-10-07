@@ -112,7 +112,7 @@ class AsnShipmentDetail < ActiveRecord::Base
   end
 
   def shipping_method
-    asn_shipping_method_code.shipping_method unless asn_shipping_method_code.nil?
+    self.asn_shipping_method_code.shipping_method unless self.asn_shipping_method_code.nil?
   end
 
   # All [AsnShipmentDetail]s that don't yet have []Shipment]s
@@ -196,13 +196,12 @@ class AsnShipmentDetail < ActiveRecord::Base
 
     # assign one inventory unit from the [Order] ]for each quantity shipped of the given product    
     self.quantity_shipped.times do
-      
       self.order.inventory_units.sold(self.variant).each do |inventory_unit|
         self.inventory_units << inventory_unit
         shipment.inventory_units << inventory_unit
       end
     end
-    
+
     self.save!
   end
 
