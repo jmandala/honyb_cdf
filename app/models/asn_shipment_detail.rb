@@ -204,8 +204,6 @@ class AsnShipmentDetail < ActiveRecord::Base
     end
     
     self.save!
-    shipment.save!
-
   end
 
 end
