@@ -91,7 +91,7 @@ class AsnShipmentDetail < ActiveRecord::Base
     # make sure tracking code is set
     self.tracking = data[:tracking]
     data.delete :tracking
-    
+
     init_shipment
   end
 
@@ -100,18 +100,16 @@ class AsnShipmentDetail < ActiveRecord::Base
   # * the shipping method matches
   # * AND the order matches
   # * AND there is NO tracking number on the shipment and no tracking number on this object
-  def available_shipments
-    if shipping_method.nil?
-      return []
-    end
+  def available_shipments    
 
-    # the first shipment related to the AsnShipmentDetail will have no tracking number and will not be shipped
-    # subsequent shipments will be identified by having the same tracking number
-    sql = "order_id = #{self.order.id} AND shipping_method_id = #{self.shipping_method.id}"
+    sql = "order_id = #{self.order.id}"
+    
+    # match shipping methods if one exists
+    sql += " AND shipping_method_id = #{self.shipping_method.id}" if self.shipping_method
 
     # match tracking number if there is one    
-    sql += " AND tracking = '#{self.tracking}'" unless self.tracking.nil?
-    
+    sql += " AND tracking = '#{self.tracking}'" if self.tracking
+
     Shipment.where(sql)
   end
 
@@ -137,25 +135,18 @@ class AsnShipmentDetail < ActiveRecord::Base
   # assigns the correct shipment to this object
   # matches the first available shipment
   def init_shipment
-    if shipped?
-      assignable_shipments = self.available_shipments
-      if assignable_shipments.empty?
-        # Shipment must use a shipping method that is a copy of the original method
-        # but which only bills for multiple-packages
-        shipments = [Shipment.create(:address_id => self.order.ship_address_id, :order_id => self.order_id, :shipping_method_id => self.shipping_method.id)]
-      else
-        shipments = assignable_shipments
-      end
-
-      shipments.each do |shipment|
-        assign_inventory shipment
-        assign_shipment shipment
-      end
-
+    assignable_shipments = self.available_shipments
+    if assignable_shipments.empty?
+      # Shipment must use a shipping method that is a copy of the original method
+      # but which only bills for multiple-packages
+      shipments = [Shipment.create(:address_id => self.order.ship_address_id, :order_id => self.order_id, :shipping_method_id => self.shipping_method.id)]
     else
-      raise Cdf::IllegalStateError, "Cannot init_shipment for status: #{self.asn_order_status.to_yaml}"
+      shipments = assignable_shipments
+    end
 
-      # todo: Cancel items that did not ship and which were truly canceled
+    shipments.each do |shipment|
+      assign_inventory shipment
+      assign_shipment shipment
     end
 
     self.save!
@@ -198,11 +189,13 @@ class AsnShipmentDetail < ActiveRecord::Base
 
     shipment.unassign_sold_inventory
 
-    # assign one inventory unit from the [Order] ]for each quantity shipped of the given product    
+    # assign one inventory unit from the [Order] for each quantity shipped of the given product    
     self.quantity_shipped.times do
       self.order.inventory_units.sold(self.variant).each do |inventory_unit|
         self.inventory_units << inventory_unit
         shipment.inventory_units << inventory_unit
+        
+        self.shipped? ? inventory_unit.ship : inventory_unit.cancel
       end
     end
 
