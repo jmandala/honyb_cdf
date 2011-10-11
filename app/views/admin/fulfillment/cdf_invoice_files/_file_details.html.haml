@@ -66,7 +66,7 @@
                 - h.cdf_invoice_freight_and_fees.each do |f|            
                   %tr
                     %td #{link_to f.order.number, admin_order_path(f.order)}                    
-                    %td{:class => 'inactive'} #{ f.tracking_number }
+                    %td{:class => 'inactive'} #{ f.tracking }
                     %td{:class => 'inactive'} #{ number_to_currency f.gift_wrap }
                     %td{:class => 'inactive'} #{ number_to_currency f.handling }
                     %td{:class => 'inactive'} #{ number_to_currency f.net_price }

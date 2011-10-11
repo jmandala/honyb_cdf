@@ -100,10 +100,10 @@ class AsnShipmentDetail < ActiveRecord::Base
   # * the shipping method matches
   # * AND the order matches
   # * AND there is NO tracking number on the shipment and no tracking number on this object
-  def available_shipments    
+  def available_shipments
 
     sql = "order_id = #{self.order.id}"
-    
+
     # match shipping methods if one exists
     sql += " AND shipping_method_id = #{self.shipping_method.id}" if self.shipping_method
 
@@ -165,10 +165,11 @@ class AsnShipmentDetail < ActiveRecord::Base
   def shipment_date
     self.asn_shipment.shipment_date if self.asn_shipment
   end
-# assigns [Shipment] to this []AsnShipmentDetail]
-# * as a result the shipment will be marked as shipped
-# * the tracking number will be set
-# * the inventory will be allocated
+
+  # assigns [Shipment] to this []AsnShipmentDetail]
+  # * as a result the shipment will be marked as shipped
+  # * the tracking number will be set
+  # * the inventory will be allocated
   def assign_shipment(shipment)
     self.shipment = shipment
 
@@ -179,15 +180,15 @@ class AsnShipmentDetail < ActiveRecord::Base
       #raise StandardError, shipment.to_yaml
       shipment.ship! unless shipment.state?('shipped')
     rescue => e
-      raise Cdf::IllegalStateError, "Error attempting to import #{self.asn_file.file_name}::#{self.isbn_13}: #{self.tracking}, (#{shipment.state}) - #{e.message}"
+      raise Cdf::IllegalStateError, "Error attempting to import #{self.asn_file.file_name} for order #{self.order.number}, #{self.isbn_13}: #{self.tracking}, (#{shipment.state}) - #{e.message}"
     end
 
     shipment.save!
   end
 
-# assigns inventory from [Shipment] to this [AsnShipmentDetail]]
-# * consider inventory only if the state is 'sold'
-# * assign enough inventory to satisfy #quantity_shipped, or raise exception
+  # assigns inventory from [Shipment] to this [AsnShipmentDetail]]
+  # * consider inventory only if the state is 'sold'
+  # * assign enough inventory to satisfy #quantity_shipped, or raise exception
   def assign_inventory(shipment)
 
     shipment.unassign_sold_inventory
@@ -197,7 +198,7 @@ class AsnShipmentDetail < ActiveRecord::Base
       self.order.inventory_units.sold(self.variant).each do |inventory_unit|
         self.inventory_units << inventory_unit
         shipment.inventory_units << inventory_unit
-        
+
         self.shipped? ? inventory_unit.ship : inventory_unit.cancel
       end
     end

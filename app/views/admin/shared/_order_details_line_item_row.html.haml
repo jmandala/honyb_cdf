@@ -37,7 +37,7 @@
               %tr
                 %th #{t 'asn_order_status'}
                 %th #{t 'shipping'}
-                %th #{t 'tracking_number'}
+                %th #{t 'tracking'}
                 %th #{t 'dc_code'}
             %tbody
               %tr
@@ -45,7 +45,7 @@
                 %td 
                   = "#{asn_shipment_detail.asn_shipping_method_code.big_bisac_code_sent_in} /  #{asn_shipment_detail.asn_shipping_method_code.shipping_method.name}" if asn_shipment_detail.asn_shipping_method_code
                   = "#{asn_shipment_detail.asn_slash_code.description} (#{asn_shipment_detail.asn_slash_code.code})"  if asn_shipment_detail.asn_slash_code  
-                %td #{asn_shipment_detail.tracking_number}
+                %td #{asn_shipment_detail.tracking}
                 %td #{asn_shipment_detail.dc_code.dc_name}
         .collapseable          
           = render 'admin/fulfillment/asn_files/asn_shipment_detail', :asn_shipment_detail => asn_shipment_detail  

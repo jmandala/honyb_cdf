@@ -5,8 +5,7 @@ Shipment.class_eval do
   # the shipment is marked shipped
   # AsnShipmentDetail will be responsible for sending the shipment emails
   def after_ship
-    inventory_units.each &:ship!
-    self.shipped_at = Time.now
+    inventory_units.each {|u| u.ship! unless u.state?('shipped') }
   end
 
   # removes all sold inventory from this [Shipment].
