@@ -180,7 +180,7 @@ class AsnShipmentDetail < ActiveRecord::Base
     begin
       shipment.ship! unless shipment.state?('shipped') || !shipment.can_ship?
     rescue => e
-      raise Cdf::IllegalStateError, "Error attempting to import #{self.asn_file.file_name} for order #{self.order.number}, #{self.isbn_13}: #{self.tracking}, (#{shipment.state}) - #{e.message}"
+      raise Cdf::IllegalStateError, "Error attempting to assign shipment from #{self.asn_file.file_name} for order #{self.order.number}, #{self.isbn_13}: #{self.tracking}, (#{shipment.state}) - #{e.message}"
     end
 
     shipment.save!
@@ -203,6 +203,7 @@ class AsnShipmentDetail < ActiveRecord::Base
       end
     end
 
+    shipment.save!
     self.save!
   end
 
