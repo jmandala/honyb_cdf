@@ -89,7 +89,7 @@ class AsnShipmentDetail < ActiveRecord::Base
     end
 
     # make sure tracking code is set
-    self.tracking = data[:tracking]
+    self.tracking = data[:tracking].strip
     data.delete :tracking
 
     init_shipment
@@ -107,8 +107,8 @@ class AsnShipmentDetail < ActiveRecord::Base
     # match shipping methods if one exists
     sql += " AND shipping_method_id = #{self.shipping_method.id}" if self.shipping_method
 
-    # match tracking number if there is one    
-    sql += " AND tracking = '#{self.tracking}'" if self.tracking
+    # match any shipment with no tracking number, or the same tracking number
+    sql += " AND (tracking IS NULL OR tracking = '#{self.tracking}')" if self.tracking
 
     Shipment.where(sql)
   end
@@ -166,19 +166,19 @@ class AsnShipmentDetail < ActiveRecord::Base
     self.asn_shipment.shipment_date if self.asn_shipment
   end
 
-  # assigns [Shipment] to this []AsnShipmentDetail]
+  # assigns [Shipment] to this [AsnShipmentDetail]
   # * as a result the shipment will be marked as shipped
   # * the tracking number will be set
   # * the inventory will be allocated
   def assign_shipment(shipment)
+    shipment.update!(self.order)
     self.shipment = shipment
 
     shipment.tracking = self.tracking if self.tracking
     shipment.shipped_at = self.shipment_date
 
     begin
-      #raise StandardError, shipment.to_yaml
-      shipment.ship! unless shipment.state?('shipped')
+      shipment.ship! unless shipment.state?('shipped') || !shipment.can_ship?
     rescue => e
       raise Cdf::IllegalStateError, "Error attempting to import #{self.asn_file.file_name} for order #{self.order.number}, #{self.isbn_13}: #{self.tracking}, (#{shipment.state}) - #{e.message}"
     end
@@ -186,7 +186,7 @@ class AsnShipmentDetail < ActiveRecord::Base
     shipment.save!
   end
 
-  # assigns inventory from [Shipment] to this [AsnShipmentDetail]]
+  # assigns inventory from [Shipment] to this [AsnShipmentDetail]
   # * consider inventory only if the state is 'sold'
   # * assign enough inventory to satisfy #quantity_shipped, or raise exception
   def assign_inventory(shipment)

@@ -14,9 +14,9 @@
       - if import_file.imported_at
         != data_pair(:imported_at) { import_file.imported_at.strftime("%m-%d-%y %H:%M")}
       - else
-      = form_tag(send("import_admin_fulfillment_#{type}_file_path".to_sym, import_file)) do |f|
-        %div
-          = button t('import_now'), 'add'
+        = form_tag(send("import_admin_fulfillment_#{type}_file_path".to_sym, import_file)) do |f|
+          %div
+            = button t('import_now'), 'add'
 
   - if defined? file_details
     #file_details{:class => 'data_group'}

@@ -17,7 +17,7 @@ InventoryUnit.class_eval do
     # Added by Josh Jacobs to address conditions when inventory was assigned and then canceled
     # by the fulfilment department    
     event :cancel do
-      transition all => 'canceled'
+      transition all => 'canceled', :from => 'sold'
     end
 
     after_transition :on => :fill_backorder, :do => :update_order
