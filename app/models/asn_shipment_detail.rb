@@ -171,9 +171,8 @@ class AsnShipmentDetail < ActiveRecord::Base
   # * the tracking number will be set
   # * the inventory will be allocated
   def assign_shipment(shipment)
+    shipment.reload
     shipment.update!(self.order)
-    self.shipment = shipment
-
     shipment.tracking = self.tracking if self.tracking
     shipment.shipped_at = self.shipment_date
 
@@ -184,6 +183,7 @@ class AsnShipmentDetail < ActiveRecord::Base
     end
 
     shipment.save!
+    self.shipment = shipment
   end
 
   # assigns inventory from [Shipment] to this [AsnShipmentDetail]
@@ -191,7 +191,7 @@ class AsnShipmentDetail < ActiveRecord::Base
   # * assign enough inventory to satisfy #quantity_shipped, or raise exception
   def assign_inventory(shipment)
 
-    shipment.unassign_sold_inventory
+    #shipment.unassign_sold_inventory
 
     # assign one inventory unit from the [Order] for each quantity shipped of the given product    
     self.quantity_shipped.times do
