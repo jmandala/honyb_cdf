@@ -12,7 +12,7 @@ Shipment.class_eval do
   # useful so that other shipments can allocate it
   def unassign_sold_inventory
     self.inventory_units.each {|unit| self.inventory_units.delete(unit) if unit.state == 'sold'}
-    self.save
+    self.save!
     self
   end
   
