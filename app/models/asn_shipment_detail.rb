@@ -172,12 +172,13 @@ class AsnShipmentDetail < ActiveRecord::Base
   # * the inventory will be allocated
   def assign_shipment(shipment)
     self.shipment = shipment
-    shipment.save!
     shipment.reload # need to reload the shipment to ensure data is fresh
     shipment.update!(self.order)
     shipment.tracking = self.tracking if self.tracking
     shipment.shipped_at = self.shipment_date
 
+    shipment.ship!
+    
     begin
       shipment.ship! unless shipment.state?('shipped') || !shipment.can_ship?
     rescue => e
@@ -192,17 +193,29 @@ class AsnShipmentDetail < ActiveRecord::Base
   # * assign enough inventory to satisfy #quantity_shipped, or raise exception
   def assign_inventory(shipment)
 
-    # assign the inventory that matches between the ASN and the [Shipment]    
+    # assign the inventory from the [Shipment] or if not available from the []Order]   
     self.quantity_shipped.times do
-      inventory_unit = self.order.inventory_units.sold(self.variant).limit(1).first
-      puts inventory_unit.id
+      inventory_unit = shipment.inventory_units.sold(self.variant).limit(1).first
+      inventory_unit ||= self.order.inventory_units.sold(self.variant).limit(1).first
+
+      raise Cdf::IllegalStateError, "Must have inventory units to assign!: #{order.shipments.count}" if inventory_unit.nil?
+
       self.inventory_units << inventory_unit
-      shipment.inventory_units << inventory_unit
-      self.shipped? ? inventory_unit.ship : inventory_unit.cancel
-      puts inventory_unit.shipped?
+      shipment.inventory_units << inventory_unit unless shipment.inventory_units.include?(inventory_unit)
+      
+      self.shipped? ? inventory_unit.ship! : inventory_unit.cancel!
     end
 
-    self.save!
+    # remove unshipped items from shipment
+    shipment.inventory_units.all.each { |u| shipment.inventory_units.delete(u) unless u.shipped? }
+    
+    # adjust costs
+    # todo: Need to calculate shipping costs based on amount of items on the shipment
+    puts shipment.state
+    
+    puts shipment.adjustment.to_yaml
+    
+    shipment.save!
   end
 
 end
