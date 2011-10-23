@@ -20,10 +20,21 @@ module Cdf
       Dir.glob(File.join(File.dirname(__FILE__), "../app/**/*_decorator*.rb")) do |c|
         Rails.env.production? ? require(c) : load(c)
       end
+
+      klass = Calculator::AdvancedFlexiRate 
+      [klass].each do |c_model|
+        begin
+          c_mode.register if c_model.table_exists?
+        rescue Exception => e
+          $stderr.puts "Error registering calculator #{c_model}"
+        end
+
+      end
+
+
     end
 
     config.to_prepare &method(:activate).to_proc
-
   end
 
 end

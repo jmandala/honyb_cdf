@@ -1,7 +1,6 @@
 Calculator::FlexiRate.class_eval do
   
   def compute(object)
-    puts "calculating shipping costs..."
     sum = 0
     max = self.preferred_max_items
     items_count = object.line_items.map(&:quantity).sum
