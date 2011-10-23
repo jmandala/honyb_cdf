@@ -41,7 +41,7 @@ class Calculator::AdvancedFlexiRate < Calculator
   def compute_for_inventory_units(object)
     sum = 0
     max = self.preferred_max_items
-    object.inventory_units.count.times do |i|
+    object.inventory_units.each_with_index do |inventory_unit, i|
       if (max == 0 && i == 0) || (max > 0) && (i % max == 0)                
         sum += is_a_child?(object) ? self.preferred_first_child_item : self.preferred_first_item
       else

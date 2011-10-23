@@ -177,7 +177,7 @@ class AsnShipmentDetail < ActiveRecord::Base
     shipment.tracking = self.tracking if self.tracking
     shipment.shipped_at = self.shipment_date
 
-    shipment.ship!
+    #shipment.ship!
     
     begin
       shipment.ship! unless shipment.state?('shipped') || !shipment.can_ship?

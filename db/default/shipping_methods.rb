@@ -87,7 +87,7 @@ methods.each do |options|
   asn_shipping_method.to_yaml
   shipping_method = ShippingMethod.find_by_name(name)
   unless shipping_method
-    shipping_method = ShippingMethod.create(:name => name, :zone => Zone.all_us, :calculator_type => 'Calculator::FlexiRate', :environment => options[:environment])
+    shipping_method = ShippingMethod.create(:name => name, :zone => Zone.all_us, :calculator_type => 'Calculator::AdvancedFlexiRate', :environment => options[:environment])
     shipping_method.calculator.preferred_first_item = options[:first_item]
     shipping_method.calculator.preferred_additional_item = options[:additional_item]
     shipping_method.save!
