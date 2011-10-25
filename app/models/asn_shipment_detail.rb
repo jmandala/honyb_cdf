@@ -95,14 +95,8 @@ class AsnShipmentDetail < ActiveRecord::Base
     init_shipment
   end
 
-  # Returns shipments that are available for assignment to this object.
-  # The constraints are:
-  # * the shipping method matches
-  # * AND the order matches
-  # * AND there is NO tracking number on the shipment and no tracking number on this object
-  def available_shipment
-
-    sql = "order_id = :order_id"
+  def available_shipment_query
+    sql = "order_id = :order_id AND shipped_at IS NULL"
     params = {:order_id => self.order.id}
 
     # match shipping methods if one exists
@@ -116,16 +110,23 @@ class AsnShipmentDetail < ActiveRecord::Base
       sql += " AND (tracking IS NULL OR tracking = :tracking)"
       params[:tracking] = self.tracking
     end
+    
+    Shipment.where(sql, params)
+  end
 
-    shipment_count = available_shipment_count sql
+  # Returns shipments that are available for assignment to this object.
+  # The constraints are:
+  # * the shipping method matches
+  # * AND the order matches
+  # * AND there is NO tracking number on the shipment and no tracking number on this object
+  def available_shipment
+
+    sql = available_shipment_query
+    shipment_count = sql.count
 
     Rails.logger.warn "Found #{shipment_count} shipments, but expected 1: #{sql}" if shipment_count > 1
 
-    Shipment.where(sql, params).order('created_at asc').first
-  end
-
-  def available_shipment_count(sql)
-    Shipment.where(sql).count
+    sql.order('created_at asc').first
   end
 
   def shipping_method
@@ -150,7 +151,6 @@ class AsnShipmentDetail < ActiveRecord::Base
   # assigns the correct shipment to this object
   # matches the first available shipment
   def init_shipment
-    return unless self.quantity_shipped > 0
     assign_inventory
     assign_shipment
 
@@ -198,35 +198,51 @@ class AsnShipmentDetail < ActiveRecord::Base
   # * assign enough inventory to satisfy #quantity_shipped, or raise exception
   # * if no available shipments exist, creat one
   def assign_inventory
-    return unless self.quantity_shipped > 0
-    
-    shipment = self.available_shipment
+    p self.quantity_shipped
+    p self.quantity_slashed
+    self.shipment = self.available_shipment
     
     # assign the inventory from the [Shipment] or if not available from the []Order]   
     self.quantity_shipped.times do
-
-      inventory_unit = shipment.inventory_units.sold(self.variant).limit(1).first if shipment
-      inventory_unit ||= self.order.inventory_units.sold(self.variant).limit(1).first
-
-      raise Cdf::IllegalStateError, "Must have inventory units to assign!: #{order.shipments.count}" if inventory_unit.nil?
-
-      self.inventory_units << inventory_unit
-
-      shipment ||= new_shipment_for_order(inventory_unit)
-
-      shipment.inventory_units << inventory_unit unless shipment.inventory_units.include?(inventory_unit)
-
-      self.shipped? ? inventory_unit.ship! : inventory_unit.cancel!
+      assign_inventory_by_type(:shipped)
     end
     
-    return unless shipment
+    self.quantity_slashed.times do
+      assign_inventory_by_type(:slashed)
+    end
+    
+    return unless self.shipment
 
     # move sold (shippable) items from shipment to a new, child shipment
-    shipment.transfer_sold_to_child
+    self.shipment.transfer_sold_to_child
     
-    shipment.save!
+    self.shipment.save!
   end
 
+  def assign_inventory_by_type(type)
+    inventory_unit = self.shipment.inventory_units.sold(self.variant).limit(1).first if shipment
+
+    inventory_unit ||= self.order.inventory_units.sold(self.variant).limit(1).first
+      
+    raise Cdf::IllegalStateError, "Must have inventory units to assign!: #{order.shipments.count}" if inventory_unit.nil?
+
+    self.inventory_units << inventory_unit
+
+    self.shipment ||= new_shipment_for_order(inventory_unit)
+
+    self.shipment.inventory_units << inventory_unit unless self.shipment.inventory_units.include?(inventory_unit)
+
+    self.save!
+    
+    if type == :shipped
+      inventory_unit.ship!
+    elsif type == :slashed
+      inventory_unit.cancel!
+    end
+    
+  end
+  
+  
   # Returns the shipment that will be considered the parent of the shipment associated with this object
   # A parent is any shipment on the same order, with the same shipping method, shipped within 1 day of this shipment
   def find_parent_shipment

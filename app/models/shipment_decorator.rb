@@ -7,17 +7,18 @@ Shipment.class_eval do
   # the shipment is marked shipped
   # AsnShipmentDetail will be responsible for sending the shipment emails
   def after_ship
-    inventory_units.each {|u| u.ship! unless u.state?('shipped') }
+    inventory_units.each {|u| u.ship! if u.can_ship? && ! u.state?('shipped') }
   end
  
   def create_child(inventory_units)
-    child = Shipment.create!(
+    child = Shipment.new(
         :order => order, 
         :shipping_method => shipping_method,
         :address => address,
-        :inventory_units => inventory_units,
         :parent => self
     )
+    child.inventory_units = inventory_units
+    child.save!
     self.children << child
     child
   end
@@ -39,6 +40,7 @@ Shipment.class_eval do
   # Removes any []InventoryUnit]s that have status 'sold'
   # and adds them to a child shipment
   def transfer_sold_to_child
+    return unless self.inventory_units.sold.count > 0
     sold_units = self.inventory_units.sold.all
     sold_units.each { |u| self.inventory_units.delete(u) }
     self.create_child(sold_units)
