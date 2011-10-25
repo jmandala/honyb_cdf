@@ -12,6 +12,8 @@ class AsnShipmentDetail < ActiveRecord::Base
   belongs_to :asn_slash_code
   belongs_to :asn_shipping_method_code
   belongs_to :dc_code
+  
+  after_save :debug_me
 
   def self.spec(d)
     d.asn_shipment_detail do |l|
@@ -240,7 +242,7 @@ class AsnShipmentDetail < ActiveRecord::Base
       inventory_unit.delete
     end
 
-
+    puts "save me!"
     self.save!
 
   end
@@ -269,4 +271,7 @@ class AsnShipmentDetail < ActiveRecord::Base
   end
 
 
+  def debug_me
+    puts self.shipment.state if self.shipment
+  end
 end
