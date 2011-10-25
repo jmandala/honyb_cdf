@@ -22,4 +22,17 @@ Shipment.class_eval do
     child
   end
 
+  def inventory_units_shipped
+    inventory_units_shipped = {}
+    self.inventory_units.all.each do |iu|
+      next unless iu.shipped?
+      key = iu.variant.sku
+      result = inventory_units_shipped[key]
+      count = result[:count] if result
+      count ||= 0
+      count += 1
+      inventory_units_shipped[key] = {:inventory_unit => iu, :count => count} 
+    end
+    inventory_units_shipped
+  end
 end

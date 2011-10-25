@@ -250,7 +250,8 @@ module Importable
         begin
           imported << klass.populate(p, self)
         rescue => e
-          message = "Error importing #{klass}. #{e.message}"
+          message = "Error importing #{klass}. #{e.message}. #{e.backtrace.slice(0,15)}"
+          Rails.logger.error e.backtrace.slice(0,15)
           CdfImportExceptionLog.create(:event => message, :file_name => self.file_name)
           raise e, message, e.backtrace
         end

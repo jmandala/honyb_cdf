@@ -10,9 +10,6 @@ class Calculator::AdvancedFlexiRate < Calculator
   preference :additional_item, :decimal, :default => 0
   preference :max_items, :decimal, :default => 0
 
-  # the first item fee when this is a child shipment
-  preference :child_shipment_first_item, :decimal, :default => 0
-
   def self.description
     I18n.t("advanced_flexible_rate")
   end
@@ -42,8 +39,9 @@ class Calculator::AdvancedFlexiRate < Calculator
     sum = 0
     max = self.preferred_max_items
     object.inventory_units.each_with_index do |inventory_unit, i|
-      if (max == 0 && i == 0) || (max > 0) && (i % max == 0)                
-        sum += is_a_child?(object) ? self.preferred_first_child_item : self.preferred_first_item
+      if (max == 0 && i == 0) || (max > 0) && (i % max == 0)
+        # children get charged the additional_item fee
+        sum += is_a_child?(object) ? self.preferred_additional_item : self.preferred_first_item
       else
         sum += self.preferred_additional_item
       end
@@ -57,9 +55,10 @@ class Calculator::AdvancedFlexiRate < Calculator
     return compute_for_inventory_units(object) unless object.inventory_units.empty?
     compute_for_line_items(object)
   end
-  
+
+  # It's a child if it has a parent
   def is_a_child?(object)
-    object.respond_to?(:child?) && object.child?
+    object.respond_to?(:parent) && object.parent
   end
 
 

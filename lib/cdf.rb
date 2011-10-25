@@ -21,16 +21,7 @@ module Cdf
         Rails.env.production? ? require(c) : load(c)
       end
 
-      klass = Calculator::AdvancedFlexiRate 
-      [klass].each do |c_model|
-        begin
-          c_mode.register if c_model.table_exists?
-        rescue Exception => e
-          $stderr.puts "Error registering calculator #{c_model}"
-        end
-
-      end
-
+      Calculator::AdvancedFlexiRate.register 
 
     end
 

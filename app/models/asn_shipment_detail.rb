@@ -100,17 +100,32 @@ class AsnShipmentDetail < ActiveRecord::Base
   # * the shipping method matches
   # * AND the order matches
   # * AND there is NO tracking number on the shipment and no tracking number on this object
-  def available_shipments
+  def available_shipment
 
-    sql = "order_id = #{self.order.id}"
+    sql = "order_id = :order_id"
+    params = {:order_id => self.order.id}
 
     # match shipping methods if one exists
-    sql += " AND shipping_method_id = #{self.shipping_method.id}" if self.shipping_method
+    if self.shipping_method
+      sql += " AND shipping_method_id = :shipping_method_id"
+      params[:shipping_method_id] = self.shipping_method.id
+    end
 
     # match any shipment with no tracking number, or the same tracking number
-    sql += " AND (tracking IS NULL OR tracking = '#{self.tracking}')" if self.tracking
+    if self.tracking
+      sql += " AND (tracking IS NULL OR tracking = :tracking)"
+      params[:tracking] = self.tracking
+    end
 
-    Shipment.where(sql)
+    shipment_count = available_shipment_count sql
+
+    Rails.logger.warn "Found #{shipment_count} shipments, but expected 1: #{sql}" if shipment_count > 1
+
+    Shipment.where(sql, params).order('created_at asc').first
+  end
+
+  def available_shipment_count(sql)
+    Shipment.where(sql).count
   end
 
   def shipping_method
@@ -135,28 +150,18 @@ class AsnShipmentDetail < ActiveRecord::Base
   # assigns the correct shipment to this object
   # matches the first available shipment
   def init_shipment
-    assignable_shipments = self.available_shipments
-    if assignable_shipments.empty?
-      # Shipment must use a shipping method that is a copy of the original method
-      # but which only bills for multiple-packages
-      shipments = [Shipment.create(:address_id => self.order.ship_address_id, :order_id => self.order_id, :shipping_method_id => self.shipping_method.id)]
-    else
-      shipments = assignable_shipments
-    end
+    return unless self.quantity_shipped > 0
+    assign_inventory
+    assign_shipment
 
-    shipments.each do |shipment|
-      assign_inventory shipment
-      assign_shipment shipment
-    end
-
+    return unless shipment
     self.save!
-
     self.shipment
   end
 
   def shipped?
     if self.asn_order_status
-      return self.asn_order_status.shipped?
+      return self.asn_order_status.shipped? || self.asn_order_status.partial_shipment?
     end
 
     false
@@ -170,52 +175,79 @@ class AsnShipmentDetail < ActiveRecord::Base
   # * as a result the shipment will be marked as shipped
   # * the tracking number will be set
   # * the inventory will be allocated
-  def assign_shipment(shipment)
-    self.shipment = shipment
-    shipment.reload # need to reload the shipment to ensure data is fresh
-    shipment.update!(self.order)
-    shipment.tracking = self.tracking if self.tracking
-    shipment.shipped_at = self.shipment_date
+  def assign_shipment
+    self.shipment = self.available_shipment
+    return unless shipment
+    self.shipment.update!(self.order)
+    self.shipment.tracking = self.tracking if self.tracking
+    self.shipment.shipped_at = self.shipment_date
 
-    shipment.ship!
-    
+    raise Cdf :IllegalStateError, 'Error attempting to ship shipment #{shipment.number}. Current state: #{shipment.state}' unless shipment.can_ship?
+
     begin
-      shipment.ship! unless shipment.state?('shipped') || !shipment.can_ship?
+      self.shipment.ship! unless self.shipment.state?('shipped')
     rescue => e
       raise Cdf::IllegalStateError, "Error attempting to assign shipment from #{self.asn_file.file_name} for order #{self.order.number}, #{self.isbn_13}: #{self.tracking}, (#{shipment.state}) - #{e.message}"
     end
 
-    shipment.save!
+    self.shipment.save!
   end
 
   # assigns inventory from [Shipment] to this [AsnShipmentDetail]
   # * consider inventory only if the state is 'sold'
   # * assign enough inventory to satisfy #quantity_shipped, or raise exception
-  def assign_inventory(shipment)
-
+  # * if no available shipments exist, creat one
+  def assign_inventory
+    return unless self.quantity_shipped > 0
+    
+    shipment = self.available_shipment
+    
     # assign the inventory from the [Shipment] or if not available from the []Order]   
     self.quantity_shipped.times do
-      inventory_unit = shipment.inventory_units.sold(self.variant).limit(1).first
+
+      inventory_unit = shipment.inventory_units.sold(self.variant).limit(1).first if shipment
       inventory_unit ||= self.order.inventory_units.sold(self.variant).limit(1).first
 
       raise Cdf::IllegalStateError, "Must have inventory units to assign!: #{order.shipments.count}" if inventory_unit.nil?
 
       self.inventory_units << inventory_unit
+
+      shipment ||= new_shipment_for_order(inventory_unit)
+
       shipment.inventory_units << inventory_unit unless shipment.inventory_units.include?(inventory_unit)
-      
+
       self.shipped? ? inventory_unit.ship! : inventory_unit.cancel!
     end
+    
+    return unless shipment
 
     # remove unshipped items from shipment
     shipment.inventory_units.all.each { |u| shipment.inventory_units.delete(u) unless u.shipped? }
-    
-    # adjust costs
-    # todo: Need to calculate shipping costs based on amount of items on the shipment
-    puts shipment.state
-    
-    puts shipment.adjustment.to_yaml
-    
+
     shipment.save!
   end
+
+  # Returns the shipment that will be considered the parent of the shipment associated with this object
+  # A parent is any shipment on the same order, with the same shipping method, shipped within 1 day of this shipment
+  def find_parent_shipment
+    sql = "order_id = :order_id AND shipped_at = :shipped_at"
+    params = {:order_id => self.order.id, :shipped_at => self.shipment_date}
+
+    # match shipping methods if one exists
+    if self.shipping_method
+      sql += " AND shipping_method_id = :shipment_id"
+      params[:shipment_id] = self.shipping_method.id
+    end
+
+    Shipment.where(sql, params).order('created_at asc').first
+  end
+
+  def new_shipment_for_order(inventory_unit)
+    parent = find_parent_shipment
+    return parent.create_child([inventory_unit]) if parent
+
+    Shipment.create(:address => self.order.ship_address, :order => self.order, :shipping_method => self.shipping_method, :inventory_units => [inventory_unit])
+  end
+
 
 end
