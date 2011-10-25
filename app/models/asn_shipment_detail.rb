@@ -110,7 +110,7 @@ class AsnShipmentDetail < ActiveRecord::Base
       sql += " AND (tracking IS NULL OR tracking = :tracking)"
       params[:tracking] = self.tracking
     end
-    
+
     Shipment.where(sql, params)
   end
 
@@ -152,9 +152,19 @@ class AsnShipmentDetail < ActiveRecord::Base
   # matches the first available shipment
   def init_shipment
     assign_inventory
+    
+    # if there are no inventory_units, delete the shipment
+    if self.shipment.inventory_units.count == 0
+      self.shipment.delete
+      return
+    end
+
+    self.shipment.transfer_sold_to_child
+    self.shipment.save!
+    
     assign_shipment
 
-    return unless shipment
+    puts self.shipment.state
     self.save!
     self.shipment
   end
@@ -176,16 +186,16 @@ class AsnShipmentDetail < ActiveRecord::Base
   # * the tracking number will be set
   # * the inventory will be allocated
   def assign_shipment
-    self.shipment = self.available_shipment
-    return unless shipment
     self.shipment.update!(self.order)
     self.shipment.tracking = self.tracking if self.tracking
     self.shipment.shipped_at = self.shipment_date
 
-    raise Cdf :IllegalStateError, 'Error attempting to ship shipment #{shipment.number}. Current state: #{shipment.state}' unless shipment.can_ship?
+    raise Cdf::IllegalStateError, "Error attempting to ship shipment #{shipment.number}. Current state: #{shipment.state}" unless self.shipment.can_ship?
 
+    puts self.shipment.can_ship?
     begin
       self.shipment.ship! unless self.shipment.state?('shipped')
+      puts self.shipment.state
     rescue => e
       raise Cdf::IllegalStateError, "Error attempting to assign shipment from #{self.asn_file.file_name} for order #{self.order.number}, #{self.isbn_13}: #{self.tracking}, (#{shipment.state}) - #{e.message}"
     end
@@ -198,51 +208,44 @@ class AsnShipmentDetail < ActiveRecord::Base
   # * assign enough inventory to satisfy #quantity_shipped, or raise exception
   # * if no available shipments exist, creat one
   def assign_inventory
-    p self.quantity_shipped
-    p self.quantity_slashed
     self.shipment = self.available_shipment
-    
+
     # assign the inventory from the [Shipment] or if not available from the []Order]   
     self.quantity_shipped.times do
       assign_inventory_by_type(:shipped)
     end
-    
+
     self.quantity_slashed.times do
       assign_inventory_by_type(:slashed)
     end
-    
-    return unless self.shipment
 
-    # move sold (shippable) items from shipment to a new, child shipment
-    self.shipment.transfer_sold_to_child
-    
-    self.shipment.save!
   end
 
   def assign_inventory_by_type(type)
     inventory_unit = self.shipment.inventory_units.sold(self.variant).limit(1).first if shipment
 
     inventory_unit ||= self.order.inventory_units.sold(self.variant).limit(1).first
-      
+
     raise Cdf::IllegalStateError, "Must have inventory units to assign!: #{order.shipments.count}" if inventory_unit.nil?
 
-    self.inventory_units << inventory_unit
+    if type == :shipped
+      self.inventory_units << inventory_unit
+      self.shipment ||= new_shipment_for_order(inventory_unit)
+      self.shipment.inventory_units << inventory_unit unless self.shipment.inventory_units.include?(inventory_unit)
+      inventory_unit.ship!
 
-    self.shipment ||= new_shipment_for_order(inventory_unit)
+      # canceled, slashed
+    else
+      inventory_unit.slash
+      inventory_unit.delete
+    end
 
-    self.shipment.inventory_units << inventory_unit unless self.shipment.inventory_units.include?(inventory_unit)
 
     self.save!
-    
-    if type == :shipped
-      inventory_unit.ship!
-    elsif type == :slashed
-      inventory_unit.cancel!
-    end
-    
+
   end
-  
-  
+
+
   # Returns the shipment that will be considered the parent of the shipment associated with this object
   # A parent is any shipment on the same order, with the same shipping method, shipped within 1 day of this shipment
   def find_parent_shipment
