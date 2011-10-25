@@ -35,4 +35,13 @@ Shipment.class_eval do
     end
     inventory_units_shipped
   end
+  
+  # Removes any []InventoryUnit]s that have status 'sold'
+  # and adds them to a child shipment
+  def transfer_sold_to_child
+    sold_units = self.inventory_units.sold.all
+    sold_units.each { |u| self.inventory_units.delete(u) }
+    self.create_child(sold_units)
+  end
+  
 end

@@ -221,9 +221,9 @@ class AsnShipmentDetail < ActiveRecord::Base
     
     return unless shipment
 
-    # remove unshipped items from shipment
-    shipment.inventory_units.all.each { |u| shipment.inventory_units.delete(u) unless u.shipped? }
-
+    # move sold (shippable) items from shipment to a new, child shipment
+    shipment.transfer_sold_to_child
+    
     shipment.save!
   end
 
