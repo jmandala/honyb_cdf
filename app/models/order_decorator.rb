@@ -198,5 +198,5 @@ Order.class_eval do
     self.dc_code = DcCode.default if self.dc_code.nil?
     self.split_shipment_type = SPLIT_SHIPMENT_TYPE[Cdf::Config[:split_shipment_type].to_sym] if self.split_shipment_type.nil?
   end
-
+  
 end

@@ -65,7 +65,7 @@ module Importable
       files = []
       ['test', 'outgoing'].each do |dir|
         remote_dir = "~/#{dir}"
-        files +=  client.dir(remote_dir, ".*#{@ext}")
+        files += client.dir(remote_dir, ".*#{@ext}")
       end
       client.close
       files
@@ -240,7 +240,7 @@ module Importable
     if import_error?
       return CdfImportExceptionLog.create(:event => "Error importing file: #{import_error_message}", :file_name => self.file_name)
     end
-    
+
     begin
       p = parsed
 
@@ -250,8 +250,9 @@ module Importable
         begin
           imported << klass.populate(p, self)
         rescue => e
-          message = "Error importing #{klass}. #{e.message}. #{e.backtrace.slice(0,15)}"
-          Rails.logger.error e.backtrace.slice(0,15)
+          message = "Error importing #{klass}. #{e.message}. #{e.backtrace.slice(0, 15)}"
+          Rails.logger.error message
+          Rails.logger.error e.backtrace.slice(0, 15)
           CdfImportExceptionLog.create(:event => message, :file_name => self.file_name)
           raise e, message, e.backtrace
         end

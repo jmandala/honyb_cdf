@@ -12,8 +12,7 @@ class AsnShipmentDetail < ActiveRecord::Base
   belongs_to :asn_slash_code
   belongs_to :asn_shipping_method_code
   belongs_to :dc_code
-  
-  after_save :debug_me
+
 
   def self.spec(d)
     d.asn_shipment_detail do |l|
@@ -154,7 +153,7 @@ class AsnShipmentDetail < ActiveRecord::Base
   # matches the first available shipment
   def init_shipment
     assign_inventory
-    
+
     # if there are no inventory_units, delete the shipment
     if self.shipment.inventory_units.count == 0
       self.shipment.delete
@@ -163,10 +162,9 @@ class AsnShipmentDetail < ActiveRecord::Base
 
     self.shipment.transfer_sold_to_child
     self.shipment.save!
-    
+
     assign_shipment
 
-    puts self.shipment.state
     self.save!
     self.shipment
   end
@@ -188,22 +186,19 @@ class AsnShipmentDetail < ActiveRecord::Base
   # * the tracking number will be set
   # * the inventory will be allocated
   def assign_shipment
-    self.shipment.update!(self.order)
-    self.shipment.tracking = self.tracking if self.tracking
-    self.shipment.shipped_at = self.shipment_date
+      raise Cdf::IllegalStateError, "Error attempting to ship shipment #{shipment.number}. Current state: #{shipment.state}" unless self.shipment.can_ship?
 
-    raise Cdf::IllegalStateError, "Error attempting to ship shipment #{shipment.number}. Current state: #{shipment.state}" unless self.shipment.can_ship?
+      self.shipment.update!(self.order)
+      self.shipment.tracking = self.tracking if self.tracking
+      self.shipment.shipped_at = self.shipment_date
+      self.shipment.state = 'shipped'
+      self.shipment.update!(order)
+      
+      # reload the shipments on the order in order to prevent stale shipments from clobbering this new one 
+      self.shipment.order.shipments.reload
 
-    puts self.shipment.can_ship?
-    begin
-      self.shipment.ship! unless self.shipment.state?('shipped')
-      puts self.shipment.state
-    rescue => e
-      raise Cdf::IllegalStateError, "Error attempting to assign shipment from #{self.asn_file.file_name} for order #{self.order.number}, #{self.isbn_13}: #{self.tracking}, (#{shipment.state}) - #{e.message}"
-    end
-
-    self.shipment.save!
   end
+
 
   # assigns inventory from [Shipment] to this [AsnShipmentDetail]
   # * consider inventory only if the state is 'sold'
@@ -242,7 +237,6 @@ class AsnShipmentDetail < ActiveRecord::Base
       inventory_unit.delete
     end
 
-    puts "save me!"
     self.save!
 
   end
@@ -270,8 +264,4 @@ class AsnShipmentDetail < ActiveRecord::Base
     Shipment.create(:address => self.order.ship_address, :order => self.order, :shipping_method => self.shipping_method, :inventory_units => [inventory_unit])
   end
 
-
-  def debug_me
-    puts self.shipment.state if self.shipment
-  end
 end
