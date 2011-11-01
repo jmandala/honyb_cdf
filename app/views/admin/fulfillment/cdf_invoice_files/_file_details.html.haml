@@ -18,11 +18,16 @@
           %td #{h.company_account_id_number}
           %td #{h.invoice_number}
           %td #{h.invoice_date.strftime("%D")}
-          %td #{ number_to_currency trailer.total_gift_wrap }
-          %td #{ number_to_currency trailer.total_handling }
-          %td #{ number_to_currency trailer.total_net_price }
-          %td #{ number_to_currency trailer.total_shipping }
-          %td{:class => 'active'} #{ number_to_currency trailer.total_invoice }
+          - if !trailer
+            %td{:colspan=> 5} No trailer in this invoice
+          
+          - else
+            %td #{ number_to_currency trailer.total_gift_wrap }
+            %td #{ number_to_currency trailer.total_handling }
+            %td #{ number_to_currency trailer.total_net_price }
+            %td #{ number_to_currency trailer.total_shipping }
+            %td{:class => 'active'} #{ number_to_currency trailer.total_invoice }
+            
         %tr
           %td{:colspan => 8, :class => 'invoice_group'}
             %h4 #{t 'invoice_details'}
@@ -41,14 +46,22 @@
                 - h.cdf_invoice_detail_totals.each do |t|
                   - isbn = t.cdf_invoice_isbn_detail
                   %tr
-                    %td #{link_to t.order.number, admin_order_path(t.order)}
+                    %td #{link_to t.order.number, admin_order_path(t.order) if t.order}
                     %td #{t.title}
-                    %td #{t.cdf_invoice_ean_detail.ean_shipped} / #{isbn.isbn_10_shipped}
-                    %td #{ isbn.metered_date.strftime("%D") }
-                    %td #{ isbn.quantity_shipped }
-                    %td #{ number_to_currency isbn.ingram_list_price }
-                    %td #{ number_to_currency isbn.discount }
-                    %td{:class => 'active'} #{ number_to_currency isbn.net_price }
+                    %td 
+                      - if t.cdf_invoice_ean_detail
+                        #{t.cdf_invoice_ean_detail.ean_shipped} / #{isbn.isbn_10_shipped }
+                      - else 
+                        undefined cdf_invoice_ean_detail
+                    - if isbn
+                      %td #{ isbn.metered_date.strftime("%D") }
+                      %td #{ isbn.quantity_shipped }
+                      %td #{ number_to_currency isbn.ingram_list_price }
+                      %td #{ number_to_currency isbn.discount }
+                      %td{:class => 'active'} #{ number_to_currency isbn.net_price }
+                    - else
+                      %td{:colspan => 5}
+                        Undefined ISBN for invoice
         %tr
           %td{:colspan => 8, :class => 'invoice_group'}
             %h4 #{t 'freight_and_fees'}
