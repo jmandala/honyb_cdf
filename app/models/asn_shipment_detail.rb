@@ -186,16 +186,18 @@ class AsnShipmentDetail < ActiveRecord::Base
   # * the tracking number will be set
   # * the inventory will be allocated
   def assign_shipment
-      raise Cdf::IllegalStateError, "Error attempting to ship shipment #{shipment.number}. Current state: #{shipment.state}" unless self.shipment.can_ship?
+    raise Cdf::IllegalStateError, "Error attempting to ship shipment #{shipment.number}. Current state: #{shipment.state}" unless self.shipment.can_ship?
 
-      self.shipment.update!(self.order)
-      self.shipment.tracking = self.tracking if self.tracking
-      self.shipment.shipped_at = self.shipment_date
-      self.shipment.state = 'shipped'
-      self.shipment.update!(order)
-      
-      # reload the shipments on the order in order to prevent stale shipments from clobbering this new one 
-      self.shipment.order.shipments.reload
+    # save the shipment status
+    self.shipment.state = 'shipped'
+    self.shipment.update!(order)
+
+    # reload the shipments on the order in order to prevent stale shipments from clobbering this new one 
+    self.shipment.order.shipments.reload
+    self.shipment.tracking = self.tracking if self.tracking
+    self.shipment.shipped_at = self.shipment_date
+
+    self.shipment.save!
 
   end
 
