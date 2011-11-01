@@ -1,11 +1,16 @@
 Order.class_eval do
 
-  before_create :init_order
+  has_many :children, :class_name => Order.name, :foreign_key => 'parent_id'
+  belongs_to :parent, :class_name => Order.name, :foreign_key => 'parent_id'
   
+  
+  before_create :init_order
+
+
   ORDER_NAME = 'Order Name'
 
   TYPES = [:live, :test]
-  
+
   # EL = Multi-shipment: Allow immediate shipment of all in-stockt itles
   # for every warehouse shopped. Backorders will allocate AND SHIP as stock
   # becomes available. On the cancel date unallocated lines will be cancelled.
@@ -178,7 +183,7 @@ Order.class_eval do
     order_name_type = CommentType.find_by_name!(ORDER_NAME)
     self.comments.create(:comment => name, :comment_type => order_name_type, :commentable => self, :commentable_type => self.class.name, :user => User.current)
   end
-  
+
   def order_name
     if self.comments.count == 0
       return ''
@@ -187,10 +192,38 @@ Order.class_eval do
     if comment.nil?
       return ''
     end
-    
+
     comment.comment
   end
-  
+
+  # Creates a new Order based on this one, copying
+  # * bill_address
+  # * ship_address
+  # * line_items
+  # * shipping_method
+  def duplicate
+    dup = Order.new
+    dup.parent = self
+    self.children << dup
+
+    [:ship_address,
+     :bill_address,
+     :shipping_method,
+     :special_instructions,
+     :split_shipment_type,
+     :dc_code,
+     :order_type].each do |attr|
+      value = self.send(attr)
+      dup.send("#{attr.to_s}=", value)
+    end
+
+    # assign line_items
+    self.line_items.each { |li| dup.add_variant li.variant, li.quantity }
+
+    dup.save!
+    dup
+  end
+
   private
   # Sets the order type if not already set 
   def init_order
@@ -198,5 +231,5 @@ Order.class_eval do
     self.dc_code = DcCode.default if self.dc_code.nil?
     self.split_shipment_type = SPLIT_SHIPMENT_TYPE[Cdf::Config[:split_shipment_type].to_sym] if self.split_shipment_type.nil?
   end
-  
+
 end
