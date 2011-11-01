@@ -21,7 +21,7 @@ module Cdf
         Rails.env.production? ? require(c) : load(c)
       end
 
-      Calculator::AdvancedFlexiRate.register 
+      Calculator::AdvancedFlexiRate.register       
 
     end
 

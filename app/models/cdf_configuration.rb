@@ -13,4 +13,6 @@ class CdfConfiguration < Configuration
 
   preference :days_to_hold_backorder, :integer, :default => 1
   preference :split_shipment_type, :string, :default => :release_when_full
+  
+  PER_PAGE = [25, 50, 75, 100, 150, 200]
 end
