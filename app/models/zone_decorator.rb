@@ -9,4 +9,8 @@ Zone.class_eval do
   def self.all_us
     where(:name => 'ALL US').first
   end
+  
+  def self.intl
+    where(:name => 'International').first
+  end
 end

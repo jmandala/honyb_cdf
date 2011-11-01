@@ -1,4 +1,5 @@
 puts "ZoneMember..."
+puts "USA Zones"
 continental_zone = Zone.find_or_create_by_name('Continental USA', :description => 'Continental United States')
 non_continental_zone = Zone.find_or_create_by_name('Non-continental USA', :description => 'Non-continental United States')
 armed_forces_zone = Zone.find_or_create_by_name('APO/AFO', :description => 'US Armed Forces')
@@ -41,4 +42,10 @@ puts "\tAdd all us zones to USA"
   next if all_usa_zone.includes_zoneable? zone
   member = ZoneMember.create(:zone => all_usa_zone, :zoneable => zone, :zoneable_type => 'Zone')
   all_usa_zone.members << member
+end
+
+puts "International Zone"
+intl_zone = Zone.find_or_create_by_name('International', :description => 'International Zone')
+Country.where('iso not in (?)', Zone.find_by_name('ALL US').country_list.collect(&:iso)).each do |country|
+  intl_zone.members << ZoneMember.create(:zone => intl_zone, :zoneable => country, :zoneable_type => 'Country')
 end

@@ -72,11 +72,20 @@ AsnShippingMethodCode.find_or_create_by_big_bisac_code_sent_in('### INTL W/DEL C
                                                                :po_box_option_id => po_box_depends.id,
                                                                :notes => 'only available for Canada, Great Britain, and Japan')
 
+invalid_asn = AsnShippingMethodCode.find_or_create_by_big_bisac_code_sent_in('### INVALID_TEST',
+                                                               :code => 'XX',
+                                                               :address_type => 'Domestic',
+                                                               :name => 'INVALID SHIPPING METHOD',
+                                                               :big_bisac_code_sent_in => '',
+                                                               :po_box_option_id => po_box_depends.id,
+                                                               :notes => 'INVALID -- ONLY USE FOR TESTING')
+
 methods = [
     {:name => 'Economy Mail', :first_item => 3.99, :additional_item => 0.99, :asn_shipping_method_code => economy_mail},
     {:name => 'Expedited Mail', :first_item => 4.98, :additional_item => 1.99, :asn_shipping_method_code => expedited_mail},
     {:name => '2nd Day Air', :first_item => 19.98, :additional_item => 5.99, :asn_shipping_method_code => two_day_air},
-    {:name => 'INTL Priority', :first_item => 19.98, :additional_item => 5.99, :asn_shipping_method_code => intl_priority, :environment => 'development,test'},
+    {:name => 'INTL Priority', :first_item => 19.98, :additional_item => 5.99, :asn_shipping_method_code => intl_priority, :zone => Zone.intl, :environment => 'development,test'},
+    {:name => 'Invalid Shipping Method', :first_item => 3.99, :additional_item => 0.99, :asn_shipping_method_code => invalid_asn, :environment => 'development,test'},
 ]
 
 puts "ShippingMethods..."
@@ -86,8 +95,9 @@ methods.each do |options|
   asn_shipping_method = options[:asn_shipping_method_code]
   asn_shipping_method.to_yaml
   shipping_method = ShippingMethod.find_by_name(name)
+  options[:zone] ||= Zone.all_us
   unless shipping_method
-    shipping_method = ShippingMethod.create(:name => name, :zone => Zone.all_us, :calculator_type => 'Calculator::AdvancedFlexiRate', :environment => options[:environment])
+    shipping_method = ShippingMethod.create(:name => name, :zone => options[:zone], :calculator_type => 'Calculator::AdvancedFlexiRate', :environment => options[:environment])
     shipping_method.calculator.preferred_first_item = options[:first_item]
     shipping_method.calculator.preferred_additional_item = options[:additional_item]
     shipping_method.save!
