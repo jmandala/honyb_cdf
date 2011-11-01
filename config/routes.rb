@@ -66,6 +66,7 @@ Rails.application.routes.draw do
       
       member do
         get :fulfillment
+        post :duplicate
       end
     end
 

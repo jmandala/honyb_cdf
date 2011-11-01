@@ -150,11 +150,11 @@ Order.class_eval do
   end
 
   # Transitions order to the next state and throws exception if it fails
-  def next!
-    if !self.next
-      raise Cdf::IllegalStateError, "Cannot transition order because: #{self.errors.to_yaml}"
-    end
-  end
+  #def next!
+  #  if !self.next
+  #    raise Cdf::IllegalStateError, "Cannot transition order because: #{self.errors.to_yaml}"
+  #  end
+  #end
 
   # Transitions the order to the completed state or raise exception if error occurs while trying  
   def complete!
@@ -206,7 +206,8 @@ Order.class_eval do
     dup.parent = self
     self.children << dup
 
-    [:ship_address,
+    [:email,
+     :ship_address,
      :bill_address,
      :shipping_method,
      :special_instructions,
@@ -220,6 +221,8 @@ Order.class_eval do
     # assign line_items
     self.line_items.each { |li| dup.add_variant li.variant, li.quantity }
 
+    # set name
+    dup.order_name = "Duplicate of #{self.number}: #{self.order_name}"
     dup.save!
     dup
   end

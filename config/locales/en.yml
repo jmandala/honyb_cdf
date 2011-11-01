@@ -75,6 +75,7 @@ en:
   system_checks: "System Checks"
   ftp_check: "FTP Check"
   ftp_check_description: "Confirm FTP credentials"
+  duplicate: "Duplicate"
   order_check: "Order Compliance Check"
   order_check_description: "Perform Order compliance testing"
   submitted_at: "Submitted At"
@@ -107,3 +108,4 @@ en:
   isbn_shipped: "ISBN Shipped"
   asn_order_status: "Status"
   shipping: "Shipping"
+  order_duplicated: "Order :number has been duplicated."

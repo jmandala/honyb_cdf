@@ -1,3 +1,5 @@
+.toolbar.order-links
+  = button_link_to t('duplicate'), duplicate_admin_order_path, :icon => 'add', :method => :post
 - if !@order.has_po?
   - if @order.ready_for_po?
     = button_link_to t("create_po_file"), admin_fulfillment_po_files_path, :icon => 'send-email', :method => :post
