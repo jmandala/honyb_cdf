@@ -78,7 +78,7 @@ Order.class_eval do
   end
 
   def gift_message
-    "Enjoy your gifts!"
+    ""
   end
 
   def total_quantity

@@ -9,6 +9,6 @@ LineItem.class_eval do
   end
 
   def gift_message
-    "I love you so much!"
+    ""
   end
 end
